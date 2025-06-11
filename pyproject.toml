@@ -1,0 +1,23 @@
+[project]
+name = "dstamp"
+version = "0.1.0"
+description = "CLI app for generating timestamps for use in Discord chats."
+authors = [{ name = "Mariusz Tang", email = "dev@mariusztang.com" }]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = ["typer (>=0.16.0,<0.17.0)"]
+keywords = ["Discord", "timestamp", "generator"]
+
+[project.urls]
+Repository = "https://github.com/mariusz-tang/dstamp"
+
+[tool.poetry]
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.0"
+coverage = "^7.8.2"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
