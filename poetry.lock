@@ -16,6 +16,21 @@ files = [
 colorama = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
+name = "clipman"
+version = "3.3.1"
+description = "Python3 module for working with clipboard. Created because pyperclip is discontinued."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "clipman-3.3.1-py3-none-any.whl", hash = "sha256:1f33ce83f6da162c068016db03e6230800f58b83cf3362fa1220fe55736b0a1f"},
+    {file = "clipman-3.3.1.tar.gz", hash = "sha256:cb2ad1a7ec5795b805ae521952ed733b35a499a33d512236a439a64fd58add50"},
+]
+
+[package.dependencies]
+dbus-next = "*"
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -107,6 +122,18 @@ files = [
 
 [package.extras]
 toml = ["tomli ; python_full_version <= \"3.11.0a6\""]
+
+[[package]]
+name = "dbus-next"
+version = "0.2.3"
+description = "A zero-dependency DBus library for Python with asyncio support"
+optional = false
+python-versions = ">=3.6.0"
+groups = ["main"]
+files = [
+    {file = "dbus_next-0.2.3-py3-none-any.whl", hash = "sha256:58948f9aff9db08316734c0be2a120f6dc502124d9642f55e90ac82ffb16a18b"},
+    {file = "dbus_next-0.2.3.tar.gz", hash = "sha256:f4eae26909332ada528c0a3549dda8d4f088f9b365153952a408e28023a626a5"},
+]
 
 [[package]]
 name = "iniconfig"
@@ -286,4 +313,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "b968ba72182276f15dba0fb91443e1eb270b7a8b26fdb70f4d104fad303043c6"
+content-hash = "93488fad483178092b36d69ad9c91674a062a6d5bef48195f763a7af47f0c49c"
