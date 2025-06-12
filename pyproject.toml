@@ -14,6 +14,9 @@ Repository = "https://github.com/mariusz-tang/dstamp"
 
 [tool.poetry]
 
+[tool.poetry.scripts]
+dstamp = "dstamp.main:app"
+
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.0"
 coverage = "^7.8.2"
