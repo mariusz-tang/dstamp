@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 import clipman
 import typer
@@ -11,7 +12,10 @@ app = typer.Typer(no_args_is_help=True)
 
 @app.command()
 def main(
-    time: datetime,
+    time: Annotated[
+        Optional[datetime],
+        typer.Argument(default_factory=datetime.now, show_default="the current time"),
+    ],
     output_format: Annotated[
         format.Format,
         typer.Option(
