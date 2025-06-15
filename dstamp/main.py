@@ -1,11 +1,10 @@
 from datetime import datetime
 from typing import Optional
 
-import clipman
 import typer
 from typing_extensions import Annotated
 
-from . import format
+from . import clipboard, format
 
 app = typer.Typer(no_args_is_help=True)
 
@@ -35,9 +34,7 @@ def main(
     output = format.convert_to_discord_format(time, output_format)
     print(output)
     if copy_to_clipboard:
-        clipman.init()
-        clipman.set(output)
-        print("Copied to clipboard!")
+        clipboard.copy(output)
 
 
 if __name__ == "__main__":
