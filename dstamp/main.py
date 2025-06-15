@@ -18,7 +18,12 @@ app = typer.Typer(no_args_is_help=True)
 def main(
     time: Annotated[
         Optional[datetime],
-        typer.Argument(default_factory=datetime.now, show_default="the current time"),
+        typer.Argument(
+            default_factory=datetime.now,
+            show_default=False,
+            help="The date and time to which the timestamp should point. "
+            "If omitted, the current time is used.",
+        ),
     ],
     output_format: Annotated[
         format.Format,
@@ -36,6 +41,11 @@ def main(
         ),
     ] = False,
 ):
+    """
+    Generate a Discord timestamp.
+
+    If TIME is omitted, uses the current time.
+    """
     output = format.convert_to_discord_format(time, output_format)
     print(output)
     if copy_to_clipboard:
