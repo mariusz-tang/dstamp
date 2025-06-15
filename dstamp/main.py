@@ -14,8 +14,13 @@ from . import clipboard, format
 app = typer.Typer(no_args_is_help=True)
 
 
-@app.command()
-def main(
+@app.callback()
+def callback():
+    """Discord Timestamp Generator."""
+
+
+@app.command("get")
+def get_timestamp(
     time: Annotated[
         Optional[datetime],
         typer.Argument(
