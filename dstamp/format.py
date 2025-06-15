@@ -1,3 +1,8 @@
+"""format.py
+
+This module provides tools for formatting datetimes for dstamp output.
+"""
+
 from datetime import datetime
 from enum import Enum
 
@@ -19,5 +24,6 @@ class Format(str, Enum):
 
 
 def convert_to_discord_format(time: datetime, format: Format) -> str:
+    """Convert a datetime object into a Discord-friendly timestamp."""
     timestamp = int(time.timestamp())
     return f"<t:{timestamp}:{format.code}>"

@@ -1,3 +1,8 @@
+"""main.py
+
+This module contains the commands provided by dstamp.
+"""
+
 from datetime import datetime
 from typing import Optional
 

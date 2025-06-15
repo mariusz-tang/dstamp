@@ -1,4 +1,7 @@
-"""Module for handling clipboard interaction."""
+"""clipboard.py
+
+This module provides functions for interacting with the clipboard.
+"""
 
 import clipman
 from rich.console import Console
