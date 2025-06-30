@@ -9,7 +9,7 @@ from typing import Optional
 import typer
 from typing_extensions import Annotated
 
-from . import clipboard, format
+from . import clipboard, format, parse
 
 app = typer.Typer(no_args_is_help=True)
 
@@ -22,7 +22,7 @@ def callback():
 @app.command("get")
 def get_timestamp(
     time: Annotated[
-        Optional[datetime],
+        datetime,
         typer.Argument(
             default_factory=datetime.now,
             show_default=False,
@@ -30,6 +30,13 @@ def get_timestamp(
             "If omitted, the current time is used.",
         ),
     ],
+    offset: Annotated[
+        Optional[str],
+        typer.Argument(
+            show_default=False,
+            help="Optional offset to apply to TIME. Examples: 2d3h1m, +3s, -1w3d.",
+        ),
+    ] = None,
     output_format: Annotated[
         format.Format,
         typer.Option(
@@ -51,7 +58,8 @@ def get_timestamp(
 
     If TIME is omitted, uses the current time.
     """
-    output = format.convert_to_discord_format(time, output_format)
+    delta = parse.parse_offset(offset)
+    output = format.convert_to_discord_format(time + delta, output_format)
     print(output)
     if copy_to_clipboard:
         clipboard.copy(output)
