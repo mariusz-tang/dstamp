@@ -41,7 +41,9 @@ def get_timestamp(
     output_format: Annotated[
         format.Format,
         typer.Option(
-            help="The format in which the timestamp will be displayed in Discord."
+            "--output-format",
+            "-f",
+            help="The format in which the timestamp will be displayed in Discord.",
         ),
     ] = format.Format.RELATIVE,
     copy_to_clipboard: Annotated[
