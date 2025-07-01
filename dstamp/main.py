@@ -3,7 +3,7 @@
 This module contains the commands provided by dstamp.
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional
 
 import typer
@@ -31,12 +31,13 @@ def get_timestamp(
         ),
     ],
     offset: Annotated[
-        Optional[str],
+        timedelta,
         typer.Argument(
+            parser=parse.parse_offset,
             show_default=False,
             help="Optional offset to apply to TIME. Examples: 2d3h1m, +3s, -1w3d.",
         ),
-    ] = None,
+    ] = "",
     output_format: Annotated[
         format.Format,
         typer.Option(
@@ -58,8 +59,7 @@ def get_timestamp(
 
     If TIME is omitted, uses the current time.
     """
-    delta = parse.parse_offset(offset)
-    output = format.convert_to_discord_format(time + delta, output_format)
+    output = format.convert_to_discord_format(time + offset, output_format)
     print(output)
     if copy_to_clipboard:
         clipboard.copy(output)
