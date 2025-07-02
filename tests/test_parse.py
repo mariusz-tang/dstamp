@@ -15,5 +15,5 @@ from dstamp import parse
         ("-300d", timedelta(days=-300)),
     ),
 )
-def test_temp(raw_input, desired_output):
-    assert parse.parse_offset(raw_input) == desired_output
+def test_offset(raw_input, desired_output):
+    assert parse.offset(raw_input) == desired_output
