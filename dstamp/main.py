@@ -32,10 +32,10 @@ def get_timestamp(
     ],
     offset: Annotated[
         timedelta,
-            parser=parse.parse_offset,
         typer.Option(
             "--offset",
             "-o",
+            parser=parse.offset,
             show_default=False,
             help="Optional offset to apply to TIME. Examples: 2d3h1m, +3s, -1w3d.",
         ),

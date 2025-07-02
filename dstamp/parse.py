@@ -14,7 +14,7 @@ units = {
 }
 
 
-def parse_offset(raw_offset: str | None) -> timedelta:
+def offset(raw_offset: str | None) -> timedelta:
     """
     Parse raw_offset into a timedelta.
 
