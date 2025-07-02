@@ -24,12 +24,12 @@ def get_timestamp(
     time: Annotated[
         datetime,
         typer.Argument(
-            default_factory=datetime.now,
+            parser=parse.datetime_string,
             show_default=False,
             help="The date and time to which the timestamp should point. "
             "If omitted, the current time is used.",
         ),
-    ],
+    ] = "",
     offset: Annotated[
         timedelta,
         typer.Option(
