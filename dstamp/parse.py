@@ -69,8 +69,9 @@ def datetime_string(raw_datetime: str) -> datetime:
     raw_datetime should be of the form "ddmmmyyyy,hhmmss", albeit with some
     flexibility and special values allowed.
 
-    If either the date or time is omitted, attempt to use the current day
-    or time.
+    If the date is omitted, use the current date.
+    If the only time is omitted, use midnight.
+    If both are omitted, use the current date and time.
 
     Valid examples:
     07jun2025,1230
@@ -79,6 +80,8 @@ def datetime_string(raw_datetime: str) -> datetime:
     tomorrow
     12pm
     73002pm
+    noon
+    midnight
     """
     if raw_datetime == "":
         return datetime.now()
@@ -87,7 +90,7 @@ def datetime_string(raw_datetime: str) -> datetime:
         try:
             return datetime_string("today," + raw_datetime)
         except InvalidFormatError:
-            return datetime_string(raw_datetime + ",now")
+            return datetime_string(raw_datetime + ",midnight")
     elif x > 2:
         raise InvalidFormatError
 
@@ -125,6 +128,12 @@ def parse_date(datestr: str) -> date:
 def parse_time(timestr: str) -> time:
     if timestr == "now":
         return datetime.now().time()
+
+    if timestr == "midnight":
+        return time()
+
+    if timestr == "noon":
+        return time(12)
 
     m = re.fullmatch(r"(\d{1,2}?)(\d{2})?(\d{2})?([ap]m)?", timestr)
     if m is None:
