@@ -1,6 +1,7 @@
-from datetime import timedelta
+from datetime import date, datetime, time, timedelta
 
 import pytest
+from freezegun import freeze_time
 
 from dstamp import parse
 
@@ -17,3 +18,27 @@ from dstamp import parse
 )
 def test_offset(raw_input, desired_output):
     assert parse.offset(raw_input) == desired_output
+
+
+# Patched time
+today = date(2025, 1, 2)
+current_time = time(12, 53, 42)
+now = datetime.combine(today, current_time)
+
+
+@pytest.mark.parametrize(
+    "raw_input,desired_output",
+    (
+        ("12june2024", datetime(2024, 6, 12)),
+        ("24aug2000,midnight", datetime(2000, 8, 24)),
+        ("", now),
+        ("tmrw,7pm", datetime.combine(today + timedelta(days=1), time(19))),
+        ("yesterday,noon", datetime.combine(today - timedelta(days=1), time(12))),
+        ("830pm", datetime.combine(today, time(20, 30))),
+        ("200943", datetime.combine(today, time(20, 9, 43))),
+        ("4jan,1am", datetime.combine(date(today.year, 1, 4), time(1))),
+    ),
+)
+@freeze_time(now)
+def test_datetime(raw_input, desired_output, monkeypatch):
+    assert parse.datetime_string(raw_input) == desired_output
