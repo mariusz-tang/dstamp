@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 import typer
 from typing_extensions import Annotated
 
-from . import clipboard, format, parse
+from . import clipboard, config, format, parse
 
 app = typer.Typer(no_args_is_help=True)
 
@@ -55,7 +55,7 @@ def get_timestamp(
             help="If set, copy the timestamp to clipboard. "
             "On Linux, requires that xsel or xclip be installed.",
         ),
-    ] = False,
+    ] = None,
 ):
     """
     Generate a Discord timestamp.
@@ -63,9 +63,21 @@ def get_timestamp(
     If TIME is omitted, uses the current time.
     """
     output = format.convert_to_discord_format(time + offset, output_format)
+    cfg = config.get()
+    copy_to_clipboard = get_value_after_config(
+        copy_to_clipboard, cfg.copy_to_clipboard, False
+    )
     print(output)
     if copy_to_clipboard:
         clipboard.copy(output)
+
+
+def get_value_after_config(cli_value, config_value, default):
+    if cli_value is not None:
+        return cli_value
+    if config_value is not None:
+        return config_value
+    return default
 
 
 if __name__ == "__main__":
