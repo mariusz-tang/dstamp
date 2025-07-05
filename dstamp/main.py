@@ -4,7 +4,6 @@ This module contains the commands provided by dstamp.
 """
 
 from datetime import datetime, timedelta
-from typing import Optional
 
 import typer
 from typing_extensions import Annotated
