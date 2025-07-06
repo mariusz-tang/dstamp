@@ -18,6 +18,9 @@ def callback():
     """Discord Timestamp Generator."""
 
 
+FROM_CONFIG = "from config"
+
+
 @app.command("get")
 def get_timestamp(
     time: Annotated[
@@ -52,6 +55,7 @@ def get_timestamp(
         typer.Option(
             "--copy-to-clipboard/--no-copy",
             "-x",
+            show_default=FROM_CONFIG,
             help="If set, copy the timestamp to clipboard. "
             "On Linux, requires that xsel or xclip be installed.",
         ),
