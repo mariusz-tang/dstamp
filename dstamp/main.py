@@ -65,7 +65,15 @@ def get_timestamp(
     ] = None,
     config_path: Annotated[
         Optional[Path],
-        typer.Option("--config", "-c", exists=True, dir_okay=False),
+        typer.Option(
+            "--config",
+            "-c",
+            show_default=False,
+            exists=True,
+            dir_okay=False,
+            help="If specified, read config from this file instead of the default "
+            "location.",
+        ),
     ] = None,
 ):
     """
