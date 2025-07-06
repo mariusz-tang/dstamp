@@ -10,11 +10,14 @@ from pathlib import Path
 import typer
 from pydantic import BaseModel
 
+from . import format
+
 APP_NAME = "dstamp"
 
 
 class DstampConfig(BaseModel):
     copy_to_clipboard: bool = False
+    output_format: format.Format = format.Format.RELATIVE
 
 
 @cache

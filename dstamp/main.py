@@ -47,9 +47,10 @@ def get_timestamp(
         typer.Option(
             "--output-format",
             "-f",
+            show_default=FROM_CONFIG,
             help="The format in which the timestamp will be displayed in Discord.",
         ),
-    ] = format.Format.RELATIVE,
+    ] = None,
     copy_to_clipboard: Annotated[
         bool,
         typer.Option(
@@ -66,8 +67,10 @@ def get_timestamp(
 
     If TIME is omitted, uses the current time.
     """
-    output = format.convert_to_discord_format(time + offset, output_format)
     cfg = config.get()
+    output_format = fill_value(output_format, cfg.output_format)
+    output = format.convert_to_discord_format(time + offset, output_format)
+
     copy_to_clipboard = fill_value(copy_to_clipboard, cfg.copy_to_clipboard)
     print(output)
     if copy_to_clipboard:
