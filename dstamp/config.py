@@ -23,8 +23,7 @@ class DstampConfig(BaseModel):
 @cache
 def get(config_path: Path) -> DstampConfig:
     """Load the config file and return config object."""
-    app_dir = typer.get_app_dir(APP_NAME)
-    config_path = config_path or (Path(app_dir) / "config.toml")
+    config_path = config_path or get_config_path()
 
     raw_config = {}
     if config_path.is_file():
@@ -33,3 +32,8 @@ def get(config_path: Path) -> DstampConfig:
 
     config = DstampConfig(**raw_config)
     return config
+
+
+def get_config_path() -> Path:
+    app_dir = typer.get_app_dir(APP_NAME)
+    return Path(app_dir) / "config.toml"
