@@ -4,6 +4,7 @@ import pytest
 from freezegun import freeze_time
 
 from dstamp import parse
+from tests.patched_time import now, today
 
 
 @pytest.mark.parametrize(
@@ -18,12 +19,6 @@ from dstamp import parse
 )
 def test_offset(raw_input, desired_output):
     assert parse.offset(raw_input) == desired_output
-
-
-# Patched time
-today = date(2025, 1, 2)
-current_time = time(12, 53, 42)
-now = datetime.combine(today, current_time)
 
 
 @pytest.mark.parametrize(
