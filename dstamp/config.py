@@ -4,6 +4,7 @@ This module contains the config file loader and parser.
 """
 
 import tomllib
+from functools import cache
 from pathlib import Path
 
 import typer
@@ -16,6 +17,7 @@ class DstampConfig(BaseModel):
     copy_to_clipboard: bool = False
 
 
+@cache
 def get() -> DstampConfig:
     app_dir = typer.get_app_dir(APP_NAME)
     config_path = Path(app_dir) / "config.toml"
