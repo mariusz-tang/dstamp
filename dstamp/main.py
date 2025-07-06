@@ -64,20 +64,21 @@ def get_timestamp(
     """
     output = format.convert_to_discord_format(time + offset, output_format)
     cfg = config.get()
-    copy_to_clipboard = get_value_after_config(
-        copy_to_clipboard, cfg.copy_to_clipboard, False
-    )
+    copy_to_clipboard = fill_value(copy_to_clipboard, cfg.copy_to_clipboard)
     print(output)
     if copy_to_clipboard:
         clipboard.copy(output)
 
 
-def get_value_after_config(cli_value, config_value, default):
-    if cli_value is not None:
-        return cli_value
-    if config_value is not None:
-        return config_value
-    return default
+def fill_value(user_provided_value, filler_value):
+    """
+    Return filler_value is user_provided value is None.
+
+    Otherwise, return user_provided_value.
+    """
+    if user_provided_value is not None:
+        return user_provided_value
+    return filler_value
 
 
 if __name__ == "__main__":

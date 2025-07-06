@@ -13,7 +13,7 @@ APP_NAME = "dstamp"
 
 
 class DstampConfig(BaseModel):
-    copy_to_clipboard: bool | None = None
+    copy_to_clipboard: bool = False
 
 
 def get() -> DstampConfig:
