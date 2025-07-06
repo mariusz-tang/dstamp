@@ -4,6 +4,8 @@ This module contains the commands provided by dstamp.
 """
 
 from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Optional
 
 import typer
 from typing_extensions import Annotated
@@ -61,13 +63,17 @@ def get_timestamp(
             "On Linux, requires that xsel or xclip be installed.",
         ),
     ] = None,
+    config_path: Annotated[
+        Optional[Path],
+        typer.Option("--config", "-c", exists=True, dir_okay=False),
+    ] = None,
 ):
     """
     Generate a Discord timestamp.
 
     If TIME is omitted, uses the current time.
     """
-    cfg = config.get()
+    cfg = config.get(config_path)
     output_format = fill_value(output_format, cfg.output_format)
     output = format.convert_to_discord_format(time + offset, output_format)
 
