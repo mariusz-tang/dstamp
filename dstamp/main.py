@@ -45,7 +45,7 @@ def get_timestamp(
         ),
     ] = "",
     output_format: Annotated[
-        format.Format,
+        Optional[format.Format],
         typer.Option(
             "--output-format",
             "-f",
@@ -54,7 +54,7 @@ def get_timestamp(
         ),
     ] = None,
     copy_to_clipboard: Annotated[
-        bool,
+        Optional[bool],
         typer.Option(
             "--copy-to-clipboard/--no-copy",
             "-x",
