@@ -1,7 +1,7 @@
 import pytest
 
 from dstamp.format import Format
-from tests.utils.timestamp import Timestamp
+from tests.utils.parse import Timestamp
 
 
 @pytest.mark.parametrize(
