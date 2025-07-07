@@ -3,7 +3,7 @@ import datetime
 import pytest
 
 from dstamp import format
-from tests.timestamp import Timestamp
+from tests.utils.timestamp import Timestamp
 
 
 @pytest.mark.parametrize("form", (form for form in format.Format))

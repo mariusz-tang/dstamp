@@ -4,7 +4,7 @@ import pytest
 from freezegun import freeze_time
 
 from dstamp import parse
-from tests.patched_time import now, today
+from tests.utils.patched_time import now, today
 
 
 @pytest.mark.parametrize(
