@@ -8,6 +8,8 @@ from rich.console import Console
 
 console = Console()
 
+COPY_SUCCESS_TEXT = "Copied to clipboard!"
+
 
 def copy(text: str):
     """
@@ -19,7 +21,7 @@ def copy(text: str):
     try:
         clipman.init()
         clipman.set(text)
-        console.print("Copied to clipboard!", style="white")
+        console.print(COPY_SUCCESS_TEXT, style="white")
     except clipman.exceptions.ClipmanBaseException:
         console.print(
             "There was a problem with the clipboard manager:", style="bold red"
