@@ -1,3 +1,8 @@
+"""utils.patched_time.py
+
+This module defines the current time to be used for freezegun-assisted tests.
+"""
+
 from datetime import date, datetime, time
 
 today = date(2025, 1, 2)

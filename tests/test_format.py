@@ -1,3 +1,8 @@
+"""test_format.py
+
+This module contains tests for the dstamp.format module.
+"""
+
 import datetime
 
 import pytest

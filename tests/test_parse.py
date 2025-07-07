@@ -1,3 +1,8 @@
+"""test_parse.py
+
+This module contains tests for the dstamp.parse module.
+"""
+
 from datetime import date, datetime, time, timedelta
 
 import pytest

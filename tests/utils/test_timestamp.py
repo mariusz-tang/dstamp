@@ -1,3 +1,9 @@
+"""utils/test_timestamp.py
+
+This module provides tests for the Timestamp utility provided by the
+tests.utils.parse module.
+"""
+
 import pytest
 
 from dstamp.format import Format
