@@ -12,4 +12,4 @@ def test_convert_to_discord_format(form: format.Format):
     formatted_time = format.convert_to_discord_format(dt, form)
     stamp = Timestamp(formatted_time)
     assert stamp.format_code == form.code
-    assert stamp.timestamp == str(int(dt.timestamp()))
+    assert stamp.timestamp == int(dt.timestamp())

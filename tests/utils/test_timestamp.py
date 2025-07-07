@@ -8,7 +8,7 @@ from tests.utils.parse import Timestamp
     "format_str", ("{}", "gjaifejf{}aiojoiajfe", "\n\naiojda\n{}\n\n\n")
 )
 def test_timestamp_ignores_extra_text(format_str: str):
-    timestamp = "1749682800"
+    timestamp = 1749682800
     code = Format.RELATIVE.code
     text = str.format(format_str, f"<t:{timestamp}:{code}>")
     stamp = Timestamp(text)
@@ -21,7 +21,7 @@ def test_timestamp_ignores_extra_text(format_str: str):
     ("{}{}", "awadad{}awdad{}wad", "daopdka\naoip\n{}jaioj\nas{}aosdaks\n\n"),
 )
 def test_timestamp_grabs_first_match(format_str: str):
-    timestamps = "4921319031", "123913202"
+    timestamps = 4921319031, 123913202
     codes = Format.RELATIVE.code, Format.SHORT_DATE.code
 
     text = str.format(
