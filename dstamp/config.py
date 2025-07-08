@@ -19,6 +19,20 @@ class DstampConfig(BaseModel):
     copy_to_clipboard: bool = False
     output_format: format.Format = format.Format.RELATIVE
 
+    def __str__(self):
+        def convert_to_line(option):
+            if type(option) is str:
+                option = (option, getattr(self, option))
+            name, value = option
+            return f"{name}: {value}"
+
+        options = (
+            "copy_to_clipboard",
+            ("output_format", self.output_format.value),
+        )
+        lines = (convert_to_line(option) for option in options)
+        return "\n".join(lines)
+
 
 @cache
 def get(config_path: Path) -> DstampConfig:

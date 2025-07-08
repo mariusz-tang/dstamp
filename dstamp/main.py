@@ -8,11 +8,13 @@ from pathlib import Path
 from typing import Optional
 
 import typer
+from rich.console import Console
 from typing_extensions import Annotated
 
 from . import clipboard, config, format, parse
 
 app = typer.Typer(no_args_is_help=True)
+console = Console()
 
 
 @app.callback()
@@ -100,6 +102,23 @@ def fill_value(user_provided_value, filler_value):
     if user_provided_value is not None:
         return user_provided_value
     return filler_value
+
+
+@app.command()
+def show_config(
+    path: Annotated[
+        Optional[Path],
+        typer.Argument(
+            show_default=False,
+            help="If specified, use this config file instead of the default.",
+        ),
+    ] = None,
+):
+    """Show the currently-active configuration settings and file location."""
+    if path is None:
+        path = config.get_config_path()
+    console.print(f"Using config at {path}\n", style="white")
+    print(config.get(path))
 
 
 if __name__ == "__main__":
