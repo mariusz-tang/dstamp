@@ -1,7 +1,6 @@
-"""test_main.py
+"""functional/test_get.py
 
-This module contains tests for the dstamp.main module.
-These are predominantly functional tests on the commands offered by Dstamp.
+This module contains functional tests for the dstamp get command.
 """
 
 import pytest
@@ -35,21 +34,21 @@ def test_get():
     assert output.timestamp.timestamp == int(now.timestamp())
 
 
-def test_get_copy_to_clipboard_cli_option():
+def test_copy_to_clipboard_cli_option():
     output = get_output_for_command("get -x")
     assert output.copied_to_clipboard
     output = get_output_for_command("get --copy-to-clipboard")
     assert output.copied_to_clipboard
 
 
-def test_get_copy_to_clipboard_config_option():
+def test_copy_to_clipboard_config_option():
     output = get_output_for_command("get")
     assert not output.copied_to_clipboard
     output = get_output_for_command(f"get --config {config.COPY_CONFIG_PATH}")
     assert output.copied_to_clipboard
 
 
-def test_get_no_copy_cli_option():
+def test_no_copy_cli_option():
     output = get_output_for_command(f"get --config {config.COPY_CONFIG_PATH} --no-copy")
     assert not output.copied_to_clipboard
 
@@ -62,7 +61,7 @@ def test_get_output_format_cli_option(format: Format):
     assert output.timestamp.format_code == format.code
 
 
-def test_get_output_format_config_option():
+def test_output_format_config_option():
     output = get_output_for_command("get")
     assert output.timestamp.format_code == Format.RELATIVE.code
     output = get_output_for_command(

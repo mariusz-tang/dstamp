@@ -1,6 +1,6 @@
-"""test_parse.py
+"""unit/test_parse.py
 
-This module contains tests for the dstamp.parse module.
+This module contains unit tests for the dstamp.parse module.
 """
 
 from datetime import date, datetime, time, timedelta
