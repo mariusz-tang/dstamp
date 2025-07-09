@@ -1,4 +1,4 @@
-"""utils.patched_time.py
+"""utils/patched_time.py
 
 This module defines the current time to be used for freezegun-assisted tests.
 """
