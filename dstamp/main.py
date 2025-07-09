@@ -121,5 +121,5 @@ def show_config(
     print(config.get(path))
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     app()

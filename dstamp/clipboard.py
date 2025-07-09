@@ -22,7 +22,7 @@ def copy(text: str):
         clipman.init()
         clipman.set(text)
         console.print(COPY_SUCCESS_TEXT, style="white")
-    except clipman.exceptions.ClipmanBaseException:
+    except clipman.exceptions.ClipmanBaseException:  # pragma: no cover
         console.print(
             "There was a problem with the clipboard manager:", style="bold red"
         )
