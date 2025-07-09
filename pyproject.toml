@@ -6,7 +6,11 @@ authors = [{ name = "Mariusz Tang", email = "dev@mariusztang.com" }]
 license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = ["typer (>=0.16.0,<0.17.0)", "clipman (>=3.3.1,<4.0.0)", "pydantic (>=2.11.7,<3.0.0)"]
+dependencies = [
+    "typer (>=0.16.0,<0.17.0)",
+    "clipman (>=3.3.1,<4.0.0)",
+    "pydantic (>=2.11.7,<3.0.0)",
+]
 keywords = ["Discord", "timestamp", "generator"]
 
 [project.urls]
@@ -21,6 +25,23 @@ dstamp = "dstamp.main:app"
 pytest = "^8.4.0"
 coverage = "^7.8.2"
 freezegun = "^1.5.2"
+
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib"]
+
+[tool.coverage.run]
+branch = true
+command_line = "-m pytest"
+source = ["dstamp"]
+omit = ["dstamp/__main__.py"]
+
+[tool.coverage.report]
+skip_empty = true
+skip_covered = true
+
+[tool.coverage.html]
+skip_empty = true
+skip_covered = true
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
