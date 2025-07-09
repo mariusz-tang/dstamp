@@ -58,8 +58,16 @@ def get_suboffset(unit_key: str, count_str: str, subtracting: bool) -> timedelta
     return timedelta(**kwargs)
 
 
-class InvalidFormatError(ValueError):
+class ParserInputError(ValueError):
+    """Raised when there is a problem with the input received by a parser."""
+
+
+class InvalidFormatError(ParserInputError):
     """Raised when a parser is provided an improperly-formatted value."""
+
+
+class InvalidDateTimeError(ParserInputError):
+    """Raised when a parser is provided an invalid date or time."""
 
 
 def datetime_string(raw_datetime: str) -> datetime:
@@ -91,7 +99,7 @@ def datetime_string(raw_datetime: str) -> datetime:
             return datetime_string("today," + raw_datetime)
         except InvalidFormatError:
             return datetime_string(raw_datetime + ",midnight")
-    elif x > 2:
+    elif x >= 2:
         raise InvalidFormatError
 
     datestr, timestr = raw_datetime.split(",")
@@ -122,7 +130,7 @@ def parse_date(datestr: str) -> date:
     try:
         return date(year, month, day)
     except ValueError as e:
-        raise InvalidFormatError from e
+        raise InvalidDateTimeError from e
 
 
 def parse_time(timestr: str) -> time:
@@ -154,7 +162,7 @@ def parse_time(timestr: str) -> time:
     try:
         return time(hour, minute, second)
     except ValueError as e:
-        raise InvalidFormatError from e
+        raise InvalidDateTimeError from e
 
 
 months = [

@@ -32,6 +32,8 @@ def test_offset(raw_input, desired_output):
         ("12june2024", datetime(2024, 6, 12)),
         ("24aug2000,midnight", datetime(2000, 8, 24)),
         ("", now),
+        ("today,now", now),
+        ("now", now),
         ("tmrw,7pm", datetime.combine(today + timedelta(days=1), time(19))),
         ("yesterday,noon", datetime.combine(today - timedelta(days=1), time(12))),
         ("830pm", datetime.combine(today, time(20, 30))),
@@ -42,3 +44,17 @@ def test_offset(raw_input, desired_output):
 @freeze_time(now)
 def test_datetime(raw_input, desired_output, monkeypatch):
     assert parse.datetime_string(raw_input) == desired_output
+
+
+@pytest.mark.parametrize(
+    "input", ("today,now,now", "in two days", "2203pm", "24notamonth2032")
+)
+def test_datetime_invalid_format(input):
+    with pytest.raises(parse.InvalidFormatError):
+        parse.datetime_string(input)
+
+
+@pytest.mark.parametrize("input", ("2500", "32jan2024", "166", "1jan2001,13066pm"))
+def test_datetime_invalid_datetime(input):
+    with pytest.raises(parse.InvalidDateTimeError):
+        parse.datetime_string(input)
