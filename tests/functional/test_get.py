@@ -10,13 +10,13 @@ from typer.testing import CliRunner
 from dstamp.format import Format
 from dstamp.main import app
 from tests.utils import config
-from tests.utils.parse import DstampOutput
+from tests.utils.parse import DstampGetOutput
 from tests.utils.patched_time import now
 
 runner = CliRunner()
 
 
-def get_output_for_command(command: str) -> DstampOutput:
+def get_output_for_command(command: str) -> DstampGetOutput:
     """
     Run the command and parse the output.
 
@@ -25,7 +25,7 @@ def get_output_for_command(command: str) -> DstampOutput:
     """
     args = command.split(" ")
     result = runner.invoke(app, args)
-    return DstampOutput(result.output)
+    return DstampGetOutput(result.output)
 
 
 @freeze_time(now)

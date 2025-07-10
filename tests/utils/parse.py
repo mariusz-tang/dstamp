@@ -21,8 +21,8 @@ class Timestamp:
         self.format_code = match[2]
 
 
-class DstampOutput:
-    """Test utility class for parsing Dstamp output."""
+class DstampGetOutput:
+    """Test utility class for parsing dstamp get command output."""
 
     def __init__(self, raw_output: str):
         lines = raw_output.splitlines()
