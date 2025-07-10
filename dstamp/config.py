@@ -9,10 +9,12 @@ from pathlib import Path
 
 import typer
 from pydantic import BaseModel
+from rich.console import Console
 
 from . import format
 
 APP_NAME = "dstamp"
+console = Console()
 
 
 class DstampConfig(BaseModel):
@@ -38,14 +40,31 @@ class DstampConfig(BaseModel):
 def get(config_path: Path) -> DstampConfig:
     """Load the config file and return config object."""
     config_path = config_path or get_config_path()
-
-    raw_config = {}
-    if config_path.is_file():
-        with open(config_path, "rb") as f:
-            raw_config = tomllib.load(f)
-
+    raw_config = _get_raw_config_from_path(config_path)
     config = DstampConfig(**raw_config)
     return config
+
+
+def _get_raw_config_from_path(config_path: Path) -> dict:
+    raw_config = {}
+
+    if not config_path.is_file():
+        _warn_using_default_because(f"{config_path} is not a file.")
+
+    try:
+        with open(config_path, "rb") as f:
+            raw_config = tomllib.load(f)
+    except tomllib.TOMLDecodeError:
+        _warn_using_default_because(
+            f"Config at {config_path} is not a valid TOML file."
+        )
+
+    return raw_config
+
+
+def _warn_using_default_because(reason: str) -> None:
+    console.print(reason, style="yellow")
+    console.print("Using default config settings.\n", style="yellow")
 
 
 def get_config_path() -> Path:
