@@ -4,9 +4,8 @@ This module provides functions for interacting with the clipboard.
 """
 
 import clipman
-from rich.console import Console
 
-console = Console()
+from . import console
 
 COPY_SUCCESS_TEXT = "Copied to clipboard!"
 
@@ -21,9 +20,7 @@ def copy(text: str):
     try:
         clipman.init()
         clipman.set(text)
-        console.print(COPY_SUCCESS_TEXT, style="white")
+        console.info(COPY_SUCCESS_TEXT)
     except clipman.exceptions.ClipmanBaseException:  # pragma: no cover
-        console.print(
-            "There was a problem with the clipboard manager:", style="bold red"
-        )
+        console.error("There was a problem with the clipboard manager:")
         raise

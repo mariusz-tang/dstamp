@@ -33,7 +33,7 @@ addopts = ["--import-mode=importlib"]
 branch = true
 command_line = "-m pytest"
 source = ["dstamp"]
-omit = ["dstamp/__main__.py"]
+omit = ["dstamp/__main__.py", "dstamp/console.py"]
 
 [tool.coverage.report]
 skip_empty = true

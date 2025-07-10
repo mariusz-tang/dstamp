@@ -9,12 +9,10 @@ from pathlib import Path
 
 import typer
 from pydantic import BaseModel
-from rich.console import Console
 
-from . import format
+from . import console, format
 
 APP_NAME = "dstamp"
-console = Console()
 
 
 class DstampConfig(BaseModel):
@@ -63,10 +61,11 @@ def _get_raw_config_from_path(config_path: Path) -> dict:
 
 
 def _warn_using_default_because(reason: str) -> None:
-    console.print(reason, style="yellow")
-    console.print("Using default config settings.\n", style="yellow")
+    console.warn(reason)
+    console.warn("Using default config settings.\n")
 
 
-def get_config_path() -> Path:
+def get_config_path() -> Path:  # pragma: no cover
+    # This function is patched in all our tests.
     app_dir = typer.get_app_dir(APP_NAME)
     return Path(app_dir) / "config.toml"

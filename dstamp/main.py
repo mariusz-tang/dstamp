@@ -8,13 +8,11 @@ from pathlib import Path
 from typing import Optional
 
 import typer
-from rich.console import Console
 from typing_extensions import Annotated
 
-from . import clipboard, config, format, parse
+from . import clipboard, config, console, format, parse
 
 app = typer.Typer(no_args_is_help=True)
-console = Console()
 
 
 @app.callback()
@@ -88,7 +86,7 @@ def get_timestamp(
     output = format.convert_to_discord_format(time + offset, output_format)
 
     copy_to_clipboard = fill_value(copy_to_clipboard, cfg.copy_to_clipboard)
-    print(output)
+    console.print(output)
     if copy_to_clipboard:
         clipboard.copy(output)
 
@@ -119,8 +117,8 @@ def show_config(
     """Show the currently-active configuration settings and file location."""
     if path is None:
         path = config.get_config_path()
-    console.print(f"Using config at {path}\n", style="white")
-    print(config.get(path))
+    console.info(f"Using config at {path}\n")
+    console.print(config.get(path))
 
 
 if __name__ == "__main__":  # pragma: no cover
