@@ -12,7 +12,7 @@ from tests.utils.patched_time import now
 
 
 @freeze_time(now)
-def test_get():
+def test_no_parameters():
     output = dstamp_cli.run_get()
     assert output.timestamp.timestamp == int(now.timestamp())
 
