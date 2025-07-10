@@ -17,6 +17,10 @@ def run_get(args: Optional[str] = None) -> parse.DstampGetOutput:
     return _run("get", args, parse.DstampGetOutput)
 
 
+def run_show_config(args: Optional[str] = None) -> parse.DstampShowConfigOutput:
+    return _run("show-config", args, parse.DstampShowConfigOutput)
+
+
 def _run(keyword: str, raw_args: Optional[str], output_class):
     """
     Run the command and parse the output.

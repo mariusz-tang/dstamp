@@ -4,6 +4,7 @@ This module provides utility classes for parsing dstamp output.
 """
 
 import re
+from pathlib import Path
 
 from dstamp.clipboard import COPY_SUCCESS_TEXT
 
@@ -28,3 +29,14 @@ class DstampGetOutput:
         lines = raw_output.splitlines()
         self.timestamp = Timestamp(lines[0])
         self.copied_to_clipboard = COPY_SUCCESS_TEXT in raw_output
+
+
+class DstampShowConfigOutput:
+    """Test utility class for parsing dstamp show-config command output."""
+
+    FILE_PATTERN = r"Using config at (.+)"
+
+    def __init__(self, raw_output: str):
+        lines = raw_output.splitlines()
+        m = re.fullmatch(self.FILE_PATTERN, lines[0])
+        self.config_path = Path(m[1])
