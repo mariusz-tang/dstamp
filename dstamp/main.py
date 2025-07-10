@@ -110,6 +110,8 @@ def show_config(
         Optional[Path],
         typer.Argument(
             show_default=False,
+            exists=True,
+            dir_okay=False,
             help="If specified, use this config file instead of the default.",
         ),
     ] = None,
