@@ -34,9 +34,29 @@ class DstampGetOutput:
 class DstampShowConfigOutput:
     """Test utility class for parsing dstamp show-config command output."""
 
-    FILE_PATTERN = r"Using config at (.+)"
+    PATH_PATTERN = r"Using config at (.+)"
+    PROPERTY_PATTERN = r"([^:]+): (.+)"
 
     def __init__(self, raw_output: str):
         lines = raw_output.splitlines()
-        m = re.fullmatch(self.FILE_PATTERN, lines[0])
-        self.config_path = Path(m[1])
+        m_path = re.fullmatch(self.PATH_PATTERN, lines[0])
+        self.config_path = Path(m_path[1])
+
+        joined_output = "".join(lines)
+        self.has_using_default_warning = (
+            "Using default config settings." in joined_output
+        )
+        self.not_a_file = False
+        self.invalid_toml = False
+        if self.has_using_default_warning:
+            self.not_a_file = "not a file" in joined_output
+            self.invalid_toml = "not a valid TOML file" in joined_output
+
+        properties = dict()
+        for line in lines[1:]:
+            m = re.fullmatch(self.PROPERTY_PATTERN, line)
+            if m is not None:
+                properties[m[1]] = m[2]
+
+        self.copy_to_clipboard = properties["copy_to_clipboard"] == "True"
+        self.output_format = properties["output_format"]

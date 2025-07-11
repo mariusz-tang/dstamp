@@ -16,3 +16,4 @@ def _get_path_to_config_file(name: str) -> Path:
 EMPTY_CONFIG_PATH = _get_path_to_config_file("empty")
 COPY_CONFIG_PATH = _get_path_to_config_file("copy")
 SHORT_TIME_FORMAT_CONFIG_PATH = _get_path_to_config_file("output_format_shorttime")
+INVALID_TOML_PATH = _get_path_to_config_file("invalid")
