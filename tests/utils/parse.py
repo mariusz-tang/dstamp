@@ -34,12 +34,12 @@ class DstampGetOutput:
 class DstampShowConfigOutput:
     """Test utility class for parsing dstamp show-config command output."""
 
-    PATH_PATTERN = r"Using config at (.+)"
+    PATH_PATTERN = r"Using config at \n?(.+)\n\n"
     PROPERTY_PATTERN = r"([^:]+): (.+)"
 
     def __init__(self, raw_output: str):
         lines = raw_output.splitlines()
-        m_path = re.fullmatch(self.PATH_PATTERN, lines[0])
+        m_path = re.match(self.PATH_PATTERN, raw_output)
         self.config_path = Path(m_path[1])
 
         joined_output = "".join(lines)
