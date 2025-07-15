@@ -48,6 +48,7 @@ def _get_raw_config_from_path(config_path: Path) -> dict:
 
     if not config_path.is_file():
         _warn_using_default_because(f"{config_path} is not a file.")
+        return raw_config
 
     try:
         with open(config_path, "rb") as f:
