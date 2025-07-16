@@ -9,6 +9,7 @@ import pytest
 from freezegun import freeze_time
 
 from dstamp import parse
+from dstamp.round import RoundingUnit
 from tests.utils.patched_time import now, today
 
 
@@ -56,5 +57,31 @@ def test_datetime_invalid_format(input):
 
 @pytest.mark.parametrize("input", ("2500", "32jan2024", "166", "1jan2001,13066pm"))
 def test_datetime_invalid_datetime(input):
-    with pytest.raises(parse.InvalidDateTimeError):
+    with pytest.raises(parse.InvalidValueError):
         parse.datetime_string(input)
+
+
+@pytest.mark.parametrize(
+    "raw_input,desired_output",
+    (
+        ("20m", (20, RoundingUnit.MINUTE)),
+        ("1H", (1, RoundingUnit.HOUR)),
+        ("M", (1, RoundingUnit.MINUTE)),
+        ("15m", (15, RoundingUnit.MINUTE)),
+    ),
+)
+@freeze_time(now)
+def test_rounding_precision(raw_input, desired_output, monkeypatch):
+    assert parse.rounding_precision(raw_input) == desired_output
+
+
+@pytest.mark.parametrize("input", ("60m", "120H", "0m", "24h", "0H"))
+def test_rounding_precision_invalid_quantity(input):
+    with pytest.raises(parse.InvalidValueError):
+        parse.rounding_precision(input)
+
+
+@pytest.mark.parametrize("input", ("60", "30g", "1D", "b", "-4m", "21901123103gea"))
+def test_rounding_precision_wrong_format(input):
+    with pytest.raises(parse.InvalidFormatError):
+        parse.rounding_precision(input)

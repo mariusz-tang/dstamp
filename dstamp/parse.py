@@ -6,6 +6,8 @@ This module contains parsers for datetimes and offsets.
 import re
 from datetime import date, datetime, time, timedelta
 
+from . import round
+
 units = {
     "d": "days",
     "h": "hours",
@@ -66,8 +68,8 @@ class InvalidFormatError(ParserInputError):
     """Raised when a parser is provided an improperly-formatted value."""
 
 
-class InvalidDateTimeError(ParserInputError):
-    """Raised when a parser is provided an invalid date or time."""
+class InvalidValueError(ParserInputError):
+    """Raised when a parser is provided a correctly-formatted but invalid value."""
 
 
 def datetime_string(raw_datetime: str) -> datetime:
@@ -130,7 +132,7 @@ def parse_date(datestr: str) -> date:
     try:
         return date(year, month, day)
     except ValueError as e:
-        raise InvalidDateTimeError from e
+        raise InvalidValueError from e
 
 
 def parse_time(timestr: str) -> time:
@@ -162,7 +164,7 @@ def parse_time(timestr: str) -> time:
     try:
         return time(hour, minute, second)
     except ValueError as e:
-        raise InvalidDateTimeError from e
+        raise InvalidValueError from e
 
 
 months = [
@@ -187,3 +189,26 @@ def get_month_from_shortening(shortening: str) -> int:
         if name.startswith(shortening):
             return ix + 1
     raise InvalidFormatError
+
+
+def rounding_precision(raw_precision: str) -> tuple[int, str]:
+    """
+    Accepts precisions in the format of <value><unit>
+    """
+    lowercase_input = raw_precision.lower()
+
+    for unit in round.RoundingUnit:
+        m = re.fullmatch(rf"(\d*){unit.code}", lowercase_input)
+        if m is None:
+            continue
+
+        quantity = int(m[1]) if m[1] else 1
+        if quantity <= 0 or quantity >= unit.max_quantity:
+            raise InvalidValueError(
+                f"Invalid precision: {raw_precision}. "
+                f"Maximum quantity for this unit is {unit.max_quantity} (exclusive)."
+            )
+
+        return quantity, unit
+
+    raise InvalidFormatError(f"Invalid precision: {raw_precision}.")
