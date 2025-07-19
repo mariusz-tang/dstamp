@@ -203,10 +203,16 @@ def rounding_precision(raw_precision: str) -> tuple[int, str]:
             continue
 
         quantity = int(m[1]) if m[1] else 1
-        if quantity <= 0 or quantity >= unit.max_quantity:
+
+        quantity_is_in_range = 0 < quantity < unit.max_quantity
+        quantity_is_a_factor_of_max = (
+            quantity != 0 and unit.max_quantity % quantity == 0
+        )
+        if not (quantity_is_in_range and quantity_is_a_factor_of_max):
             raise InvalidValueError(
                 f"Invalid precision: {raw_precision}. "
-                f"Maximum quantity for this unit is {unit.max_quantity} (exclusive)."
+                f"Quantity must be between 0 and {unit.max_quantity} (exclusive), "
+                f"and must be a factor of {unit.max_quantity}."
             )
 
         return quantity, unit
