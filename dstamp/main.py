@@ -10,7 +10,7 @@ from typing import Optional
 import typer
 from typing_extensions import Annotated
 
-from . import clipboard, config, console, format, parse
+from . import clipboard, config, console, format, parse, round
 
 app = typer.Typer(no_args_is_help=True)
 
@@ -80,10 +80,12 @@ def get_timestamp(
     Generate a Discord timestamp.
 
     If TIME is omitted, uses the current time.
+    The TIME is rounded to the nearest 10 minutes.
     """
     cfg = config.get(config_path)
     output_format = fill_value(output_format, cfg.output_format)
-    output = format.convert_to_discord_format(time + offset, output_format)
+    rounded_time = round.round_time_to_precision(time + offset, "10m")
+    output = format.convert_to_discord_format(rounded_time, output_format)
 
     copy_to_clipboard = fill_value(copy_to_clipboard, cfg.copy_to_clipboard)
     console.print(output)
