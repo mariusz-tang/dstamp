@@ -76,21 +76,23 @@ def get_timestamp(
         ),
     ] = None,
     do_rounding: Annotated[
-        bool,
+        Optional[bool],
         typer.Option(
             "--round/--no-round",
             "-r",
+            show_default=FROM_CONFIG,
             help="If specified, round TIME based on --precision.",
         ),
-    ] = False,
+    ] = None,
     precision: Annotated[
-        str,
+        Optional[str],
         typer.Option(
             "--precision",
             "-p",
+            show_default=FROM_CONFIG,
             help="The precision to which TIME will be rounded if --round is specified.",
         ),
-    ] = "10m",
+    ] = None,
 ):
     """
     Generate a Discord timestamp.
@@ -99,6 +101,8 @@ def get_timestamp(
     """
     cfg = config.get(config_path)
     output_format = fill_value(output_format, cfg.output_format)
+    do_rounding = fill_value(do_rounding, cfg.round)
+    precision = fill_value(precision, cfg.rounding_precision)
 
     target_time = time + offset
     if do_rounding:

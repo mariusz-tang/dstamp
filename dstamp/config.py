@@ -18,6 +18,8 @@ APP_NAME = "dstamp"
 class DstampConfig(BaseModel):
     copy_to_clipboard: bool = False
     output_format: format.Format = format.Format.RELATIVE
+    round: bool = False
+    rounding_precision: str = "10m"
 
     def __str__(self):
         def convert_to_line(option):
@@ -29,6 +31,8 @@ class DstampConfig(BaseModel):
         options = (
             "copy_to_clipboard",
             ("output_format", self.output_format.value),
+            "round",
+            "rounding_precision",
         )
         lines = (convert_to_line(option) for option in options)
         return "\n".join(lines)

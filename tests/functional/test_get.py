@@ -77,3 +77,22 @@ def test_invalid_precision():
 
     output = dstamp_cli.run_get("-rp 24h")
     assert output.has_rounding_error
+
+
+@freeze_time(now)
+def test_rounding_and_precision_config_options():
+    output = dstamp_cli.run_get()
+    assert output.timestamp.timestamp == int(now.timestamp())
+
+    # The default precision is 10m
+    output = dstamp_cli.run_get("-r")
+    assert (
+        output.timestamp.timestamp
+        == round.round_time_to_precision(now, "10m").timestamp()
+    )
+
+    output = dstamp_cli.run_get(f"--config {config.ROUNDING_CONFIG_PATH}")
+    assert (
+        output.timestamp.timestamp
+        == round.round_time_to_precision(now, "15m").timestamp()
+    )

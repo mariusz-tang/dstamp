@@ -16,6 +16,8 @@ def test_no_parameters(empty_default_config):
     assert not output.has_using_default_warning
     assert output.copy_to_clipboard is False
     assert output.output_format == format.Format.RELATIVE.value
+    assert output.round is False
+    assert output.rounding_precision == "10m"
 
 
 def test_invalid_toml():
@@ -48,3 +50,10 @@ def test_format_config():
     output = dstamp_cli.run_show_config(str(config.SHORT_TIME_FORMAT_CONFIG_PATH))
     assert output.config_path == config.SHORT_TIME_FORMAT_CONFIG_PATH
     assert output.output_format == format.Format.SHORT_TIME.value
+
+
+def test_rounding_config():
+    output = dstamp_cli.run_show_config(str(config.ROUNDING_CONFIG_PATH))
+    assert output.config_path == config.ROUNDING_CONFIG_PATH
+    assert output.round is True
+    assert output.rounding_precision == "15m"

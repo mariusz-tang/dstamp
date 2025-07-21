@@ -67,3 +67,5 @@ class DstampShowConfigOutput:
 
         self.copy_to_clipboard = properties["copy_to_clipboard"] == "True"
         self.output_format = properties["output_format"]
+        self.round = properties["round"] == "True"
+        self.rounding_precision = properties["rounding_precision"]
