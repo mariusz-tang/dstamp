@@ -9,8 +9,12 @@ from enum import Enum
 from . import parse
 
 
-class BaseRoundingError(ValueError):
-    """Base class for errors raised due to invalid rounding attempts."""
+class RoundingError(ValueError):
+    """Raised when a rounding attempt fails."""
+
+    def __init__(self, message=None, *args):
+        self.message = message
+        super().__init__(*args)
 
 
 class RoundingUnit(Enum):
@@ -25,7 +29,10 @@ class RoundingUnit(Enum):
 
 
 def round_time_to_precision(time: datetime, precision: str):
-    quantity, unit = parse.rounding_precision(precision)
+    try:
+        quantity, unit = parse.rounding_precision(precision)
+    except parse.ParserInputError as e:
+        raise RoundingError(e.message) from e
 
     truncated_time = time.replace(microsecond=0)
     if unit is not RoundingUnit.SECOND:

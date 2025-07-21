@@ -102,7 +102,7 @@ def get_timestamp(
 
     target_time = time + offset
     if do_rounding:
-        target_time = round.round_time_to_precision(target_time, precision)
+        target_time = try_round(target_time, precision)
 
     output = format.convert_to_discord_format(target_time, output_format)
 
@@ -123,6 +123,14 @@ def fill_value(user_provided_value, filler_value):
     if user_provided_value is not None:
         return user_provided_value
     return filler_value
+
+
+def try_round(time, precision):
+    try:
+        return round.round_time_to_precision(time, precision)
+    except round.RoundingError as e:
+        console.error(f"There was an error in rounding:\n{e.message}")
+        raise typer.Exit(code=1)
 
 
 @app.command()

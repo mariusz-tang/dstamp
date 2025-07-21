@@ -27,6 +27,13 @@ class DstampGetOutput:
 
     def __init__(self, raw_output: str):
         lines = raw_output.splitlines()
+        self.has_rounding_error = "There was an error in rounding:" in raw_output
+
+        if self.has_rounding_error:
+            # Rounding error means the program aborted so no other information
+            # will be displayed.
+            return
+
         self.timestamp = Timestamp(lines[1])
         self.copied_to_clipboard = COPY_SUCCESS_TEXT in raw_output
 

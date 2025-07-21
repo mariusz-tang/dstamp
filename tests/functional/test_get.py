@@ -63,3 +63,17 @@ def test_round_and_precision_config_cli_options():
 
     output = dstamp_cli.run_get("15jun2025,537pm -rp 3H")
     assert output.timestamp.timestamp == datetime(2025, 6, 15, 18).timestamp()
+
+
+def test_invalid_precision():
+    output = dstamp_cli.run_get()
+    assert not output.has_rounding_error
+
+    output = dstamp_cli.run_get("-rp 1000")
+    assert output.has_rounding_error
+
+    output = dstamp_cli.run_get("-rp 60m")
+    assert output.has_rounding_error
+
+    output = dstamp_cli.run_get("-rp 24h")
+    assert output.has_rounding_error
