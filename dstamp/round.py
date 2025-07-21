@@ -16,6 +16,7 @@ class BaseRoundingError(ValueError):
 class RoundingUnit(Enum):
     HOUR = "hour", "h", 24
     MINUTE = "minute", "m", 60
+    SECOND = "second", "s", 60
 
     def __init__(self, attribute_name, code, max_quantity):
         self.attribute_name = attribute_name
@@ -26,9 +27,11 @@ class RoundingUnit(Enum):
 def round_time_to_precision(time: datetime, precision: str):
     quantity, unit = parse.rounding_precision(precision)
 
-    truncated_time = time.replace(second=0, microsecond=0)
-    if unit is RoundingUnit.HOUR:
-        truncated_time = truncated_time.replace(minute=0)
+    truncated_time = time.replace(microsecond=0)
+    if unit is not RoundingUnit.SECOND:
+        truncated_time = truncated_time.replace(second=0)
+        if unit is not RoundingUnit.MINUTE:
+            truncated_time = truncated_time.replace(minute=0)
 
     # This is currently very crude as it only checks the top-most unit.
     # This means it may not handle values close to half-way as expected.

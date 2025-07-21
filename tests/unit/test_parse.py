@@ -68,6 +68,8 @@ def test_datetime_invalid_datetime(input):
         ("1H", (1, RoundingUnit.HOUR)),
         ("M", (1, RoundingUnit.MINUTE)),
         ("15m", (15, RoundingUnit.MINUTE)),
+        ("12s", (12, RoundingUnit.SECOND)),
+        ("3S", (3, RoundingUnit.SECOND)),
     ),
 )
 @freeze_time(now)
@@ -75,7 +77,9 @@ def test_rounding_precision(raw_input, desired_output, monkeypatch):
     assert parse.rounding_precision(raw_input) == desired_output
 
 
-@pytest.mark.parametrize("input", ("60m", "120H", "0m", "24h", "0H"))
+@pytest.mark.parametrize(
+    "input", ("60m", "120H", "0m", "24h", "0H", "0s", "13S", "78s")
+)
 def test_rounding_precision_invalid_quantity(input):
     with pytest.raises(parse.InvalidValueError):
         parse.rounding_precision(input)
