@@ -3,9 +3,12 @@
 This module contains functional tests for the dstamp get command.
 """
 
+from datetime import datetime
+
 import pytest
 from freezegun import freeze_time
 
+from dstamp import round
 from dstamp.format import Format
 from tests.utils import config, dstamp_cli
 from tests.utils.patched_time import now
@@ -49,3 +52,14 @@ def test_output_format_config_option():
     assert output.timestamp.format_code == Format.RELATIVE.code
     output = dstamp_cli.run_get(f"--config {config.SHORT_TIME_FORMAT_CONFIG_PATH}")
     assert output.timestamp.format_code == Format.SHORT_TIME.code
+
+
+def test_round_and_precision_config_cli_options():
+    output = dstamp_cli.run_get("15jun2025,537pm")
+    assert output.timestamp.timestamp == int(datetime(2025, 6, 15, 17, 37).timestamp())
+
+    output = dstamp_cli.run_get("15jun2025,537pm --round --precision 10m")
+    assert output.timestamp.timestamp == datetime(2025, 6, 15, 17, 40).timestamp()
+
+    output = dstamp_cli.run_get("15jun2025,537pm -rp 3H")
+    assert output.timestamp.timestamp == datetime(2025, 6, 15, 18).timestamp()
