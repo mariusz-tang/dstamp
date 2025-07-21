@@ -63,6 +63,10 @@ def get_suboffset(unit_key: str, count_str: str, subtracting: bool) -> timedelta
 class ParserInputError(ValueError):
     """Raised when there is a problem with the input received by a parser."""
 
+    def __init__(self, message=None, *args):
+        self.message = message
+        super().__init__(*args)
+
 
 class InvalidFormatError(ParserInputError):
     """Raised when a parser is provided an improperly-formatted value."""
@@ -210,7 +214,8 @@ def rounding_precision(raw_precision: str) -> tuple[int, str]:
         )
         if not (quantity_is_in_range and quantity_is_a_factor_of_max):
             raise InvalidValueError(
-                f"Invalid precision: {raw_precision}. "
+                "Invalid precision quantity: "
+                f"[underline cyan]{quantity}[/]{unit.code}. "
                 f"Quantity must be between 0 and {unit.max_quantity} (exclusive), "
                 f"and must be a factor of {unit.max_quantity}."
             )
