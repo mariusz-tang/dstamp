@@ -106,6 +106,7 @@ def get_timestamp(
 
     output = format.convert_to_discord_format(target_time, output_format)
 
+    console.info(f"Using time: {round.round_time_to_precision(target_time, "1s")}.")
     console.print(output)
 
     copy_to_clipboard = fill_value(copy_to_clipboard, cfg.copy_to_clipboard)

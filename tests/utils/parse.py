@@ -27,7 +27,7 @@ class DstampGetOutput:
 
     def __init__(self, raw_output: str):
         lines = raw_output.splitlines()
-        self.timestamp = Timestamp(lines[0])
+        self.timestamp = Timestamp(lines[1])
         self.copied_to_clipboard = COPY_SUCCESS_TEXT in raw_output
 
 
