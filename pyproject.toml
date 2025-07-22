@@ -11,15 +11,23 @@ dependencies = [
     "clipman (>=3.3.1,<4.0.0)",
     "pydantic (>=2.11.7,<3.0.0)",
 ]
-keywords = ["Discord", "timestamp", "generator"]
+keywords = ["discord", "timestamp", "generator"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Communications :: Chat",
+    "Environment :: Console",
+]
+
+[project.scripts]
+dstamp = "dstamp.main:app"
 
 [project.urls]
 Repository = "https://github.com/mariusz-tang/dstamp"
+Issues = "https://github.com/mariusz-tang/dstamp/issues"
 
 [tool.poetry]
-
-[tool.poetry.scripts]
-dstamp = "dstamp.main:app"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.0"
