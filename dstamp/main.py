@@ -196,7 +196,11 @@ def show_config(
         ),
     ] = None,
 ):
-    """Show the currently-active configuration settings and file location."""
+    """
+    Show the currently-active configuration settings and file location.
+
+    The config file should be in TOML format.
+    """
     if path is None:
         path = config.get_config_path()
     console.info(f"Using config at {path}\n")

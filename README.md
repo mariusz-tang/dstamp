@@ -29,6 +29,26 @@ dstamp get --help
 dstamp show-config --help
 ```
 
+## Configuration
+
+Run `show-config` with no arguments to find the default config location:
+
+```bash
+dstamp show-config
+```
+
+The config file should be in `.toml` format. The defaults are equivalent to the
+following:
+
+```toml
+copy_to_clipboard = false
+output_format = "relative"
+round = false
+rounding_precision = "10m"
+```
+
+These settings will be in effect unless overriden by CLI options.
+
 ## Contributing
 
 If you'd like to see something added to dstamp or if you would like to add something
