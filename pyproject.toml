@@ -1,6 +1,6 @@
 [project]
 name = "dstamp"
-version = "0.1.0"
+version = "1.0.0"
 description = "CLI app for generating timestamps for use in Discord chats."
 authors = [{ name = "Mariusz Tang", email = "dev@mariusztang.com" }]
 license = { text = "MIT" }
