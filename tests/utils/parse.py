@@ -41,13 +41,14 @@ class DstampGetOutput:
 class DstampShowConfigOutput:
     """Test utility class for parsing dstamp show-config command output."""
 
-    PATH_PATTERN = r"Using config at \n?(.+)\n\n"
+    PATH_PATTERN = r"Using config at \n?((?:.|\n)*?.)\n\n"
     PROPERTY_PATTERN = r"([^:]+): (.+)"
 
     def __init__(self, raw_output: str):
         lines = raw_output.splitlines()
         m_path = re.match(self.PATH_PATTERN, raw_output)
-        self.config_path = Path(m_path[1])
+        joined_path = m_path[1].replace("\n", "")
+        self.config_path = Path(joined_path)
 
         joined_output = "".join(lines)
         self.has_using_default_warning = (
