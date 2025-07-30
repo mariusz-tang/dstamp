@@ -3,7 +3,7 @@
 This module contains unit tests for the dstamp.round module.
 """
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import pytest
 
