@@ -37,6 +37,7 @@ Issues = "https://github.com/mariusz-tang/dstamp/issues"
 pytest = "^8.4.0"
 coverage = "^7.8.2"
 freezegun = "^1.5.2"
+pre-commit = "^4.2.0"
 
 [tool.pytest.ini_options]
 addopts = ["--import-mode=importlib"]
