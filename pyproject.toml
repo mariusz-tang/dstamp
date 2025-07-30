@@ -51,6 +51,9 @@ skip_covered = true
 skip_empty = true
 skip_covered = true
 
+[tool.isort]
+profile = "black"
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
