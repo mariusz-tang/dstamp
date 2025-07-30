@@ -9,12 +9,12 @@ repos:
       - id: check-docstring-first
       - id: check-illegal-windows-names
       - id: check-toml
-        exclude: '^tests/dstamp_config/invalid.toml$'
+        exclude: ^tests/dstamp_config/invalid.toml$
       - id: check-yaml
       - id: debug-statements
       - id: end-of-file-fixer
       - id: name-tests-test
-        exclude: '^tests/utils/.*'
+        exclude: ^tests/utils/.*
         args: [--pytest-test-first]
       - id: trailing-whitespace
 
@@ -32,3 +32,8 @@ repos:
     rev: 7.3.0
     hooks:
       - id: flake8
+
+  - repo: https://github.com/lyz-code/yamlfix
+    rev: 1.17.0
+    hooks:
+      - id: yamlfix

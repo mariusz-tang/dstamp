@@ -58,3 +58,6 @@ skip_covered = true
 
 [tool.isort]
 profile = "black"
+
+[tool.yamlfix]
+whitelines = 1
