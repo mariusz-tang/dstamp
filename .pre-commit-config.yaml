@@ -43,3 +43,11 @@ repos:
     rev: 1.17.0
     hooks:
       - id: yamlfix
+
+  - repo: https://github.com/markdownlint/markdownlint
+    rev: v0.12.0
+    hooks:
+      - id: markdownlint
+
+default_language_version:
+  ruby: 3.3.5
