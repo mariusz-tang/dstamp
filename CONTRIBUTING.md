@@ -22,9 +22,9 @@ to improve it. If you have suggestions please let me know in an Issue :)
 After cloning the project set up [Poetry] and run the tests:
 
 ```bash
-poetry install
+poetry sync
 
-# See Poetry docs above for how to activate the virtual environment in your shell.
+# See the Poetry docs for how to activate the virtual environment in your shell.
 eval $(poetry env activate)
 coverage run
 ```
