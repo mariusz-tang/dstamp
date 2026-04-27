@@ -29,16 +29,16 @@ eval $(poetry env activate)
 coverage run
 ```
 
-Optionally install and run the [pre-commit] hooks.
+Optionally install and run the [prek] hooks.
 This will handle the code style requirements for this project, among other things.
 
 ```bash
-pre-commit install
-pre-commit run --all-files
+prek install
+prek --all-files
 ```
 
 [poetry]: https://python-poetry.org/
-[pre-commit]: https://pre-commit.com/
+[prek]: https://prek.j178.dev/
 
 ### Code style
 
@@ -46,7 +46,6 @@ This project uses various programs to keep code in check:
 
 - [Black], [isort], and [Flake8] for Python.
 - [Markdownlint] for Markdown.
-- [yamlfix] for YAML.
 
 If you install the pre-commit hooks as above, this will be handled for you.
 
@@ -54,7 +53,6 @@ If you install the pre-commit hooks as above, this will be handled for you.
 [Black]: https://black.readthedocs.io/en/stable/
 [Flake8]: https://flake8.pycqa.org/en/latest/
 [Markdownlint]: https://github.com/markdownlint/markdownlint
-[yamlfix]: https://github.com/lyz-code/yamlfix
 
 ### Testing
 
