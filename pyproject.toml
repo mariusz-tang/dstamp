@@ -11,33 +11,32 @@ license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "typer (>=0.16.0,<0.17.0)",
-    "clipman (>=3.3.1,<4.0.0)",
-    "pydantic (>=2.11.7,<3.0.0)",
+  "clipman (>=3.3.1,<4.0.0)",
+  "pydantic (>=2.11.7,<3.0.0)",
+  "typer (>=0.16.0,<0.17.0)",
 ]
-keywords = ["discord", "timestamp", "generator"]
+keywords = ["discord", "generator", "timestamp"]
 classifiers = [
-    "License :: OSI Approved :: MIT License",
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: End Users/Desktop",
-    "Topic :: Communications :: Chat",
-    "Environment :: Console",
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: End Users/Desktop",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Communications :: Chat",
 ]
 
 [project.scripts]
 dstamp = "dstamp.main:app"
 
 [project.urls]
-Repository = "https://github.com/mariusz-tang/dstamp"
 Issues = "https://github.com/mariusz-tang/dstamp/issues"
+Repository = "https://github.com/mariusz-tang/dstamp"
 
 [tool.poetry]
-
 [tool.poetry.group.dev.dependencies]
-pytest = "^8.4.0"
 coverage = "^7.8.2"
 freezegun = "^1.5.2"
 pre-commit = "^4.2.0"
+pytest = "^8.4.0"
 
 [tool.pytest.ini_options]
 addopts = ["--import-mode=importlib"]
