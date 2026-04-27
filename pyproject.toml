@@ -1,20 +1,11 @@
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
-
 [project]
 name = "dstamp"
 version = "1.0.0"
 description = "CLI app for generating timestamps for use in Discord chats."
-authors = [{ name = "Mariusz Tang", email = "dev@mariusztang.com" }]
-license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = [
-  "clipman (>=3.3.1,<4.0.0)",
-  "pydantic (>=2.11.7,<3.0.0)",
-  "typer (>=0.16.0,<0.17.0)",
-]
+license = "MIT"
+authors = [{ name = "Mariusz Tang", email = "dev@mariusztang.com" }]
 keywords = ["discord", "generator", "timestamp"]
 classifiers = [
   "Development Status :: 4 - Beta",
@@ -23,23 +14,22 @@ classifiers = [
   "License :: OSI Approved :: MIT License",
   "Topic :: Communications :: Chat",
 ]
-
-[project.scripts]
-dstamp = "dstamp.main:app"
+dependencies = [
+  "clipman (>=3.3.1,<4.0.0)",
+  "pydantic (>=2.11.7,<3.0.0)",
+  "typer (>=0.16.0,<0.17.0)",
+]
 
 [project.urls]
 Issues = "https://github.com/mariusz-tang/dstamp/issues"
 Repository = "https://github.com/mariusz-tang/dstamp"
 
-[tool.poetry]
-[tool.poetry.group.dev.dependencies]
-coverage = "^7.8.2"
-freezegun = "^1.5.2"
-pre-commit = "^4.2.0"
-pytest = "^8.4.0"
+[project.scripts]
+dstamp = "dstamp.main:app"
 
-[tool.pytest.ini_options]
-addopts = ["--import-mode=importlib"]
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.coverage.run]
 branch = true
@@ -54,3 +44,13 @@ skip_covered = true
 [tool.coverage.html]
 skip_empty = true
 skip_covered = true
+
+[tool.poetry]
+[tool.poetry.group.dev.dependencies]
+coverage = "^7.8.2"
+freezegun = "^1.5.2"
+pre-commit = "^4.2.0"
+pytest = "^8.4.0"
+
+[tool.pytest]
+addopts = ["--import-mode=importlib"]
