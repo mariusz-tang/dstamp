@@ -9,6 +9,11 @@ hooks = [
 ]
 
 [[repos]]
+repo = "https://github.com/editorconfig-checker/editorconfig-checker"
+rev = "v3.6.0"
+hooks = [{ id = "editorconfig-checker" }]
+
+[[repos]]
 repo = "https://github.com/markdownlint/markdownlint"
 rev = "v0.15.0"
 hooks = [{ id = "markdownlint" }]
