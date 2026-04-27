@@ -42,16 +42,14 @@ prek --all-files
 
 ### Code style
 
-This project uses various programs to keep code in check:
+This project uses various linters and formatters to keep code in check:
 
-- [Black], [isort], and [Flake8] for Python.
+- [Ruff] for Python.
 - [Markdownlint] for Markdown.
 
 If you install the pre-commit hooks as above, this will be handled for you.
 
-[isort]: https://pycqa.github.io/isort/
-[Black]: https://black.readthedocs.io/en/stable/
-[Flake8]: https://flake8.pycqa.org/en/latest/
+[Ruff]: https://docs.astral.sh/ruff/
 [Markdownlint]: https://github.com/markdownlint/markdownlint
 
 ### Testing

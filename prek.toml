@@ -9,21 +9,6 @@ hooks = [
 ]
 
 [[repos]]
-repo = "https://github.com/psf/black"
-rev = "26.3.1"
-hooks = [{ id = "black" }]
-
-[[repos]]
-repo = "https://github.com/PyCQA/isort"
-rev = "9.0.0a3"
-hooks = [{ id = "isort" }]
-
-[[repos]]
-repo = "https://github.com/PyCQA/flake8"
-rev = "7.3.0"
-hooks = [{ id = "flake8" }]
-
-[[repos]]
 repo = "https://github.com/python-poetry/poetry"
 rev = "2.3.4"
 hooks = [{ id = "poetry-check" }, { id = "poetry-lock" }]
@@ -32,3 +17,11 @@ hooks = [{ id = "poetry-check" }, { id = "poetry-lock" }]
 repo = "https://github.com/markdownlint/markdownlint"
 rev = "v0.15.0"
 hooks = [{ id = "markdownlint" }]
+
+[[repos]]
+repo = "https://github.com/astral-sh/ruff-pre-commit"
+rev = "v0.15.12"  # Ruff version.
+hooks = [
+  { id = "ruff-check", args = ["--fix"], types_or = ["python", "pyi"] },
+  { id = "ruff-format", types_or = ["python", "pyi"] },
+]

@@ -55,6 +55,3 @@ skip_covered = true
 [tool.coverage.html]
 skip_empty = true
 skip_covered = true
-
-[tool.isort]
-profile = "black"
