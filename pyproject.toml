@@ -27,9 +27,16 @@ Repository = "https://github.com/mariusz-tang/dstamp"
 [project.scripts]
 dstamp = "dstamp.main:app"
 
+[dependency-groups]
+dev = [
+  "coverage>=7.13.5",
+  "freezegun>=1.5.5",
+  "pytest>=9.0.3",
+]
+
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.11.8,<0.12"]
+build-backend = "uv_build"
 
 [tool.coverage.run]
 branch = true
@@ -45,12 +52,9 @@ skip_covered = true
 skip_empty = true
 skip_covered = true
 
-[tool.poetry]
-[tool.poetry.group.dev.dependencies]
-coverage = "^7.8.2"
-freezegun = "^1.5.2"
-pre-commit = "^4.2.0"
-pytest = "^8.4.0"
-
 [tool.pytest]
 addopts = ["--import-mode=importlib"]
+
+[tool.uv.build-backend]
+module-name = "dstamp"
+module-root = ""

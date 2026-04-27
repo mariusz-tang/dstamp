@@ -9,11 +9,6 @@ hooks = [
 ]
 
 [[repos]]
-repo = "https://github.com/python-poetry/poetry"
-rev = "2.3.4"
-hooks = [{ id = "poetry-check" }, { id = "poetry-lock" }]
-
-[[repos]]
 repo = "https://github.com/markdownlint/markdownlint"
 rev = "v0.15.0"
 hooks = [{ id = "markdownlint" }]
@@ -30,6 +25,17 @@ hooks = [
 repo = "https://github.com/tombi-toml/tombi-pre-commit"
 rev = "v0.9.24"
 hooks = [
-  { id = "tombi-format", exclude = "^tests/dstamp_config/invalid.toml$" },
-  { id = "tombi-lint", exclude = "^tests/dstamp_config/invalid.toml$" }
+  {
+    id = "tombi-format",
+    exclude = { glob = ["tests/dstamp_config/invalid.toml", "uv.lock"] },
+  },
+  {
+    id = "tombi-lint",
+    exclude = { glob = ["tests/dstamp_config/invalid.toml", "uv.lock"] },
+  }
 ]
+
+[[repos]]
+repo = "https://github.com/astral-sh/uv-pre-commit"
+rev = "0.11.8"
+hooks = [{ id = "uv-lock" }]

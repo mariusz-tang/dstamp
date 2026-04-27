@@ -19,13 +19,14 @@ to improve it. If you have suggestions please let me know in an Issue :)
 
 ### Installing
 
-After cloning the project set up [Poetry] and run the tests:
+After cloning the project set up [uv] and run the tests:
 
 ```bash
-poetry sync
+uv sync
 
-# See the Poetry docs for how to activate the virtual environment in your shell.
-eval $(poetry env activate)
+# This line depends on your shell.
+# See https://docs.astral.sh/uv/pip/environments/.
+source .venv/bin/activate
 coverage run
 ```
 
@@ -37,8 +38,8 @@ prek install
 prek --all-files
 ```
 
-[poetry]: https://python-poetry.org/
 [prek]: https://prek.j178.dev/
+[uv]: https://docs.astral.sh/uv/
 
 ### Code style
 
