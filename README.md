@@ -2,6 +2,21 @@
 
 CLI app for generating timestamps for use in Discord chats.
 
+## Installation
+
+Install using [pipx] or [uv]:
+
+```bash
+pipx install dstamp
+```
+
+```bash
+uv tool install dstamp
+```
+
+[pipx]: https://pipx.pypa.io/stable/
+[uv]: https://docs.astral.sh/uv/
+
 ## Example usage
 
 ```bash
