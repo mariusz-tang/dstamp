@@ -4,16 +4,16 @@ Thank you for taking interest in dstamp!
 
 ## Feedback
 
-If you have a bug to report or a feature request, please raise an [Issue].
+If you have a bug to report or a feature request, please raise an [issue].
 
-I'm also happy to accept [PR]s but I would prefer you to first raise an Issue and
+I'm also happy to accept [PR]s but I would prefer you to first raise an issue and
 indicate your willingness to submit a PR.
 
 This is my first CLI app, so there are probably many things I could do or do differently
-to improve it. If you have suggestions please let me know in an Issue :)
+to improve it. If you have suggestions please let me know in an issue :)
 
 [PR]: https://github.com/mariusz-tang/dstamp/pulls
-[Issue]: https://github.com/mariusz-tang/dstamp/issues
+[issue]: https://github.com/mariusz-tang/dstamp/issues
 
 ## Project setup
 
@@ -45,13 +45,17 @@ prek --all-files
 
 This project uses various linters and formatters to keep code in check:
 
-- [Ruff] for Python.
+- [Editorconfig-checker] for all files.
 - [Markdownlint] for Markdown.
+- [Ruff] for Python.
+- [Tombi] for TOML.
 
-If you install the pre-commit hooks as above, this will be handled for you.
+If you install the prek hooks as above, this will be handled for you.
 
-[Ruff]: https://docs.astral.sh/ruff/
+[Editorconfig-checker]: https://editorconfig-checker.github.io/
 [Markdownlint]: https://github.com/markdownlint/markdownlint
+[Ruff]: https://docs.astral.sh/ruff/
+[Tombi]: https://tombi-toml.github.io/tombi/
 
 ### Testing
 
@@ -73,9 +77,9 @@ from coverage.py.
 
 Don't worry if you are unable to follow everything in this file! I appreciate any
 effort to stick to the guidelines, but you don't need to do everything perfectly
-in order to contribute code. In particular, I will run all the pre-commit hooks
+in order to contribute code. In particular, I will run all the prek hooks
 before accepting any PR anyway, so anything which can be fixed with automatic
 formatting is not very important.
 
 If you are finding something challenging or are unsure about something, feel free
-to get in touch, for example by raising an Issue or submitting a draft PR!
+to get in touch, for example by raising an issue or submitting a draft PR!
