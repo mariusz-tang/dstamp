@@ -167,7 +167,7 @@ def get_timestamp(
 
 def fill_value(user_provided_value, filler_value):
     """
-    Return filler_value is user_provided value is None.
+    Return filler_value if user_provided value is None.
 
     Otherwise, return user_provided_value.
     """
