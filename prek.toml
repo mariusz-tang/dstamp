@@ -44,3 +44,8 @@ hooks = [
 repo = "https://github.com/astral-sh/uv-pre-commit"
 rev = "0.11.8"
 hooks = [{ id = "uv-lock" }]
+
+[[repos]]
+repo = "https://github.com/google/yamlfmt"
+rev = "v0.21.0"
+hooks = [{ id = "yamlfmt" }]

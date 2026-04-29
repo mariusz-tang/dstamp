@@ -49,6 +49,7 @@ This project uses various linters and formatters to keep code in check:
 - [Markdownlint] for Markdown.
 - [Ruff] for Python.
 - [Tombi] for TOML.
+- [Yamlfmt] for YAML.
 
 If you install the prek hooks as above, this will be handled for you.
 
@@ -56,6 +57,7 @@ If you install the prek hooks as above, this will be handled for you.
 [Markdownlint]: https://github.com/markdownlint/markdownlint
 [Ruff]: https://docs.astral.sh/ruff/
 [Tombi]: https://tombi-toml.github.io/tombi/
+[Yamlfmt]: https://github.com/google/yamlfmt/
 
 ### Testing
 
