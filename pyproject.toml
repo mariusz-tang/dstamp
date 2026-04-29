@@ -1,6 +1,6 @@
 [project]
 name = "dstamp"
-version = "1.0.0"
+version = "1.0.1"
 description = "CLI app for generating timestamps for use in Discord chats."
 readme = "README.md"
 requires-python = ">=3.13"
