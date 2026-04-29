@@ -41,8 +41,8 @@ build-backend = "uv_build"
 [tool.coverage.run]
 branch = true
 command_line = "-m pytest"
-source = ["dstamp"]
-omit = ["dstamp/__main__.py", "dstamp/console.py"]
+source = ["src/"]
+omit = ["src/dstamp/__main__.py", "src/dstamp/console.py"]
 
 [tool.coverage.report]
 skip_empty = true
@@ -54,7 +54,3 @@ skip_covered = true
 
 [tool.pytest]
 addopts = ["--import-mode=importlib"]
-
-[tool.uv.build-backend]
-module-name = "dstamp"
-module-root = ""
