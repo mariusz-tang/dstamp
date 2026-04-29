@@ -158,7 +158,7 @@ def parse_time(timestr: str) -> time:
     second = int(m[3]) if m[3] else 0
     noonstr = m[4]
 
-    if noonstr is not None and hour > 12:
+    if noonstr is not None and (hour == 0 or hour > 12):
         # Disallow noonstrings with 24h format.
         raise InvalidFormatError
 

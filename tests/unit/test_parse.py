@@ -48,7 +48,7 @@ def test_datetime(raw_input, desired_output, monkeypatch):
 
 
 @pytest.mark.parametrize(
-    "input", ("today,now,now", "in two days", "2203pm", "24notamonth2032")
+    "input", ("today,now,now", "in two days", "2203pm", "24notamonth2032", "0am", "0pm")
 )
 def test_datetime_invalid_format(input):
     with pytest.raises(parse.InvalidFormatError):
