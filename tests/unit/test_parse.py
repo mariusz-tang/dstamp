@@ -40,6 +40,8 @@ def test_offset(raw_input, desired_output):
         ("830pm", datetime.combine(today, time(20, 30))),
         ("200943", datetime.combine(today, time(20, 9, 43))),
         ("4jan,1am", datetime.combine(date(today.year, 1, 4), time(1))),
+        ("12pm", datetime.combine(today, time(12))),
+        ("12am", datetime.combine(today, time(0))),
     ),
 )
 @freeze_time(now)

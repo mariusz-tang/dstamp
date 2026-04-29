@@ -162,8 +162,10 @@ def parse_time(timestr: str) -> time:
         # Disallow noonstrings with 24h format.
         raise InvalidFormatError
 
-    if noonstr == "pm":
+    if noonstr == "pm" and hour != 12:
         hour += 12
+    elif noonstr == "am" and hour == 12:
+        hour = 0
 
     try:
         return time(hour, minute, second)
