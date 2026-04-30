@@ -3,44 +3,34 @@
 This module contains the commands provided by dstamp.
 """
 
-from datetime import datetime, timedelta
+import sys
 from pathlib import Path
 from typing import Optional
 
-import typer
+from cyclopts import App, Parameter, validators
 from typing_extensions import Annotated
 
 from . import clipboard, config, console, format, parse, round
 
-app = typer.Typer(no_args_is_help=True)
-
-
-@app.callback()
-def callback():
-    """Discord Timestamp Generator."""
+app = App(help="Discord timestamp generator")
 
 
 FROM_CONFIG = "from config"
 
 
-@app.command("get")
+@app.command(name="get")
 def get_timestamp(
     time: Annotated[
-        datetime,
-        typer.Argument(
-            parser=parse.datetime_string,
-            show_default=False,
+        str,
+        Parameter(
             help="The date and time to which the timestamp should point. "
             "If omitted, the current time is used.",
         ),
     ] = "",
     offset: Annotated[
-        timedelta,
-        typer.Option(
-            "--offset",
-            "-o",
-            parser=parse.offset,
-            show_default=False,
+        str,
+        Parameter(
+            name=["--offset", "-o"],
             help="Optional offset to apply to TIME. Examples: 2d3h1m, +3s, -3d+1d, "
             "3m-3h2h. The only acceptable units are d(ays), h(ours), m(inutes), "
             "and s(econds). Subtraction applies to all times after the - until "
@@ -49,18 +39,17 @@ def get_timestamp(
     ] = "",
     output_format: Annotated[
         Optional[format.Format],
-        typer.Option(
-            "--output-format",
-            "-f",
+        Parameter(
+            name=["--output-format", "-f"],
             show_default=FROM_CONFIG,
             help="The format in which the timestamp will be displayed in Discord.",
         ),
     ] = None,
     copy_to_clipboard: Annotated[
         Optional[bool],
-        typer.Option(
-            "--copy-to-clipboard/--no-copy",
-            "-x",
+        Parameter(
+            name=["--copy-to-clipboard", "-x"],
+            negative="--no-copy",
             show_default=FROM_CONFIG,
             help="If set, copy the timestamp to clipboard. "
             "On Linux, requires that xsel or xclip be installed.",
@@ -68,30 +57,26 @@ def get_timestamp(
     ] = None,
     config_path: Annotated[
         Optional[Path],
-        typer.Option(
-            "--config",
-            "-c",
+        Parameter(
+            name=["--config", "-c"],
             show_default=False,
-            exists=True,
-            dir_okay=False,
+            validator=validators.Path(exists=True, dir_okay=False),
             help="If specified, read config from this file instead of the default "
             "location.",
         ),
     ] = None,
     do_rounding: Annotated[
         Optional[bool],
-        typer.Option(
-            "--round/--no-round",
-            "-r",
+        Parameter(
+            name=["--round", "-r"],
             show_default=FROM_CONFIG,
             help="If specified, round TIME based on --precision.",
         ),
     ] = None,
     precision: Annotated[
         Optional[str],
-        typer.Option(
-            "--precision",
-            "-p",
+        Parameter(
+            name=["--precision", "-p"],
             show_default=FROM_CONFIG,
             help="The precision to which TIME will be rounded if --round is specified.",
         ),
@@ -146,6 +131,8 @@ def get_timestamp(
     tmrw,now (tomorrow, the current time, ie. 24 hours from the current time),
     tmrw (tomorrow, midnight).
     """
+    time = parse.datetime_string(time)
+    offset = parse.offset(offset)
     cfg = config.get(config_path)
     output_format = fill_value(output_format, cfg.output_format)
     do_rounding = fill_value(do_rounding, cfg.round)
@@ -181,17 +168,16 @@ def try_round(time, precision):
         return round.round_time_to_precision(time, precision)
     except round.RoundingError as e:
         console.error(f"There was an error in rounding:\n{e.message}")
-        raise typer.Exit(code=1)
+        sys.exit(1)
 
 
 @app.command()
 def show_config(
     path: Annotated[
         Optional[Path],
-        typer.Argument(
+        Parameter(
             show_default=False,
-            exists=True,
-            dir_okay=False,
+            validator=validators.Path(exists=True, dir_okay=False),
             help="If specified, use this config file instead of the default.",
         ),
     ] = None,

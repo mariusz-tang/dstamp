@@ -7,7 +7,7 @@ import tomllib
 from functools import cache
 from pathlib import Path
 
-import typer
+import platformdirs
 from pydantic import BaseModel
 
 from . import console, format
@@ -72,5 +72,5 @@ def _warn_using_default_because(reason: str) -> None:
 
 def get_config_path() -> Path:  # pragma: no cover
     # This function is patched in all our tests.
-    app_dir = typer.get_app_dir(APP_NAME)
+    app_dir = platformdirs.user_config_path(APP_NAME)
     return Path(app_dir) / "config.toml"

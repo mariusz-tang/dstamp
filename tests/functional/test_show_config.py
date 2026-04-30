@@ -10,8 +10,8 @@ from dstamp import format
 from tests.utils import config, dstamp_cli
 
 
-def test_no_parameters(empty_default_config):
-    output = dstamp_cli.run_show_config()
+def test_no_parameters(capsys, empty_default_config):
+    output = dstamp_cli.run_show_config(capsys)
     assert output.config_path == empty_default_config
     assert not output.has_using_default_warning
     assert output.copy_to_clipboard is False
@@ -20,40 +20,42 @@ def test_no_parameters(empty_default_config):
     assert output.rounding_precision == "10m"
 
 
-def test_invalid_toml():
-    output = dstamp_cli.run_show_config(str(config.INVALID_TOML_PATH))
+def test_invalid_toml(capsys):
+    output = dstamp_cli.run_show_config(capsys, str(config.INVALID_TOML_PATH))
     assert output.config_path == config.INVALID_TOML_PATH
     assert output.has_using_default_warning
     assert output.invalid_toml
     assert not output.not_a_file
 
 
-def test_not_a_file(monkeypatch):
+def test_not_a_file(capsys, monkeypatch):
     # Always use the following directory as the config path.
     path = Path(__file__).resolve().parent
     get = app_config.get
     monkeypatch.setattr(app_config, "get", lambda _: get(path))
 
-    output = dstamp_cli.run_show_config()
+    output = dstamp_cli.run_show_config(capsys)
     assert output.has_using_default_warning
     assert not output.invalid_toml
     assert output.not_a_file
 
 
-def test_copy_config():
-    output = dstamp_cli.run_show_config(str(config.COPY_CONFIG_PATH))
+def test_copy_config(capsys):
+    output = dstamp_cli.run_show_config(capsys, str(config.COPY_CONFIG_PATH))
     assert output.config_path == config.COPY_CONFIG_PATH
     assert output.copy_to_clipboard is True
 
 
-def test_format_config():
-    output = dstamp_cli.run_show_config(str(config.SHORT_TIME_FORMAT_CONFIG_PATH))
+def test_format_config(capsys):
+    output = dstamp_cli.run_show_config(
+        capsys, str(config.SHORT_TIME_FORMAT_CONFIG_PATH)
+    )
     assert output.config_path == config.SHORT_TIME_FORMAT_CONFIG_PATH
     assert output.output_format == format.Format.SHORT_TIME.value
 
 
-def test_rounding_config():
-    output = dstamp_cli.run_show_config(str(config.ROUNDING_CONFIG_PATH))
+def test_rounding_config(capsys):
+    output = dstamp_cli.run_show_config(capsys, str(config.ROUNDING_CONFIG_PATH))
     assert output.config_path == config.ROUNDING_CONFIG_PATH
     assert output.round is True
     assert output.rounding_precision == "15m"

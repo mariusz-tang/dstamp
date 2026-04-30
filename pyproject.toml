@@ -15,8 +15,9 @@ classifiers = [
 ]
 dependencies = [
   "clipman (>=3.3.1,<4.0.0)",
+  "cyclopts>=4.11.0",
+  "platformdirs>=4.9.6",
   "pydantic (>=2.11.7,<3.0.0)",
-  "typer (>=0.16.0,<0.17.0)",
 ]
 
 [project.urls]
