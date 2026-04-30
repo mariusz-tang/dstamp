@@ -5,7 +5,6 @@ This module contains the commands provided by dstamp.
 
 import sys
 from pathlib import Path
-from typing import Optional
 
 import cyclopts.config
 from cyclopts import App, Parameter
@@ -19,7 +18,7 @@ app = App(help="Discord timestamp generator")
 @app.meta.default
 def meta(
     *tokens: Annotated[str, Parameter(show=False, allow_leading_hyphen=True)],
-    config_path: Annotated[Optional[Path], Parameter("config")] = None,
+    config_path: Annotated[Path | None, Parameter("config")] = None,
 ):
     if config_path is None:
         config_path = config.get_config_path()
@@ -47,14 +46,14 @@ def get_timestamp(
         ),
     ] = "",
     output_format: Annotated[
-        Optional[format.Format],
+        format.Format | None,
         Parameter(
             name=["--output-format", "-f"],
             help="The format in which the timestamp will be displayed in Discord.",
         ),
     ] = format.Format.RELATIVE,
     copy_to_clipboard: Annotated[
-        Optional[bool],
+        bool | None,
         Parameter(
             name=["--copy-to-clipboard", "-x"],
             negative="--no-copy",
@@ -63,14 +62,14 @@ def get_timestamp(
         ),
     ] = False,
     do_rounding: Annotated[
-        Optional[bool],
+        bool | None,
         Parameter(
             name=["--round", "-r"],
             help="If specified, round TIME based on --precision.",
         ),
     ] = False,
     precision: Annotated[
-        Optional[str],
+        str | None,
         Parameter(
             name=["--precision", "-p"],
             help="The precision to which TIME will be rounded if --round is specified.",

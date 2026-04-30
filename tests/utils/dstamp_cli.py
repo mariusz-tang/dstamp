@@ -3,17 +3,15 @@
 This module provides functions for executing dstamp commands.
 """
 
-from typing import Optional
-
 from dstamp.main import app
 from tests.utils import parse
 
 
-def run_get(capsys, args: Optional[str] = None) -> parse.DstampGetOutput:
+def run_get(capsys, args: str | None = None) -> parse.DstampGetOutput:
     return _run(capsys, "get", args, parse.DstampGetOutput)
 
 
-def _run(capsys, keyword: str, raw_args: Optional[str], output_class):
+def _run(capsys, keyword: str, raw_args: str | None, output_class):
     """
     Run the command and parse the output.
 
@@ -32,7 +30,7 @@ def _run(capsys, keyword: str, raw_args: Optional[str], output_class):
     return output_class(result)
 
 
-def _make_command(keyword: str, args: Optional[str]) -> str:
+def _make_command(keyword: str, args: str | None) -> str:
     if args is None:
         return keyword
     return f"{keyword} {args}"
