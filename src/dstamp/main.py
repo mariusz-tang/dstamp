@@ -7,7 +7,8 @@ import sys
 from pathlib import Path
 from typing import Optional
 
-from cyclopts import App, Parameter, validators
+import cyclopts.config
+from cyclopts import App, Parameter
 from typing_extensions import Annotated
 
 from . import clipboard, config, console, format, parse, round
@@ -16,6 +17,17 @@ app = App(help="Discord timestamp generator")
 
 
 FROM_CONFIG = "from config"
+
+
+@app.meta.default
+def meta(
+    *tokens: Annotated[str, Parameter(show=False, allow_leading_hyphen=True)],
+    config_path: Annotated[Optional[Path], Parameter("config")] = None,
+):
+    if config_path is None:
+        config_path = config.get_config_path()
+    app.config = cyclopts.config.Toml(config_path, use_commands_as_keys=False)
+    app(tokens)
 
 
 @app.command(name="get")
@@ -44,7 +56,7 @@ def get_timestamp(
             show_default=FROM_CONFIG,
             help="The format in which the timestamp will be displayed in Discord.",
         ),
-    ] = None,
+    ] = format.Format.RELATIVE,
     copy_to_clipboard: Annotated[
         Optional[bool],
         Parameter(
@@ -54,17 +66,7 @@ def get_timestamp(
             help="If set, copy the timestamp to clipboard. "
             "On Linux, requires that xsel or xclip be installed.",
         ),
-    ] = None,
-    config_path: Annotated[
-        Optional[Path],
-        Parameter(
-            name=["--config", "-c"],
-            show_default=False,
-            validator=validators.Path(exists=True, dir_okay=False),
-            help="If specified, read config from this file instead of the default "
-            "location.",
-        ),
-    ] = None,
+    ] = False,
     do_rounding: Annotated[
         Optional[bool],
         Parameter(
@@ -72,7 +74,7 @@ def get_timestamp(
             show_default=FROM_CONFIG,
             help="If specified, round TIME based on --precision.",
         ),
-    ] = None,
+    ] = False,
     precision: Annotated[
         Optional[str],
         Parameter(
@@ -80,7 +82,7 @@ def get_timestamp(
             show_default=FROM_CONFIG,
             help="The precision to which TIME will be rounded if --round is specified.",
         ),
-    ] = None,
+    ] = "10m",
 ):
     """
     Generate a Discord timestamp.
@@ -133,10 +135,6 @@ def get_timestamp(
     """
     time = parse.datetime_string(time)
     offset = parse.offset(offset)
-    cfg = config.get(config_path)
-    output_format = fill_value(output_format, cfg.output_format)
-    do_rounding = fill_value(do_rounding, cfg.round)
-    precision = fill_value(precision, cfg.rounding_precision)
 
     target_time = time + offset
     if do_rounding:
@@ -147,7 +145,6 @@ def get_timestamp(
     console.info(f"Using time: {round.round_time_to_precision(target_time, '1s')}.")
     console.print(output)
 
-    copy_to_clipboard = fill_value(copy_to_clipboard, cfg.copy_to_clipboard)
     if copy_to_clipboard:
         clipboard.copy(output)
 
@@ -171,27 +168,5 @@ def try_round(time, precision):
         sys.exit(1)
 
 
-@app.command()
-def show_config(
-    path: Annotated[
-        Optional[Path],
-        Parameter(
-            show_default=False,
-            validator=validators.Path(exists=True, dir_okay=False),
-            help="If specified, use this config file instead of the default.",
-        ),
-    ] = None,
-):
-    """
-    Show the currently-active configuration settings and file location.
-
-    The config file should be in TOML format.
-    """
-    if path is None:
-        path = config.get_config_path()
-    console.info(f"Using config at {path}\n")
-    console.print(config.get(path))
-
-
 if __name__ == "__main__":  # pragma: no cover
-    app()
+    app.meta()

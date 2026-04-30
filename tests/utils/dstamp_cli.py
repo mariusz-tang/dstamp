@@ -13,10 +13,6 @@ def run_get(capsys, args: Optional[str] = None) -> parse.DstampGetOutput:
     return _run(capsys, "get", args, parse.DstampGetOutput)
 
 
-def run_show_config(capsys, args: Optional[str] = None) -> parse.DstampShowConfigOutput:
-    return _run(capsys, "show-config", args, parse.DstampShowConfigOutput)
-
-
 def _run(capsys, keyword: str, raw_args: Optional[str], output_class):
     """
     Run the command and parse the output.
@@ -27,7 +23,7 @@ def _run(capsys, keyword: str, raw_args: Optional[str], output_class):
     command = _make_command(keyword, raw_args)
     args = command.split(" ")
     try:
-        app(args, result_action="return_value")
+        app.meta(args, result_action="return_value")
     except SystemExit:
         # Todo: remove this after changing the app to return an error code
         # instead of raising SystemExit.

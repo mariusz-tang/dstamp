@@ -1,2 +1,2 @@
 round = true
-rounding_precision = "15m"
+precision = "15m"

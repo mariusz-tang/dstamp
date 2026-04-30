@@ -8,12 +8,12 @@ from enum import Enum
 
 
 class Format(str, Enum):
-    SHORT_TIME = "shorttime", "t"
-    LONG_TIME = "longtime", "T"
-    SHORT_DATE = "shortdate", "d"
-    LONG_DATE = "longdate", "D"
-    SHORT_DATETIME = "shortdatetime", "f"
-    LONG_DATETIME = "longdatetime", "F"
+    SHORT_TIME = "short-time", "t"
+    LONG_TIME = "long-time", "T"
+    SHORT_DATE = "short-date", "d"
+    LONG_DATE = "long-date", "D"
+    SHORT_DATETIME = "short-datetime", "f"
+    LONG_DATETIME = "long-datetime", "F"
     RELATIVE = "relative", "R"
 
     def __new__(cls, value, code):

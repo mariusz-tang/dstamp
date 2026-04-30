@@ -4,7 +4,6 @@ This module provides utility classes for parsing dstamp output.
 """
 
 import re
-from pathlib import Path
 
 from dstamp.clipboard import COPY_SUCCESS_TEXT
 
@@ -36,37 +35,3 @@ class DstampGetOutput:
 
         self.timestamp = Timestamp(lines[1])
         self.copied_to_clipboard = COPY_SUCCESS_TEXT in raw_output
-
-
-class DstampShowConfigOutput:
-    """Test utility class for parsing dstamp show-config command output."""
-
-    PATH_PATTERN = r"Using config at \n?((?:.|\n)*?.)\n\n"
-    PROPERTY_PATTERN = r"([^:]+): (.+)"
-
-    def __init__(self, raw_output: str):
-        lines = raw_output.splitlines()
-        m_path = re.match(self.PATH_PATTERN, raw_output)
-        joined_path = m_path[1].replace("\n", "")
-        self.config_path = Path(joined_path)
-
-        joined_output = "".join(lines)
-        self.has_using_default_warning = (
-            "Using default config settings." in joined_output
-        )
-        self.not_a_file = False
-        self.invalid_toml = False
-        if self.has_using_default_warning:
-            self.not_a_file = "not a file" in joined_output
-            self.invalid_toml = "not a valid TOML file" in joined_output
-
-        properties = dict()
-        for line in lines[1:]:
-            m = re.fullmatch(self.PROPERTY_PATTERN, line)
-            if m is not None:
-                properties[m[1]] = m[2]
-
-        self.copy_to_clipboard = properties["copy_to_clipboard"] == "True"
-        self.output_format = properties["output_format"]
-        self.round = properties["round"] == "True"
-        self.rounding_precision = properties["rounding_precision"]
