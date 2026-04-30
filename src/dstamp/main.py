@@ -16,9 +16,6 @@ from . import clipboard, config, console, format, parse, round
 app = App(help="Discord timestamp generator")
 
 
-FROM_CONFIG = "from config"
-
-
 @app.meta.default
 def meta(
     *tokens: Annotated[str, Parameter(show=False, allow_leading_hyphen=True)],
@@ -53,7 +50,6 @@ def get_timestamp(
         Optional[format.Format],
         Parameter(
             name=["--output-format", "-f"],
-            show_default=FROM_CONFIG,
             help="The format in which the timestamp will be displayed in Discord.",
         ),
     ] = format.Format.RELATIVE,
@@ -62,7 +58,6 @@ def get_timestamp(
         Parameter(
             name=["--copy-to-clipboard", "-x"],
             negative="--no-copy",
-            show_default=FROM_CONFIG,
             help="If set, copy the timestamp to clipboard. "
             "On Linux, requires that xsel or xclip be installed.",
         ),
@@ -71,7 +66,6 @@ def get_timestamp(
         Optional[bool],
         Parameter(
             name=["--round", "-r"],
-            show_default=FROM_CONFIG,
             help="If specified, round TIME based on --precision.",
         ),
     ] = False,
@@ -79,7 +73,6 @@ def get_timestamp(
         Optional[str],
         Parameter(
             name=["--precision", "-p"],
-            show_default=FROM_CONFIG,
             help="The precision to which TIME will be rounded if --round is specified.",
         ),
     ] = "10m",
