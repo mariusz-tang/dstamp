@@ -138,7 +138,3 @@ def try_round(time, precision):
     except RoundingError as e:
         console.error(f"There was an error in rounding:\n{e.message}")
         sys.exit(1)
-
-
-if __name__ == "__main__":  # pragma: no cover
-    app.meta()
