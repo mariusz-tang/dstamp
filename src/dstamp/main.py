@@ -10,7 +10,8 @@ import cyclopts.config
 from cyclopts import App, Parameter
 from typing_extensions import Annotated
 
-from . import clipboard, config, console, format, parse, round
+from . import clipboard, config, console, format, parse
+from .round import RoundingError, round_time_to_precision
 
 app = App(help="Discord timestamp generator")
 
@@ -34,15 +35,11 @@ def launch_with_config_file(
 @app.command(name="get")
 def get_timestamp(
     time: Annotated[str, Parameter(show_default=False)] = "",
-    offset: Annotated[str, Parameter(name=["--offset", "-o"], show_default=False)] = "",
-    output_format: Annotated[
-        format.Format | None, Parameter(name=["--output-format", "-f"])
-    ] = format.Format.RELATIVE,
-    copy_to_clipboard: Annotated[
-        bool | None, Parameter(name=["--copy-to-clipboard", "-x"], negative="--no-copy")
-    ] = False,
-    do_rounding: Annotated[bool | None, Parameter(name=["--round", "-r"])] = False,
-    precision: Annotated[str | None, Parameter(name=["--precision", "-p"])] = "10m",
+    offset: Annotated[str, Parameter(show_default=False)] = "",
+    output_format=format.Format.RELATIVE,
+    copy_to_clipboard: bool = False,
+    round: bool = False,
+    precision="10m",
 ):
     """
     Generate a Discord timestamp.
@@ -111,12 +108,12 @@ def get_timestamp(
     offset = parse.offset(offset)
 
     target_time = time + offset
-    if do_rounding:
+    if round:
         target_time = try_round(target_time, precision)
 
     output = format.convert_to_discord_format(target_time, output_format)
 
-    console.info(f"Using time: {round.round_time_to_precision(target_time, '1s')}.")
+    console.info(f"Using time: {round_time_to_precision(target_time, '1s')}.")
     console.print(output)
 
     if copy_to_clipboard:
@@ -136,8 +133,8 @@ def fill_value(user_provided_value, filler_value):
 
 def try_round(time, precision):
     try:
-        return round.round_time_to_precision(time, precision)
-    except round.RoundingError as e:
+        return round_time_to_precision(time, precision)
+    except RoundingError as e:
         console.error(f"There was an error in rounding:\n{e.message}")
         sys.exit(1)
 
