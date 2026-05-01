@@ -14,6 +14,7 @@ from . import clipboard, config, console, format, parse
 from .round import RoundingError, round_time_to_precision
 
 app = App(help="Discord timestamp generator")
+app.register_install_completion_command(add_to_startup=False)
 
 
 @app.meta.default
