@@ -20,6 +20,11 @@ def meta(
     *tokens: Annotated[str, Parameter(show=False, allow_leading_hyphen=True)],
     config_path: Annotated[Path | None, Parameter("config")] = None,
 ):
+    """
+    Launch the application with a config file.
+
+    :param config_path: Alternate configuration file path.
+    """
     if config_path is None:
         config_path = config.get_config_path()
     app.config = cyclopts.config.Toml(config_path, use_commands_as_keys=False)
@@ -28,53 +33,16 @@ def meta(
 
 @app.command(name="get")
 def get_timestamp(
-    time: Annotated[
-        str,
-        Parameter(
-            help="The date and time to which the timestamp should point. "
-            "If omitted, the current time is used.",
-        ),
-    ] = "",
-    offset: Annotated[
-        str,
-        Parameter(
-            name=["--offset", "-o"],
-            help="Optional offset to apply to TIME. Examples: 2d3h1m, +3s, -3d+1d, "
-            "3m-3h2h. The only acceptable units are d(ays), h(ours), m(inutes), "
-            "and s(econds). Subtraction applies to all times after the - until "
-            "the next +. Units can be repeated.",
-        ),
-    ] = "",
+    time: Annotated[str, Parameter(show_default=False)] = "",
+    offset: Annotated[str, Parameter(name=["--offset", "-o"], show_default=False)] = "",
     output_format: Annotated[
-        format.Format | None,
-        Parameter(
-            name=["--output-format", "-f"],
-            help="The format in which the timestamp will be displayed in Discord.",
-        ),
+        format.Format | None, Parameter(name=["--output-format", "-f"])
     ] = format.Format.RELATIVE,
     copy_to_clipboard: Annotated[
-        bool | None,
-        Parameter(
-            name=["--copy-to-clipboard", "-x"],
-            negative="--no-copy",
-            help="If set, copy the timestamp to clipboard. "
-            "On Linux, requires that xsel or xclip be installed.",
-        ),
+        bool | None, Parameter(name=["--copy-to-clipboard", "-x"], negative="--no-copy")
     ] = False,
-    do_rounding: Annotated[
-        bool | None,
-        Parameter(
-            name=["--round", "-r"],
-            help="If specified, round TIME based on --precision.",
-        ),
-    ] = False,
-    precision: Annotated[
-        str | None,
-        Parameter(
-            name=["--precision", "-p"],
-            help="The precision to which TIME will be rounded if --round is specified.",
-        ),
-    ] = "10m",
+    do_rounding: Annotated[bool | None, Parameter(name=["--round", "-r"])] = False,
+    precision: Annotated[str | None, Parameter(name=["--precision", "-p"])] = "10m",
 ):
     """
     Generate a Discord timestamp.
@@ -124,6 +92,20 @@ def get_timestamp(
     0 (the current date, midnight),
     tmrw,now (tomorrow, the current time, ie. 24 hours from the current time),
     tmrw (tomorrow, midnight).
+
+    :param time: The date and time to which the timestamp should point. If
+    omitted, the current time is used.
+    :param offset: Optional offset to apply to TIME. Optional offset to apply
+    to TIME. Examples: 2d3h1m, +3s, -3d+1d, 3m-3h2h. The only acceptable units
+    are d(ays), h(ours), m(inutes), and s(econds). Subtraction applies to all
+    times after the - until the next +. Units can be repeated.
+    :param output_format: The format in which the timestamp will be displayed
+    in Discord.
+    :param copy_to_clipboard: If set, copy the timestamp to clipboard. On Linux,
+    requires that xsel or xclip be installed.
+    :param do_rounding: If specified, round TIME based on PRECISION.
+    :param precision: The precision to which TIME will be rounded if ROUND is
+    specified.
     """
     time = parse.datetime_string(time)
     offset = parse.offset(offset)
