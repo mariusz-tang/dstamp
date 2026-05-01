@@ -16,7 +16,7 @@ app = App(help="Discord timestamp generator")
 
 
 @app.meta.default
-def meta(
+def launch_with_config_file(
     *tokens: Annotated[str, Parameter(show=False, allow_leading_hyphen=True)],
     config_path: Annotated[Path | None, Parameter("config")] = None,
 ):
