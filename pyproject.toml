@@ -25,7 +25,7 @@ Issues = "https://github.com/mariusz-tang/dstamp/issues"
 Repository = "https://github.com/mariusz-tang/dstamp"
 
 [project.scripts]
-dstamp = "dstamp.main:app"
+dstamp = "dstamp.main:app.meta"
 
 [dependency-groups]
 dev = [
