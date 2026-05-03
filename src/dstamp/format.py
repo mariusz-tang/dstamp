@@ -4,10 +4,10 @@ This module provides tools for formatting datetimes for dstamp output.
 """
 
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 
 
-class Format(str, Enum):
+class Format(StrEnum):
     SHORT_TIME = "t"
     LONG_TIME = "T"
     SHORT_DATE = "d"

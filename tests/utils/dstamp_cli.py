@@ -3,6 +3,8 @@
 This module provides functions for executing dstamp commands.
 """
 
+import contextlib
+
 from dstamp.main import app
 from tests.utils import parse
 
@@ -20,12 +22,8 @@ def _run(capsys, keyword: str, raw_args: str | None, output_class):
     """
     command = _make_command(keyword, raw_args)
     args = command.split(" ")
-    try:
+    with contextlib.suppress(SystemExit):
         app.meta(args, result_action="return_value")
-    except SystemExit:
-        # Todo: remove this after changing the app to return an error code
-        # instead of raising SystemExit.
-        pass
     result = capsys.readouterr().out
     return output_class(result)
 
