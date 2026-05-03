@@ -15,7 +15,7 @@ from tests.utils.parse import Timestamp
 )
 def test_timestamp_ignores_extra_text(format_str: str):
     timestamp = 1749682800
-    code = Format.RELATIVE.code
+    code = Format.RELATIVE.value
     text = str.format(format_str, f"<t:{timestamp}:{code}>")
     stamp = Timestamp(text)
     assert stamp.timestamp == timestamp
@@ -28,7 +28,7 @@ def test_timestamp_ignores_extra_text(format_str: str):
 )
 def test_timestamp_grabs_first_match(format_str: str):
     timestamps = 4921319031, 123913202
-    codes = Format.RELATIVE.code, Format.SHORT_DATE.code
+    codes = Format.RELATIVE.value, Format.SHORT_DATE.value
 
     text = str.format(
         format_str, f"<t:{timestamps[0]}:{codes[0]}>", f"<t:{timestamps[1]}:{codes[1]}>"

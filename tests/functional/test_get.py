@@ -42,16 +42,16 @@ def test_no_copy_cli_option(capsys):
 @pytest.mark.parametrize("format", (format for format in Format))
 def test_get_output_format_cli_option(capsys, format: Format):
     output = dstamp_cli.run_get(capsys, f"--output-format {format.name}")
-    assert output.timestamp.format_code == format.code
+    assert output.timestamp.format_code == format.value
 
 
 def test_output_format_config_option(capsys):
     output = dstamp_cli.run_get(capsys)
-    assert output.timestamp.format_code == Format.RELATIVE.code
+    assert output.timestamp.format_code == Format.RELATIVE.value
     output = dstamp_cli.run_get(
         capsys, f"--config {config.SHORT_TIME_FORMAT_CONFIG_PATH}"
     )
-    assert output.timestamp.format_code == Format.SHORT_TIME.code
+    assert output.timestamp.format_code == Format.SHORT_TIME.value
 
 
 def test_round_and_precision_config_cli_options(capsys):
