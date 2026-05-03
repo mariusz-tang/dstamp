@@ -5,10 +5,10 @@ This module contains the commands provided by dstamp.
 
 import sys
 from pathlib import Path
+from typing import Annotated
 
 import cyclopts.config
 from cyclopts import App, Parameter
-from typing_extensions import Annotated
 
 from . import clipboard, config, console, format, parse
 from .round import RoundingError, round_time_to_precision
