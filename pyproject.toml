@@ -14,7 +14,7 @@ classifiers = [
   "Topic :: Communications :: Chat",
 ]
 dependencies = [
-  "clipman (>=3.3.1,<4.0.0)",
+  "clipman>=3.3.1",
   "cyclopts>=4.11.0",
   "platformdirs>=4.9.6",
 ]
