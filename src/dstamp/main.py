@@ -4,6 +4,7 @@ This module contains the commands provided by dstamp.
 """
 
 import sys
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Annotated
 
@@ -105,8 +106,8 @@ def get_timestamp(
     :param precision: The precision to which TIME will be rounded if ROUND is
     specified.
     """
-    time = parse.datetime_string(time)
-    offset = parse.offset(offset)
+    time: datetime = parse.datetime_string(time)
+    offset: timedelta = parse.offset(offset)
 
     target_time = time + offset
     if round:

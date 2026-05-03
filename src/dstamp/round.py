@@ -47,7 +47,7 @@ def round_time_to_precision(time: datetime, precision: str):
 
     # Use timedelta to handle the case where the rounded value is equal to the
     # maximum quantity, eg. if we need to round up to the next day.
-    return truncated_time.replace(**{unit.attribute_name: 0}) + timedelta(
+    return truncated_time.replace(**{unit.attribute_name: 0}, tzinfo=None) + timedelta(
         **{f"{unit.attribute_name}s": rounded_value}
     )
 

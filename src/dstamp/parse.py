@@ -197,7 +197,7 @@ def get_month_from_shortening(shortening: str) -> int:
     raise InvalidFormatError
 
 
-def rounding_precision(raw_precision: str) -> tuple[int, str]:
+def rounding_precision(raw_precision: str) -> tuple[int, "round.RoundingUnit"]:
     """
     Accepts precisions in the format of <value><unit>
     """
