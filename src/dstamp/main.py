@@ -3,19 +3,21 @@
 This module contains the commands provided by dstamp.
 """
 
-import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Annotated
 
 import cyclopts.config
+import pyperclip
 from cyclopts import App, Parameter
 
-from dstamp import clipboard, config, console, format, parse
+from dstamp import config, console, format, parse
 from dstamp.round import RoundingError, round_time_to_precision
 
 app = App(help="Discord timestamp generator")
 app.register_install_completion_command(add_to_startup=False)
+
+COPY_SUCCESS_TEXT = "Copied to clipboard!"
 
 
 @app.meta.default
@@ -44,7 +46,7 @@ def get_timestamp(
     copy_to_clipboard: bool = False,
     round: bool = False,
     precision: str = "10m",
-) -> None:
+) -> int:
     """
     Generate a Discord timestamp.
 
@@ -110,10 +112,14 @@ def get_timestamp(
     """
     time: datetime = parse.datetime_string(time)
     offset: timedelta = parse.offset(offset)
-
     target_time = time + offset
+
     if round:
-        target_time = try_round(target_time, precision)
+        try:
+            target_time = round_time_to_precision(time, precision)
+        except RoundingError as e:
+            console.error(f"There was an error in rounding:\n{e.message}")
+            return 1
 
     output = format.convert_to_discord_format(target_time, output_format)
 
@@ -121,12 +127,11 @@ def get_timestamp(
     console.print(output)
 
     if copy_to_clipboard:
-        clipboard.copy(output)
+        try:
+            pyperclip.copy(output)
+            console.info(COPY_SUCCESS_TEXT)
+        except pyperclip.PyperclipException as e:
+            console.error(f"There was a problem with the clipboard manager:{e}")
+            return 1
 
-
-def try_round(time: datetime, precision: str) -> datetime:
-    try:
-        return round_time_to_precision(time, precision)
-    except RoundingError as e:
-        console.error(f"There was an error in rounding:\n{e.message}")
-        sys.exit(1)
+    return 0

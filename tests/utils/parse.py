@@ -5,7 +5,7 @@ This module provides utility classes for parsing dstamp output.
 
 import re
 
-from dstamp.clipboard import COPY_SUCCESS_TEXT
+from dstamp.main import COPY_SUCCESS_TEXT
 
 
 class Timestamp:
