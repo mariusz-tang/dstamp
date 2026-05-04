@@ -55,7 +55,8 @@ This project uses various linters and formatters to keep code in check:
 If you install the prek hooks as above, this will be handled for you.
 
 **Note**: There is no hook for ty, so you need to run this yourself with
-`ty check`.
+`ty check`. See also the [pre-push hook](#pre-push-hook)
+below.
 
 [Editorconfig-checker]: https://editorconfig-checker.github.io/
 [Markdownlint]: https://github.com/markdownlint/markdownlint
@@ -79,6 +80,21 @@ from coverage.py.
 [pytest]: https://docs.pytest.org/en/stable/
 [coverage.py]: https://coverage.readthedocs.io/en/7.10.1/
 [exclude]: https://coverage.readthedocs.io/en/7.10.1/excluding.html
+
+## Pre-push hook
+
+In addition to the pre-commit hooks installed by prek, I recommend installing
+the following pre-push hook. Simply place it in a file at
+`./.git/hooks/pre-push`. Note that this may not work on Windows.
+
+```sh
+#!/bin/sh
+
+set -e
+pytest
+ty check
+prek --all-files
+```
 
 ### A note on perfectionism
 
