@@ -12,7 +12,7 @@ from dstamp import parse
 class RoundingError(ValueError):
     """Raised when a rounding attempt fails."""
 
-    def __init__(self, message=None, *args):
+    def __init__(self, message: str | None = None, *args: tuple) -> None:
         self.message = message
         super().__init__(*args)
 
@@ -22,13 +22,13 @@ class RoundingUnit(Enum):
     MINUTE = "minute", "m", 60
     SECOND = "second", "s", 60
 
-    def __init__(self, attribute_name, code, max_quantity):
+    def __init__(self, attribute_name: str, code: str, max_quantity: int) -> None:
         self.attribute_name = attribute_name
         self.code = code
         self.max_quantity = max_quantity
 
 
-def round_time_to_precision(time: datetime, precision: str):
+def round_time_to_precision(time: datetime, precision: str) -> datetime:
     try:
         quantity, unit = parse.rounding_precision(precision)
     except parse.ParserInputError as e:

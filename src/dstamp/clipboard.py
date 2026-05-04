@@ -10,7 +10,7 @@ from dstamp import console
 COPY_SUCCESS_TEXT = "Copied to clipboard!"
 
 
-def copy(text: str):
+def copy(text: str) -> None:
     """
     Copy text to clipboard.
 

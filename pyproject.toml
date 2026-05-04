@@ -56,4 +56,5 @@ skip_covered = true
 addopts = ["--import-mode=importlib"]
 
 [tool.ruff.lint]
-select = ["E", "F", "UP", "B", "SIM", "I"]
+select = ["E", "F", "UP", "B", "SIM", "I", "ANN"]
+per-file-ignores = { "tests/**" = ["ANN"] }

@@ -22,7 +22,7 @@ app.register_install_completion_command(add_to_startup=False)
 def launch_with_config_file(
     *tokens: Annotated[str, Parameter(show=False, allow_leading_hyphen=True)],
     config_path: Annotated[Path | None, Parameter("config")] = None,
-):
+) -> None:
     """
     Launch the application with a config file.
 
@@ -40,11 +40,11 @@ def get_timestamp(
     /,
     *,
     offset: str | None = None,
-    output_format=format.Format.RELATIVE,
+    output_format: format.Format = format.Format.RELATIVE,
     copy_to_clipboard: bool = False,
     round: bool = False,
-    precision="10m",
-):
+    precision: str = "10m",
+) -> None:
     """
     Generate a Discord timestamp.
 
@@ -124,7 +124,7 @@ def get_timestamp(
         clipboard.copy(output)
 
 
-def try_round(time, precision):
+def try_round(time: datetime, precision: str) -> datetime:
     try:
         return round_time_to_precision(time, precision)
     except RoundingError as e:
