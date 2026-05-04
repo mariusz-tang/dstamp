@@ -8,7 +8,7 @@ from datetime import datetime
 import pytest
 from freezegun import freeze_time
 
-from dstamp import round
+from dstamp import parse, round
 from dstamp.format import Format
 from tests.utils import config, dstamp_cli
 from tests.utils.patched_time import now
@@ -88,11 +88,15 @@ def test_rounding_and_precision_config_options(capsys):
     output = dstamp_cli.run_get(capsys, "--round")
     assert (
         output.timestamp.timestamp
-        == round.round_time_to_precision(now, "10m").timestamp()
+        == round.round_time_to_precision(
+            now, parse.rounding_precision("10m")
+        ).timestamp()
     )
 
     output = dstamp_cli.run_get(capsys, f"--config {config.ROUNDING_CONFIG_PATH}")
     assert (
         output.timestamp.timestamp
-        == round.round_time_to_precision(now, "15m").timestamp()
+        == round.round_time_to_precision(
+            now, parse.rounding_precision("15m")
+        ).timestamp()
     )

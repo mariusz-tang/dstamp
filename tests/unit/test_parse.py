@@ -64,19 +64,21 @@ def test_datetime_invalid_datetime(input):
 
 
 @pytest.mark.parametrize(
-    "raw_input,desired_output",
+    "raw_input,quantity,unit",
     (
-        ("20m", (20, RoundingUnit.MINUTE)),
-        ("1H", (1, RoundingUnit.HOUR)),
-        ("M", (1, RoundingUnit.MINUTE)),
-        ("15m", (15, RoundingUnit.MINUTE)),
-        ("12s", (12, RoundingUnit.SECOND)),
-        ("3S", (3, RoundingUnit.SECOND)),
+        ("20m", 20, RoundingUnit.MINUTE),
+        ("1H", 1, RoundingUnit.HOUR),
+        ("M", 1, RoundingUnit.MINUTE),
+        ("15m", 15, RoundingUnit.MINUTE),
+        ("12s", 12, RoundingUnit.SECOND),
+        ("3S", 3, RoundingUnit.SECOND),
     ),
 )
 @freeze_time(now)
-def test_rounding_precision(raw_input, desired_output, monkeypatch):
-    assert parse.rounding_precision(raw_input) == desired_output
+def test_rounding_precision(raw_input, quantity, unit):
+    precision = parse.rounding_precision(raw_input)
+    assert precision.quantity == quantity
+    assert precision.unit == unit
 
 
 @pytest.mark.parametrize(

@@ -6,8 +6,6 @@ This module contains logic for rounding timestamps to nicer ones.
 from datetime import datetime, timedelta
 from enum import Enum
 
-from dstamp import parse
-
 
 class RoundingError(ValueError):
     """Raised when a rounding attempt fails."""
@@ -24,28 +22,47 @@ class RoundingUnit(Enum):
         self.max_quantity = max_quantity
 
 
-def round_time_to_precision(time: datetime, precision: str) -> datetime:
-    try:
-        quantity, unit = parse.rounding_precision(precision)
-    except parse.ParserInputError as e:
-        raise RoundingError(str(e)) from e
+class Precision:
+    """Represents a rounding precision.
 
+    For example, (to the nearest) 10 minutes.
+    """
+
+    def __init__(self, quantity: int, unit: RoundingUnit) -> None:
+        if quantity <= 0:
+            raise ValueError("Precision quantity must be positive.")
+        if quantity >= unit.max_quantity:
+            raise ValueError(
+                f"Precision quantity for {unit.name} "
+                f"must be less than {unit.max_quantity}."
+            )
+        if unit.max_quantity % quantity != 0:
+            raise ValueError(
+                f"Precision quantity for {unit.name} "
+                f"must be a factor of {unit.max_quantity}."
+            )
+
+        self.quantity = quantity
+        self.unit = unit
+
+
+def round_time_to_precision(time: datetime, precision: Precision) -> datetime:
     truncated_time = time.replace(microsecond=0)
-    if unit is not RoundingUnit.SECOND:
+    if precision.unit is not RoundingUnit.SECOND:
         truncated_time = truncated_time.replace(second=0)
-        if unit is not RoundingUnit.MINUTE:
+        if precision.unit is not RoundingUnit.MINUTE:
             truncated_time = truncated_time.replace(minute=0)
 
     # This is currently very crude as it only checks the top-most unit.
     # This means it may not handle values close to half-way as expected.
-    initial_value = getattr(time, unit.attribute_name)
-    rounded_value = round_int_to_precision(initial_value, quantity)
+    initial_value = getattr(time, precision.unit.attribute_name)
+    rounded_value = round_int_to_precision(initial_value, precision.quantity)
 
     # Use timedelta to handle the case where the rounded value is equal to the
     # maximum quantity, eg. if we need to round up to the next day.
-    return truncated_time.replace(**{unit.attribute_name: 0}, tzinfo=None) + timedelta(
-        **{f"{unit.attribute_name}s": rounded_value}
-    )
+    return truncated_time.replace(
+        **{precision.unit.attribute_name: 0}, tzinfo=None
+    ) + timedelta(**{f"{precision.unit.attribute_name}s": rounded_value})
 
 
 def round_int_to_precision(value: int, precision: int) -> int:

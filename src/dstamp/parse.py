@@ -193,31 +193,24 @@ def get_month_from_shortening(shortening: str) -> int:
     raise InvalidFormatError
 
 
-def rounding_precision(raw_precision: str) -> tuple[int, round.RoundingUnit]:
-    """
-    Accepts precisions in the format of <value><unit>
-    """
-    lowercase_input = raw_precision.lower()
+def rounding_precision(raw_precision: str) -> round.Precision:
+    """Accepts precisions in the form of <value><unit>."""
+    m = re.fullmatch(r"(\d*)([hms])", raw_precision.lower())
 
-    for unit in round.RoundingUnit:
-        m = re.fullmatch(rf"(\d*){unit.code}", lowercase_input)
-        if m is None:
-            continue
+    if m is None:
+        raise InvalidFormatError(f"Invalid rounding precision: {raw_precision}.")
 
-        quantity = int(m[1]) if m[1] else 1
+    quantity = int(m[1]) if m[1] else 1
+    if m[2] == "h":
+        unit = round.RoundingUnit.HOUR
+    elif m[2] == "m":
+        unit = round.RoundingUnit.MINUTE
+    else:
+        unit = round.RoundingUnit.SECOND
 
-        quantity_is_in_range = 0 < quantity < unit.max_quantity
-        quantity_is_a_factor_of_max = (
-            quantity != 0 and unit.max_quantity % quantity == 0
-        )
-        if not (quantity_is_in_range and quantity_is_a_factor_of_max):
-            raise InvalidValueError(
-                "Invalid precision quantity: "
-                f"[underline cyan]{quantity}[/]{unit.code}. "
-                f"Quantity must be between 0 and {unit.max_quantity} (exclusive), "
-                f"and must be a factor of {unit.max_quantity}."
-            )
-
-        return quantity, unit
-
-    raise InvalidFormatError(f"Invalid precision: {raw_precision}.")
+    try:
+        return round.Precision(quantity, unit)
+    except ValueError as e:
+        raise InvalidValueError(
+            f"Invalid rounding precision: {raw_precision}.\n{e}"
+        ) from e

@@ -7,7 +7,7 @@ from datetime import timedelta
 
 import pytest
 
-from dstamp import round
+from dstamp import parse, round
 from tests.utils.patched_time import now
 
 ONE_DAY = timedelta(days=1)
@@ -45,4 +45,7 @@ def time(hour: int, minute: int, second: int, microsecond: int = 0):
     ),
 )
 def test_round(raw_time, precision, desired_output):
-    assert round.round_time_to_precision(raw_time, precision) == desired_output
+    assert (
+        round.round_time_to_precision(raw_time, parse.rounding_precision(precision))
+        == desired_output
+    )

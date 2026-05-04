@@ -26,7 +26,7 @@ class DstampGetOutput:
 
     def __init__(self, raw_output: str):
         lines = raw_output.splitlines()
-        self.has_rounding_error = "There was an error in rounding:" in raw_output
+        self.has_rounding_error = "Invalid rounding precision:" in raw_output
 
         if self.has_rounding_error:
             # Rounding error means the program aborted so no other information
