@@ -1,0 +1,28 @@
+name: Lint and test project
+run-name: Lint and test by ${{ github.actor }}
+on: [push, pull_request]
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Run prek hooks
+        uses: j178/prek-action@v2
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.8"
+      - name: Sync environment
+        run: uv sync --dev
+      - name: Ty check
+        run: |
+          source .venv/bin/activate
+          ty check
+      - name: Run tests
+        run: |
+          source .venv/bin/activate
+          pytest
