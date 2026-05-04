@@ -6,7 +6,7 @@ This module contains logic for rounding timestamps to nicer ones.
 from datetime import datetime, timedelta
 from enum import Enum
 
-from . import parse
+from dstamp import parse
 
 
 class RoundingError(ValueError):

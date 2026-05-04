@@ -6,7 +6,7 @@ This module contains parsers for datetimes and offsets.
 import re
 from datetime import date, datetime, time, timedelta
 
-from . import round
+from dstamp import round
 
 units = {
     "d": "days",

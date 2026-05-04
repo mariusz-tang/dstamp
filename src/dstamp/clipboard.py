@@ -5,7 +5,7 @@ This module provides functions for interacting with the clipboard.
 
 import clipman
 
-from . import console
+from dstamp import console
 
 COPY_SUCCESS_TEXT = "Copied to clipboard!"
 

@@ -11,8 +11,8 @@ from typing import Annotated
 import cyclopts.config
 from cyclopts import App, Parameter
 
-from . import clipboard, config, console, format, parse
-from .round import RoundingError, round_time_to_precision
+from dstamp import clipboard, config, console, format, parse
+from dstamp.round import RoundingError, round_time_to_precision
 
 app = App(help="Discord timestamp generator")
 app.register_install_completion_command(add_to_startup=False)
