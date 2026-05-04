@@ -124,17 +124,6 @@ def get_timestamp(
         clipboard.copy(output)
 
 
-def fill_value(user_provided_value, filler_value):
-    """
-    Return filler_value if user_provided value is None.
-
-    Otherwise, return user_provided_value.
-    """
-    if user_provided_value is not None:
-        return user_provided_value
-    return filler_value
-
-
 def try_round(time, precision):
     try:
         return round_time_to_precision(time, precision)
