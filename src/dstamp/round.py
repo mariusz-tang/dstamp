@@ -11,7 +11,7 @@ class RoundingError(ValueError):
     """Raised when a rounding attempt fails."""
 
 
-class RoundingUnit(Enum):
+class Unit(Enum):
     HOUR = "hour", "h", 24
     MINUTE = "minute", "m", 60
     SECOND = "second", "s", 60
@@ -28,7 +28,7 @@ class Precision:
     For example, (to the nearest) 10 minutes.
     """
 
-    def __init__(self, quantity: int, unit: RoundingUnit) -> None:
+    def __init__(self, quantity: int, unit: Unit) -> None:
         if quantity <= 0:
             raise ValueError("Precision quantity must be positive.")
         if quantity >= unit.max_quantity:
@@ -46,17 +46,17 @@ class Precision:
         self.unit = unit
 
 
-def round_time_to_precision(time: datetime, precision: Precision) -> datetime:
+def time_to_precision(time: datetime, precision: Precision) -> datetime:
     truncated_time = time.replace(microsecond=0)
-    if precision.unit is not RoundingUnit.SECOND:
+    if precision.unit is not Unit.SECOND:
         truncated_time = truncated_time.replace(second=0)
-        if precision.unit is not RoundingUnit.MINUTE:
+        if precision.unit is not Unit.MINUTE:
             truncated_time = truncated_time.replace(minute=0)
 
     # This is currently very crude as it only checks the top-most unit.
     # This means it may not handle values close to half-way as expected.
     initial_value = getattr(time, precision.unit.attribute_name)
-    rounded_value = round_int_to_precision(initial_value, precision.quantity)
+    rounded_value = _int_to_precision(initial_value, precision.quantity)
 
     # Use timedelta to handle the case where the rounded value is equal to the
     # maximum quantity, eg. if we need to round up to the next day.
@@ -65,7 +65,7 @@ def round_time_to_precision(time: datetime, precision: Precision) -> datetime:
     ) + timedelta(**{f"{precision.unit.attribute_name}s": rounded_value})
 
 
-def round_int_to_precision(value: int, precision: int) -> int:
+def _int_to_precision(value: int, precision: int) -> int:
     scaled_value = float(value) / precision
     rounded_scaled_value = int(round(scaled_value))
     rounded_value = rounded_scaled_value * precision

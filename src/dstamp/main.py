@@ -12,7 +12,7 @@ import pyperclip
 from cyclopts import App, Parameter
 
 from dstamp import config, console, format, parse
-from dstamp.round import Precision, round_time_to_precision
+from dstamp.round import Precision, time_to_precision
 
 app = App(help="Discord timestamp generator")
 app.register_install_completion_command(add_to_startup=False)
@@ -120,15 +120,12 @@ def get_timestamp(
         except parse.ParserInputError as e:
             console.error(str(e))
             return 1
-        target_time = round_time_to_precision(target_time, precision)
+        target_time = time_to_precision(target_time, precision)
 
     output = format.convert_to_discord_format(target_time, output_format)
 
-    console.info(
-        f"Using time: {
-            round_time_to_precision(target_time, parse.rounding_precision('1s'))
-        }."
-    )
+    one_second = parse.rounding_precision("1s")
+    console.info(f"Using time: {time_to_precision(target_time, one_second)}.")
     console.print(output)
 
     if copy_to_clipboard:

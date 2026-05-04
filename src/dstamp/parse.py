@@ -202,11 +202,11 @@ def rounding_precision(raw_precision: str) -> round.Precision:
 
     quantity = int(m[1]) if m[1] else 1
     if m[2] == "h":
-        unit = round.RoundingUnit.HOUR
+        unit = round.Unit.HOUR
     elif m[2] == "m":
-        unit = round.RoundingUnit.MINUTE
+        unit = round.Unit.MINUTE
     else:
-        unit = round.RoundingUnit.SECOND
+        unit = round.Unit.SECOND
 
     try:
         return round.Precision(quantity, unit)

@@ -8,8 +8,7 @@ from datetime import date, datetime, time, timedelta
 import pytest
 from freezegun import freeze_time
 
-from dstamp import parse
-from dstamp.round import RoundingUnit
+from dstamp import parse, round
 from tests.utils.patched_time import now, today
 
 
@@ -66,12 +65,12 @@ def test_datetime_invalid_datetime(input):
 @pytest.mark.parametrize(
     "raw_input,quantity,unit",
     (
-        ("20m", 20, RoundingUnit.MINUTE),
-        ("1H", 1, RoundingUnit.HOUR),
-        ("M", 1, RoundingUnit.MINUTE),
-        ("15m", 15, RoundingUnit.MINUTE),
-        ("12s", 12, RoundingUnit.SECOND),
-        ("3S", 3, RoundingUnit.SECOND),
+        ("20m", 20, round.Unit.MINUTE),
+        ("1H", 1, round.Unit.HOUR),
+        ("M", 1, round.Unit.MINUTE),
+        ("15m", 15, round.Unit.MINUTE),
+        ("12s", 12, round.Unit.SECOND),
+        ("3S", 3, round.Unit.SECOND),
     ),
 )
 @freeze_time(now)

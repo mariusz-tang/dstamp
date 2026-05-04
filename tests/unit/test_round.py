@@ -46,6 +46,6 @@ def time(hour: int, minute: int, second: int, microsecond: int = 0):
 )
 def test_round(raw_time, precision, desired_output):
     assert (
-        round.round_time_to_precision(raw_time, parse.rounding_precision(precision))
+        round.time_to_precision(raw_time, parse.rounding_precision(precision))
         == desired_output
     )
