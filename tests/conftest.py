@@ -1,4 +1,4 @@
-import clipman
+import pyperclip
 import pytest
 
 from dstamp import config
@@ -23,5 +23,4 @@ def disable_clipboard(monkeypatch):
     def do_nothing(*_):
         pass
 
-    monkeypatch.setattr(clipman, "init", do_nothing)
-    monkeypatch.setattr(clipman, "set", do_nothing)
+    monkeypatch.setattr(pyperclip, "copy", do_nothing)

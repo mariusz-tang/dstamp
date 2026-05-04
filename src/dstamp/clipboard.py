@@ -3,7 +3,7 @@
 This module provides functions for interacting with the clipboard.
 """
 
-import clipman
+import pyperclip
 
 from dstamp import console
 
@@ -18,9 +18,8 @@ def copy(text: str):
     the problem area and reraise the error.
     """
     try:
-        clipman.init()
-        clipman.set(text)
+        pyperclip.copy(text)
         console.info(COPY_SUCCESS_TEXT)
-    except clipman.exceptions.ClipmanBaseException:  # pragma: no cover
+    except pyperclip.PyperclipException:  # pragma: no cover
         console.error("There was a problem with the clipboard manager:")
         raise
