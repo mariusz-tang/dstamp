@@ -63,10 +63,6 @@ def get_suboffset(unit_key: str, count_str: str, subtracting: bool) -> timedelta
 class ParserInputError(ValueError):
     """Raised when there is a problem with the input received by a parser."""
 
-    def __init__(self, message: str | None = None, *args: tuple) -> None:
-        self.message = message
-        super().__init__(*args)
-
 
 class InvalidFormatError(ParserInputError):
     """Raised when a parser is provided an improperly-formatted value."""

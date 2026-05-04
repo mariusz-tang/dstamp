@@ -118,7 +118,7 @@ def get_timestamp(
         try:
             target_time = round_time_to_precision(time, precision)
         except RoundingError as e:
-            console.error(f"There was an error in rounding:\n{e.message}")
+            console.error(f"There was an error in rounding:\n{e}")
             return 1
 
     output = format.convert_to_discord_format(target_time, output_format)

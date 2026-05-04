@@ -12,10 +12,6 @@ from dstamp import parse
 class RoundingError(ValueError):
     """Raised when a rounding attempt fails."""
 
-    def __init__(self, message: str | None = None, *args: tuple) -> None:
-        self.message = message
-        super().__init__(*args)
-
 
 class RoundingUnit(Enum):
     HOUR = "hour", "h", 24
@@ -32,7 +28,7 @@ def round_time_to_precision(time: datetime, precision: str) -> datetime:
     try:
         quantity, unit = parse.rounding_precision(precision)
     except parse.ParserInputError as e:
-        raise RoundingError(e.message) from e
+        raise RoundingError(str(e)) from e
 
     truncated_time = time.replace(microsecond=0)
     if unit is not RoundingUnit.SECOND:
