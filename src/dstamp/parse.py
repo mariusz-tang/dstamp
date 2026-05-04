@@ -76,7 +76,7 @@ class InvalidValueError(ParserInputError):
     """Raised when a parser is provided a correctly-formatted but invalid value."""
 
 
-def datetime_string(raw_datetime: str) -> datetime:
+def datetime_string(raw_datetime: str | None) -> datetime:
     """
     Parse raw_datetime into a datetime.
 
@@ -97,7 +97,7 @@ def datetime_string(raw_datetime: str) -> datetime:
     noon
     midnight
     """
-    if raw_datetime == "":
+    if raw_datetime is None or raw_datetime == "":
         return datetime.now()
     # Ensure there is both a date and time supplied.
     if (x := raw_datetime.count(",")) == 0:

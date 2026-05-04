@@ -36,8 +36,8 @@ def launch_with_config_file(
 
 @app.command(name="get")
 def get_timestamp(
-    time: Annotated[str, Parameter(show_default=False)] = "",
-    offset: Annotated[str, Parameter(show_default=False)] = "",
+    time: str | None = None,
+    offset: str | None = None,
     output_format=format.Format.RELATIVE,
     copy_to_clipboard: bool = False,
     round: bool = False,
