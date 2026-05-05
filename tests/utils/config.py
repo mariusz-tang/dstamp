@@ -13,7 +13,6 @@ def _get_path_to_config_file(name: str) -> Path:
     return test_config_dir / f"{name}.toml"
 
 
-EMPTY_CONFIG_PATH = _get_path_to_config_file("empty")
 COPY_CONFIG_PATH = _get_path_to_config_file("copy")
 SHORT_TIME_FORMAT_CONFIG_PATH = _get_path_to_config_file("output_format_shorttime")
 ROUNDING_CONFIG_PATH = _get_path_to_config_file("rounding")

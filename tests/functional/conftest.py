@@ -1,20 +1,19 @@
 import pytest
 
 from dstamp import config, main
-from tests.utils.config import EMPTY_CONFIG_PATH
 
 
 @pytest.fixture(autouse=True)
-def empty_default_config(monkeypatch):
+def config_path(monkeypatch, tmp_path):
     """
     Change the default config location so that it is empty for tests.
 
     Returns the new default config location.
     """
     monkeypatch.setattr(
-        config.platformdirs, "user_config_path", lambda *_, **__: EMPTY_CONFIG_PATH
+        config.platformdirs, "user_config_path", lambda *_, **__: tmp_path
     )
-    return EMPTY_CONFIG_PATH
+    return config.get_config_path()
 
 
 @pytest.fixture(autouse=True)
