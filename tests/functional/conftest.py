@@ -1,5 +1,3 @@
-from collections import namedtuple
-
 import pytest
 
 from dstamp import config, main
@@ -28,9 +26,6 @@ def disable_clipboard(monkeypatch):
     monkeypatch.setattr(main.pyperclip, "copy", do_nothing)
 
 
-AppResult = namedtuple("AppResult", ["error_code", "output"])
-
-
 @pytest.fixture
 def app(capsys):
     """Return an app runner."""
@@ -38,6 +33,6 @@ def app(capsys):
     def run(*args):
         error_code = main.app.meta(args, result_action="return_value")
         output = capsys.readouterr().out
-        return AppResult(error_code, output)
+        return error_code, output
 
     return run
