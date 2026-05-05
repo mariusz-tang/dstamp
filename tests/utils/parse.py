@@ -5,8 +5,6 @@ This module provides utility classes for parsing dstamp output.
 
 import re
 
-from dstamp.main import COPY_SUCCESS_TEXT
-
 
 class Timestamp:
     """Test utility class for parsing discord timestamps."""
@@ -19,21 +17,3 @@ class Timestamp:
             raise ValueError(f"No timestamp found in the input: {repr(text)}.")
         self.timestamp = int(match[1])
         self.format_code = match[2]
-
-
-class DstampGetOutput:
-    """Test utility class for parsing dstamp get command output."""
-
-    def __init__(self, raw_output: str):
-        lines = raw_output.splitlines()
-        self.has_rounding_error = "Invalid rounding precision:" in raw_output
-
-        if self.has_rounding_error:
-            # Rounding error means the program aborted so no other information
-            # will be displayed.
-            return
-
-        timestamp = Timestamp(lines[1])
-        self.timestamp = timestamp.timestamp
-        self.format_code = timestamp.format_code
-        self.copied_to_clipboard = COPY_SUCCESS_TEXT in raw_output

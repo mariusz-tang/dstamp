@@ -9,10 +9,29 @@ from datetime import datetime
 import pytest
 from freezegun import freeze_time
 
-from dstamp import parse, round
+from dstamp import main, parse, round
 from dstamp.format import Format
-from tests.utils.parse import DstampGetOutput
+from tests.utils.parse import Timestamp
 from tests.utils.patched_time import now
+
+
+class GetOutput:
+    """Represents dstamp get command output."""
+
+    def __init__(self, raw_output: str):
+        lines = raw_output.splitlines()
+        self.has_rounding_error = "Invalid rounding precision:" in raw_output
+
+        if self.has_rounding_error:
+            # Rounding error means the program aborted so no other information
+            # will be displayed.
+            return
+
+        timestamp = Timestamp(lines[1])
+        self.timestamp = timestamp.timestamp
+        self.format_code = timestamp.format_code
+        self.copied_to_clipboard = main.COPY_SUCCESS_TEXT in raw_output
+
 
 GetResult = namedtuple("GetResult", ["error_code", "output"])
 
@@ -23,7 +42,7 @@ def get(app):
 
     def run(*args):
         result = app("get", *args)
-        output = DstampGetOutput(result.output)
+        output = GetOutput(result.output)
         return GetResult(result.error_code, output)
 
     return run
