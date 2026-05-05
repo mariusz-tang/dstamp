@@ -11,7 +11,6 @@ from freezegun import freeze_time
 
 from dstamp import main, parse, round
 from dstamp.format import Format
-from tests.utils import config
 from tests.utils.parse import DstampGetOutput
 from tests.utils.patched_time import now
 
@@ -51,17 +50,19 @@ def test_copy_to_clipboard_cli_option(get):
     assert result.output.copied_to_clipboard
 
 
-def test_copy_to_clipboard_config_option(get):
+def test_copy_to_clipboard_config_option(get, config_path):
     result = get()
     assert result.error_code == 0
     assert not result.output.copied_to_clipboard
-    result = get("--config", str(config.COPY_CONFIG_PATH))
+    config_path.write_text("copy_to_clipboard = true")
+    result = get()
     assert result.error_code == 0
     assert result.output.copied_to_clipboard
 
 
-def test_no_copy_cli_option(get):
-    result = get("--config", str(config.COPY_CONFIG_PATH), "--no-copy-to-clipboard")
+def test_no_copy_cli_option(get, config_path):
+    config_path.write_text("copy_to_clipboard = true")
+    result = get("--no-copy-to-clipboard")
     assert result.error_code == 0
     assert not result.output.copied_to_clipboard
 
@@ -73,11 +74,12 @@ def test_get_output_format_cli_option(get, format: Format):
     assert result.output.timestamp.format_code == format.value
 
 
-def test_output_format_config_option(get):
+def test_output_format_config_option(get, config_path):
     result = get()
     assert result.error_code == 0
     assert result.output.timestamp.format_code == Format.RELATIVE.value
-    result = get("--config", str(config.SHORT_TIME_FORMAT_CONFIG_PATH))
+    config_path.write_text('output_format = "short-time"')
+    result = get()
     assert result.error_code == 0
     assert result.output.timestamp.format_code == Format.SHORT_TIME.value
 
@@ -119,7 +121,7 @@ def test_invalid_precision(get):
 
 
 @freeze_time(now)
-def test_rounding_and_precision_config_options(get):
+def test_rounding_and_precision_config_options(get, config_path):
     result = get()
     assert result.error_code == 0
     assert result.output.timestamp.timestamp == int(now.timestamp())
@@ -132,7 +134,8 @@ def test_rounding_and_precision_config_options(get):
         == round.time_to_precision(now, parse.rounding_precision("10m")).timestamp()
     )
 
-    result = get("--config", str(config.ROUNDING_CONFIG_PATH))
+    config_path.write_text('round = true\nprecision = "15m"')
+    result = get()
     assert result.error_code == 0
     assert (
         result.output.timestamp.timestamp
