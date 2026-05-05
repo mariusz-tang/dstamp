@@ -33,5 +33,7 @@ class DstampGetOutput:
             # will be displayed.
             return
 
-        self.timestamp = Timestamp(lines[1])
+        timestamp = Timestamp(lines[1])
+        self.timestamp = timestamp.timestamp
+        self.format_code = timestamp.format_code
         self.copied_to_clipboard = COPY_SUCCESS_TEXT in raw_output

@@ -33,7 +33,7 @@ def get(app):
 def test_no_parameters(get):
     result = get()
     assert result.error_code == 0
-    assert result.output.timestamp.timestamp == int(now.timestamp())
+    assert result.output.timestamp == int(now.timestamp())
 
 
 def test_copy_to_clipboard_cli_option(get):
@@ -63,35 +63,31 @@ def test_no_copy_cli_option(get, config_path):
 def test_get_output_format_cli_option(get, format: Format):
     result = get("--output-format", format.name)
     assert result.error_code == 0
-    assert result.output.timestamp.format_code == format.value
+    assert result.output.format_code == format.value
 
 
 def test_output_format_config_option(get, config_path):
     result = get()
     assert result.error_code == 0
-    assert result.output.timestamp.format_code == Format.RELATIVE.value
+    assert result.output.format_code == Format.RELATIVE.value
     config_path.write_text('output_format = "short-time"')
     result = get()
     assert result.error_code == 0
-    assert result.output.timestamp.format_code == Format.SHORT_TIME.value
+    assert result.output.format_code == Format.SHORT_TIME.value
 
 
 def test_round_and_precision_config_cli_options(get):
     result = get("15jun2025,537pm")
     assert result.error_code == 0
-    assert result.output.timestamp.timestamp == int(
-        datetime(2025, 6, 15, 17, 37).timestamp()
-    )
+    assert result.output.timestamp == int(datetime(2025, 6, 15, 17, 37).timestamp())
 
     result = get("15jun2025,537pm", "--round", "--precision", "10m")
     assert result.error_code == 0
-    assert (
-        result.output.timestamp.timestamp == datetime(2025, 6, 15, 17, 40).timestamp()
-    )
+    assert result.output.timestamp == datetime(2025, 6, 15, 17, 40).timestamp()
 
     result = get("15jun2025,537pm", "--round", "--precision", "3H")
     assert result.error_code == 0
-    assert result.output.timestamp.timestamp == datetime(2025, 6, 15, 18).timestamp()
+    assert result.output.timestamp == datetime(2025, 6, 15, 18).timestamp()
 
 
 def test_invalid_precision(get):
@@ -116,13 +112,13 @@ def test_invalid_precision(get):
 def test_rounding_and_precision_config_options(get, config_path):
     result = get()
     assert result.error_code == 0
-    assert result.output.timestamp.timestamp == int(now.timestamp())
+    assert result.output.timestamp == int(now.timestamp())
 
     # The default precision is 10m
     result = get("--round")
     assert result.error_code == 0
     assert (
-        result.output.timestamp.timestamp
+        result.output.timestamp
         == round.time_to_precision(now, parse.rounding_precision("10m")).timestamp()
     )
 
@@ -130,6 +126,6 @@ def test_rounding_and_precision_config_options(get, config_path):
     result = get()
     assert result.error_code == 0
     assert (
-        result.output.timestamp.timestamp
+        result.output.timestamp
         == round.time_to_precision(now, parse.rounding_precision("15m")).timestamp()
     )
