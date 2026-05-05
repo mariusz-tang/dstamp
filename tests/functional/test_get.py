@@ -3,8 +3,6 @@
 This module contains functional tests for the dstamp get command.
 """
 
-from datetime import datetime
-
 import pytest
 from freezegun import freeze_time
 
@@ -44,10 +42,13 @@ def get(app):
 
 
 @freeze_time(now)
-def test_no_parameters(get):
+def test_defaults(get):
     error_code, output = get()
     assert error_code == 0
-    assert output.timestamp == int(now.timestamp())
+    assert not output.has_rounding_error
+    assert output.timestamp == now.timestamp()
+    assert output.format_code == Format.RELATIVE.value
+    assert not output.copied_to_clipboard
 
 
 def test_copy_to_clipboard_cli_option(get):
@@ -57,89 +58,115 @@ def test_copy_to_clipboard_cli_option(get):
 
 
 def test_copy_to_clipboard_config_option(get, config_path):
-    error_code, output = get()
-    assert error_code == 0
-    assert not output.copied_to_clipboard
-    config_path.write_text("copy_to_clipboard = true")
+    config_path.write_text("copy-to-clipboard = true")
     error_code, output = get()
     assert error_code == 0
     assert output.copied_to_clipboard
 
 
-def test_no_copy_cli_option(get, config_path):
-    config_path.write_text("copy_to_clipboard = true")
+def test_copy_cli_option_overrides_config(get, config_path):
+    config_path.write_text("copy-to-clipboard = false")
+    error_code, output = get("--copy-to-clipboard")
+    assert error_code == 0
+    assert output.copied_to_clipboard
+
+
+def test_no_copy_cli_option_overrides_config(get, config_path):
+    config_path.write_text("copy-to-clipboard = true")
     error_code, output = get("--no-copy-to-clipboard")
     assert error_code == 0
     assert not output.copied_to_clipboard
 
 
 @pytest.mark.parametrize("format", (format for format in Format))
-def test_get_output_format_cli_option(get, format: Format):
+def test_format_cli_option(get, format):
     error_code, output = get("--output-format", format.name)
     assert error_code == 0
     assert output.format_code == format.value
 
 
-def test_output_format_config_option(get, config_path):
+@pytest.mark.parametrize("format", (format for format in Format))
+def test_format_config_option(get, config_path, format):
+    config_path.write_text(f'output-format = "{format.name}"')
     error_code, output = get()
     assert error_code == 0
-    assert output.format_code == Format.RELATIVE.value
-    config_path.write_text('output_format = "short-time"')
-    error_code, output = get()
+    assert output.format_code == format.value
+
+
+def test_format_cli_option_overrides_config(get, config_path):
+    config_path.write_text('output-format = "SHORTTIME"')
+    error_code, output = get("--output-format", "RELATIVE")
     assert error_code == 0
-    assert output.format_code == Format.SHORT_TIME.value
-
-
-def test_round_and_precision_config_cli_options(get):
-    error_code, output = get("15jun2025,537pm")
-    assert error_code == 0
-    assert output.timestamp == int(datetime(2025, 6, 15, 17, 37).timestamp())
-
-    error_code, output = get("15jun2025,537pm", "--round", "--precision", "10m")
-    assert error_code == 0
-    assert output.timestamp == datetime(2025, 6, 15, 17, 40).timestamp()
-
-    error_code, output = get("15jun2025,537pm", "--round", "--precision", "3H")
-    assert error_code == 0
-    assert output.timestamp == datetime(2025, 6, 15, 18).timestamp()
-
-
-def test_invalid_precision(get):
-    error_code, output = get()
-    assert error_code == 0
-    assert not output.has_rounding_error
-
-    error_code, output = get("--round", "--precision", "1000")
-    assert error_code == 1
-    assert output.has_rounding_error
-
-    error_code, output = get("--round", "--precision", "60m")
-    assert error_code == 1
-    assert output.has_rounding_error
-
-    error_code, output = get("--round", "--precision", "24h")
-    assert error_code == 1
-    assert output.has_rounding_error
+    assert output.format_code == "R"
 
 
 @freeze_time(now)
-def test_rounding_and_precision_config_options(get, config_path):
-    error_code, output = get()
-    assert error_code == 0
-    assert output.timestamp == int(now.timestamp())
-
-    # The default precision is 10m
+def test_round_cli_option(get):
     error_code, output = get("--round")
     assert error_code == 0
+    # 10m is the default rounding precision.
     assert (
         output.timestamp
         == round.time_to_precision(now, parse.rounding_precision("10m")).timestamp()
     )
 
-    config_path.write_text('round = true\nprecision = "15m"')
+
+@freeze_time(now)
+def test_round_config_option(get, config_path):
+    config_path.write_text("round = true")
     error_code, output = get()
+    assert error_code == 0
+    # 10m is the default rounding precision.
+    assert (
+        output.timestamp
+        == round.time_to_precision(now, parse.rounding_precision("10m")).timestamp()
+    )
+
+
+@freeze_time(now)
+def test_round_cli_option_overrides_config(get, config_path):
+    config_path.write_text("round = false")
+    error_code, output = get("--round")
+    assert error_code == 0
+    # 10m is the default rounding precision.
+    assert (
+        output.timestamp
+        == round.time_to_precision(now, parse.rounding_precision("10m")).timestamp()
+    )
+
+
+@freeze_time(now)
+def test_no_round_cli_option_overrides_config(get, config_path):
+    config_path.write_text("round = true")
+    error_code, output = get("--no-round")
+    assert error_code == 0
+    # 10m is the default rounding precision.
+    assert output.timestamp == now.timestamp()
+
+
+@pytest.mark.parametrize("precision", ["3s", "4m", "12h"])
+@freeze_time(now)
+def test_precision_cli_option(get, precision):
+    error_code, output = get("--round", "--precision", precision)
     assert error_code == 0
     assert (
         output.timestamp
-        == round.time_to_precision(now, parse.rounding_precision("15m")).timestamp()
+        == round.time_to_precision(now, parse.rounding_precision(precision)).timestamp()
     )
+
+
+@freeze_time(now)
+def test_precision_cli_option_overrides_config(get, config_path):
+    config_path.write_text('precision = "3m"')
+    error_code, output = get("--round", "--precision", "12h")
+    assert error_code == 0
+    assert (
+        output.timestamp
+        == round.time_to_precision(now, parse.rounding_precision("12h")).timestamp()
+    )
+
+
+def test_invalid_precision(get):
+    error_code, output = get("--round", "--precision", "24h")
+    assert error_code == 1
+    assert output.has_rounding_error
