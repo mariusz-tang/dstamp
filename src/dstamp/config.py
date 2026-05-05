@@ -12,4 +12,4 @@ APP_NAME = "dstamp"
 
 def get_config_path() -> Path:
     app_dir = platformdirs.user_config_path(APP_NAME, ensure_exists=True)
-    return Path(app_dir) / "config.toml"
+    return app_dir / "config.toml"
