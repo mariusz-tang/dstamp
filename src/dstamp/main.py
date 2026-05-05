@@ -132,7 +132,7 @@ def get_timestamp(
         try:
             pyperclip.copy(output)
             console.info(COPY_SUCCESS_TEXT)
-        except pyperclip.PyperclipException as e:
+        except pyperclip.PyperclipException as e:  # pragma: no cover
             console.error(f"There was a problem with the clipboard manager:{e}")
             return 1
 
