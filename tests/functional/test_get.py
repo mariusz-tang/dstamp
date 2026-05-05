@@ -9,30 +9,22 @@ from datetime import datetime
 import pytest
 from freezegun import freeze_time
 
-from dstamp import main, parse, round
+from dstamp import parse, round
 from dstamp.format import Format
 from tests.utils.parse import DstampGetOutput
 from tests.utils.patched_time import now
 
-Result = namedtuple("Result", ["error_code", "output"])
-
-
-@pytest.fixture
-def app(capsys):
-    def run(*args):
-        error_code = main.app.meta(args, result_action="return_value")
-        output = capsys.readouterr().out
-        return Result(error_code, output)
-
-    return run
+GetResult = namedtuple("GetResult", ["error_code", "output"])
 
 
 @pytest.fixture
 def get(app):
+    """Return an app runner for the get command."""
+
     def run(*args):
         result = app("get", *args)
         output = DstampGetOutput(result.output)
-        return Result(result.error_code, output)
+        return GetResult(result.error_code, output)
 
     return run
 
