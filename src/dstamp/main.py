@@ -24,7 +24,7 @@ COPY_SUCCESS_TEXT = "Copied to clipboard!"
 def launch_with_config_file(
     *tokens: Annotated[str, Parameter(show=False, allow_leading_hyphen=True)],
     config_path: Annotated[Path | None, Parameter("config")] = None,
-) -> None:
+) -> int:
     """
     Launch the application with a config file.
 
@@ -33,7 +33,7 @@ def launch_with_config_file(
     if config_path is None:
         config_path = config.get_config_path()
     app.config = cyclopts.config.Toml(config_path, use_commands_as_keys=False)
-    app(tokens)
+    return app(tokens)
 
 
 @app.command(name="get")
