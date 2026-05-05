@@ -12,7 +12,7 @@ def empty_default_config(monkeypatch):
     Returns the new default config location.
     """
     monkeypatch.setattr(
-        config.platformdirs, "user_config_path", lambda _: EMPTY_CONFIG_PATH
+        config.platformdirs, "user_config_path", lambda *_, **__: EMPTY_CONFIG_PATH
     )
     return EMPTY_CONFIG_PATH
 
