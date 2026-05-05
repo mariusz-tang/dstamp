@@ -44,7 +44,7 @@ def test_offset(raw_input, desired_output):
     ),
 )
 @freeze_time(now)
-def test_datetime(raw_input, desired_output, monkeypatch):
+def test_datetime(raw_input, desired_output):
     assert parse.datetime_string(raw_input) == desired_output
 
 
