@@ -10,7 +10,7 @@ from tests.utils.patched_time import now
 
 
 class GetOutput:
-    """Represents dstamp get command output."""
+    """Represents get command output."""
 
     def __init__(self, raw_output: str):
         lines = raw_output.splitlines()
