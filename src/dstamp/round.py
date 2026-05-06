@@ -68,5 +68,4 @@ def time_to_precision(time: datetime, precision: Precision) -> datetime:
 def _int_to_precision(value: int, precision: int) -> int:
     scaled_value = float(value) / precision
     rounded_scaled_value = int(round(scaled_value))
-    rounded_value = rounded_scaled_value * precision
-    return rounded_value
+    return rounded_scaled_value * precision

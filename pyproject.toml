@@ -68,6 +68,7 @@ select = [
   "I",
   "N",
   "PTH",
+  "RET",
   "RSE",
   "SIM",
   "SLF",

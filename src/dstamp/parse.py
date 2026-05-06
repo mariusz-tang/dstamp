@@ -45,7 +45,7 @@ def offset(raw_offset: str | None) -> timedelta:
 def update_operation(sign: str, subtracting: bool) -> bool:
     if sign == "+":
         return False
-    elif sign == "-":
+    if sign == "-":
         return True
     # If no sign is provided, persist the current operation.
     return subtracting
