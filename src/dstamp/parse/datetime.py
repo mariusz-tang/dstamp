@@ -1,75 +1,9 @@
-"""parse.py
-
-This module contains parsers for datetimes and offsets.
-"""
+"""Provides input parsers for dates and times."""
 
 import datetime as dt
 import re
 
-from dstamp import round
-
-units = {
-    "d": "days",
-    "h": "hours",
-    "m": "minutes",
-    "s": "seconds",
-}
-
-
-def offset(raw_offset: str | None) -> dt.timedelta:
-    """
-    Parse raw_offset into a timedelta.
-
-    Accepts sequences of suboffsets consisting of an optional +/- sign,
-    a count, and a unit. Units are dhms.
-
-    Examples:
-    3d4m
-    3d-2m
-    +43h
-    -2m4s+4s-19m
-    """
-    if raw_offset is None:
-        return dt.timedelta()
-
-    offset = dt.timedelta()
-    subtracting = False
-    matches = re.findall(r"([+-]?)(\d+)([dhms])", raw_offset)
-    for sign, count_str, unit_key in matches:
-        subtracting = update_operation(sign, subtracting)
-        offset += get_suboffset(unit_key, count_str, subtracting)
-
-    return offset
-
-
-def update_operation(sign: str, subtracting: bool) -> bool:
-    if sign == "+":
-        return False
-    if sign == "-":
-        return True
-    # If no sign is provided, persist the current operation.
-    return subtracting
-
-
-def get_suboffset(unit_key: str, count_str: str, subtracting: bool) -> dt.timedelta:
-    unit = units[unit_key]
-    count = int(count_str)
-    if subtracting:
-        count *= -1
-    kwargs = {unit: count}
-    return dt.timedelta(**kwargs)
-
-
-class ParserInputError(ValueError):
-    """Raised when there is a problem with the input received by a parser."""
-
-
-class InvalidFormatError(ParserInputError):
-    """Raised when a parser is provided an improperly-formatted value."""
-
-
-class InvalidValueError(ParserInputError):
-    """Raised when a parser is provided a correctly-formatted but invalid value."""
+from .exceptions import InvalidFormatError, InvalidValueError
 
 
 def datetime(raw_datetime: str | None) -> dt.datetime:
@@ -191,26 +125,3 @@ def get_month_from_shortening(shortening: str) -> int:
         if name.startswith(shortening):
             return ix + 1
     raise InvalidFormatError
-
-
-def rounding_precision(raw_precision: str) -> round.Precision:
-    """Accepts precisions in the form of <value><unit>."""
-    m = re.fullmatch(r"(\d*)([hms])", raw_precision.lower())
-
-    if m is None:
-        raise InvalidFormatError(f"Invalid rounding precision: {raw_precision}.")
-
-    quantity = int(m[1]) if m[1] else 1
-    if m[2] == "h":
-        unit = round.Unit.HOUR
-    elif m[2] == "m":
-        unit = round.Unit.MINUTE
-    else:
-        unit = round.Unit.SECOND
-
-    try:
-        return round.Precision(quantity, unit)
-    except ValueError as e:
-        raise InvalidValueError(
-            f"Invalid rounding precision: {raw_precision}.\n{e}"
-        ) from e
