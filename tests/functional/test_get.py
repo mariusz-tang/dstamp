@@ -1,11 +1,12 @@
 """Functional tests for the get command."""
 
+import re
+
 import pytest
 from freezegun import freeze_time
 
 from dstamp import main, parse, round
 from dstamp.format import Format
-from tests.utils.parse import Timestamp
 from tests.utils.patched_time import now
 
 
@@ -13,7 +14,6 @@ class GetOutput:
     """Represents get command output."""
 
     def __init__(self, raw_output: str):
-        lines = raw_output.splitlines()
         self.has_rounding_error = "Invalid rounding precision:" in raw_output
 
         if self.has_rounding_error:
@@ -21,10 +21,13 @@ class GetOutput:
             # will be displayed.
             return
 
-        timestamp = Timestamp(lines[1])
-        self.timestamp = timestamp.timestamp
-        self.format_code = timestamp.format_code
         self.copied_to_clipboard = main.COPY_SUCCESS_TEXT in raw_output
+
+        lines = raw_output.splitlines()
+        m = re.fullmatch(r"<t:(\d+):([tTdDfFR])>", lines[1])
+        assert m is not None, "No timestamp in output"
+        self.timestamp = int(m[1])
+        self.format_code = m[2]
 
 
 @pytest.fixture
