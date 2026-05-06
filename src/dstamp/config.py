@@ -1,7 +1,4 @@
-"""config.py
-
-This module contains config file utilities.
-"""
+"""Config file utilities."""
 
 from pathlib import Path
 

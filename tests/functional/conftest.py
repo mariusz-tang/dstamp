@@ -1,3 +1,5 @@
+"""Fixtures for the functional tests."""
+
 import pytest
 
 from dstamp import config, main

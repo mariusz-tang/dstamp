@@ -1,8 +1,4 @@
-"""utils/test_timestamp.py
-
-This module provides tests for the Timestamp utility provided by the
-tests.utils.parse module.
-"""
+"""Tests for the Timestamp parsing testing utility."""
 
 import pytest
 

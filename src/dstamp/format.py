@@ -1,7 +1,4 @@
-"""format.py
-
-This module provides tools for formatting datetimes for dstamp output.
-"""
+"""Formatting utilities."""
 
 from datetime import datetime
 from enum import StrEnum

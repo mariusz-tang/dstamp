@@ -1,7 +1,4 @@
-"""functional/test_get.py
-
-This module contains functional tests for the dstamp get command.
-"""
+"""Functional tests for the get command."""
 
 import pytest
 from freezegun import freeze_time

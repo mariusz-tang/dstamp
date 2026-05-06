@@ -1,7 +1,4 @@
-"""main.py
-
-This module contains the commands provided by dstamp.
-"""
+"""CLI commands."""
 
 from datetime import datetime, timedelta
 from pathlib import Path

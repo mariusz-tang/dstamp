@@ -1,7 +1,4 @@
-"""utils/parse.py
-
-This module provides utility classes for parsing dstamp output.
-"""
+"""Provides the output timestamp parsing utility."""
 
 import re
 

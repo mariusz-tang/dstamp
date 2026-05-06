@@ -1,7 +1,4 @@
-"""console.py
-
-This module contains functions for printing to the console.
-"""
+"""Console printing utilities."""
 
 from rich.console import Console
 

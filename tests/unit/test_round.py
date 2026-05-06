@@ -1,7 +1,4 @@
-"""unit/test_round.py
-
-This module contains unit tests for the dstamp.round module.
-"""
+"""Tests for dstamp.round."""
 
 from datetime import timedelta
 

@@ -1,7 +1,4 @@
-"""unit/test_format.py
-
-This module contains unit tests for the dstamp.format module.
-"""
+"""Tests for dstamp.format."""
 
 import datetime
 
