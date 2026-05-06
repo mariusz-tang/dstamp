@@ -6,7 +6,9 @@ import pytest
 from freezegun import freeze_time
 
 from dstamp import parse, round
-from tests.utils.patched_time import now, today
+
+NOW = datetime(2025, 1, 2, 12, 53, 42)
+TODAY = NOW.date()
 
 
 @pytest.mark.parametrize(
@@ -28,19 +30,19 @@ def test_offset(raw_input, desired_output):
     (
         ("12june2024", datetime(2024, 6, 12)),
         ("24aug2000,midnight", datetime(2000, 8, 24)),
-        ("", now),
-        ("today,now", now),
-        ("now", now),
-        ("tmrw,7pm", datetime.combine(today + timedelta(days=1), time(19))),
-        ("yesterday,noon", datetime.combine(today - timedelta(days=1), time(12))),
-        ("830pm", datetime.combine(today, time(20, 30))),
-        ("200943", datetime.combine(today, time(20, 9, 43))),
-        ("4jan,1am", datetime.combine(date(today.year, 1, 4), time(1))),
-        ("12pm", datetime.combine(today, time(12))),
-        ("12am", datetime.combine(today, time(0))),
+        ("", NOW),
+        ("today,now", NOW),
+        ("now", NOW),
+        ("tmrw,7pm", datetime.combine(TODAY + timedelta(days=1), time(19))),
+        ("yesterday,noon", datetime.combine(TODAY - timedelta(days=1), time(12))),
+        ("830pm", datetime.combine(TODAY, time(20, 30))),
+        ("200943", datetime.combine(TODAY, time(20, 9, 43))),
+        ("4jan,1am", datetime.combine(date(TODAY.year, 1, 4), time(1))),
+        ("12pm", datetime.combine(TODAY, time(12))),
+        ("12am", datetime.combine(TODAY, time(0))),
     ),
 )
-@freeze_time(now)
+@freeze_time(NOW)
 def test_datetime(raw_input, desired_output):
     assert parse.datetime(raw_input) == desired_output
 
@@ -70,7 +72,7 @@ def test_datetime_invalid_datetime(input):
         ("3S", 3, round.Unit.SECOND),
     ),
 )
-@freeze_time(now)
+@freeze_time(NOW)
 def test_rounding_precision(raw_input, quantity, unit):
     precision = parse.rounding_precision(raw_input)
     assert precision.quantity == quantity

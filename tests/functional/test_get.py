@@ -1,13 +1,15 @@
 """Functional tests for the get command."""
 
 import re
+from datetime import datetime
 
 import pytest
 from freezegun import freeze_time
 
 from dstamp import main, parse, round
 from dstamp.format import Format
-from tests.utils.patched_time import now
+
+NOW = datetime(2025, 1, 2, 12, 53, 42)
 
 
 class GetOutput:
@@ -41,12 +43,12 @@ def get(app):
     return run
 
 
-@freeze_time(now)
+@freeze_time(NOW)
 def test_defaults(get):
     error_code, output = get()
     assert error_code == 0
     assert not output.has_rounding_error
-    assert output.timestamp == now.timestamp()
+    assert output.timestamp == NOW.timestamp()
     assert output.format_code == Format.RELATIVE.value
     assert not output.copied_to_clipboard
 
@@ -100,18 +102,18 @@ def test_format_cli_option_overrides_config(get, config_path):
     assert output.format_code == "R"
 
 
-@freeze_time(now)
+@freeze_time(NOW)
 def test_round_cli_option(get):
     error_code, output = get("--round")
     assert error_code == 0
     # 10m is the default rounding precision.
     assert (
         output.timestamp
-        == round.time_to_precision(now, parse.rounding_precision("10m")).timestamp()
+        == round.time_to_precision(NOW, parse.rounding_precision("10m")).timestamp()
     )
 
 
-@freeze_time(now)
+@freeze_time(NOW)
 def test_round_config_option(get, config_path):
     config_path.write_text("round = true")
     error_code, output = get()
@@ -119,11 +121,11 @@ def test_round_config_option(get, config_path):
     # 10m is the default rounding precision.
     assert (
         output.timestamp
-        == round.time_to_precision(now, parse.rounding_precision("10m")).timestamp()
+        == round.time_to_precision(NOW, parse.rounding_precision("10m")).timestamp()
     )
 
 
-@freeze_time(now)
+@freeze_time(NOW)
 def test_round_cli_option_overrides_config(get, config_path):
     config_path.write_text("round = false")
     error_code, output = get("--round")
@@ -131,38 +133,38 @@ def test_round_cli_option_overrides_config(get, config_path):
     # 10m is the default rounding precision.
     assert (
         output.timestamp
-        == round.time_to_precision(now, parse.rounding_precision("10m")).timestamp()
+        == round.time_to_precision(NOW, parse.rounding_precision("10m")).timestamp()
     )
 
 
-@freeze_time(now)
+@freeze_time(NOW)
 def test_no_round_cli_option_overrides_config(get, config_path):
     config_path.write_text("round = true")
     error_code, output = get("--no-round")
     assert error_code == 0
     # 10m is the default rounding precision.
-    assert output.timestamp == now.timestamp()
+    assert output.timestamp == NOW.timestamp()
 
 
 @pytest.mark.parametrize("precision", ["3s", "4m", "12h"])
-@freeze_time(now)
+@freeze_time(NOW)
 def test_precision_cli_option(get, precision):
     error_code, output = get("--round", "--precision", precision)
     assert error_code == 0
     assert (
         output.timestamp
-        == round.time_to_precision(now, parse.rounding_precision(precision)).timestamp()
+        == round.time_to_precision(NOW, parse.rounding_precision(precision)).timestamp()
     )
 
 
-@freeze_time(now)
+@freeze_time(NOW)
 def test_precision_cli_option_overrides_config(get, config_path):
     config_path.write_text('precision = "3m"')
     error_code, output = get("--round", "--precision", "12h")
     assert error_code == 0
     assert (
         output.timestamp
-        == round.time_to_precision(now, parse.rounding_precision("12h")).timestamp()
+        == round.time_to_precision(NOW, parse.rounding_precision("12h")).timestamp()
     )
 
 

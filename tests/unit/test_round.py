@@ -1,17 +1,17 @@
 """Tests for dstamp.round."""
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 import pytest
 
 from dstamp import parse, round
-from tests.utils.patched_time import now
 
+NOW = datetime(2025, 1, 2, 12, 53, 42)
 ONE_DAY = timedelta(days=1)
 
 
 def time(hour: int, minute: int, second: int, microsecond: int = 0):
-    return now.replace(hour=hour, minute=minute, second=second, microsecond=microsecond)
+    return NOW.replace(hour=hour, minute=minute, second=second, microsecond=microsecond)
 
 
 @pytest.mark.parametrize(
