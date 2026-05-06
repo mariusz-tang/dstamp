@@ -110,7 +110,7 @@ def get_timestamp(
     :param precision: The precision to which TIME will be rounded if ROUND is
     specified.
     """
-    time: datetime = parse.datetime_string(time)
+    time: datetime = parse.datetime(time)
     offset: timedelta = parse.offset(offset)
     target_time = time + offset
 

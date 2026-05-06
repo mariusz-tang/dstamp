@@ -45,7 +45,7 @@ def test_offset(raw_input, desired_output):
 )
 @freeze_time(now)
 def test_datetime(raw_input, desired_output):
-    assert parse.datetime_string(raw_input) == desired_output
+    assert parse.datetime(raw_input) == desired_output
 
 
 @pytest.mark.parametrize(
@@ -53,13 +53,13 @@ def test_datetime(raw_input, desired_output):
 )
 def test_datetime_invalid_format(input):
     with pytest.raises(parse.InvalidFormatError):
-        parse.datetime_string(input)
+        parse.datetime(input)
 
 
 @pytest.mark.parametrize("input", ("2500", "32jan2024", "166", "1jan2001,13066pm"))
 def test_datetime_invalid_datetime(input):
     with pytest.raises(parse.InvalidValueError):
-        parse.datetime_string(input)
+        parse.datetime(input)
 
 
 @pytest.mark.parametrize(

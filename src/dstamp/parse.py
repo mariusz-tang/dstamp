@@ -3,8 +3,8 @@
 This module contains parsers for datetimes and offsets.
 """
 
+import datetime as dt
 import re
-from datetime import date, datetime, time, timedelta
 
 from dstamp import round
 
@@ -16,7 +16,7 @@ units = {
 }
 
 
-def offset(raw_offset: str | None) -> timedelta:
+def offset(raw_offset: str | None) -> dt.timedelta:
     """
     Parse raw_offset into a timedelta.
 
@@ -30,9 +30,9 @@ def offset(raw_offset: str | None) -> timedelta:
     -2m4s+4s-19m
     """
     if raw_offset is None:
-        return timedelta()
+        return dt.timedelta()
 
-    offset = timedelta()
+    offset = dt.timedelta()
     subtracting = False
     matches = re.findall(r"([+-]?)(\d+)([dhms])", raw_offset)
     for sign, count_str, unit_key in matches:
@@ -51,13 +51,13 @@ def update_operation(sign: str, subtracting: bool) -> bool:
     return subtracting
 
 
-def get_suboffset(unit_key: str, count_str: str, subtracting: bool) -> timedelta:
+def get_suboffset(unit_key: str, count_str: str, subtracting: bool) -> dt.timedelta:
     unit = units[unit_key]
     count = int(count_str)
     if subtracting:
         count *= -1
     kwargs = {unit: count}
-    return timedelta(**kwargs)
+    return dt.timedelta(**kwargs)
 
 
 class ParserInputError(ValueError):
@@ -72,7 +72,7 @@ class InvalidValueError(ParserInputError):
     """Raised when a parser is provided a correctly-formatted but invalid value."""
 
 
-def datetime_string(raw_datetime: str | None) -> datetime:
+def datetime(raw_datetime: str | None) -> dt.datetime:
     """
     Parse raw_datetime into a datetime.
 
@@ -94,32 +94,32 @@ def datetime_string(raw_datetime: str | None) -> datetime:
     midnight
     """
     if raw_datetime is None or raw_datetime == "":
-        return datetime.now()
+        return dt.datetime.now()
     # Ensure there is both a date and time supplied.
     if (x := raw_datetime.count(",")) == 0:
         try:
-            return datetime_string("today," + raw_datetime)
+            return datetime("today," + raw_datetime)
         except InvalidFormatError:
-            return datetime_string(raw_datetime + ",midnight")
+            return datetime(raw_datetime + ",midnight")
     elif x >= 2:
         raise InvalidFormatError
 
     datestr, timestr = raw_datetime.split(",")
-    parsed_date = parse_date(datestr)
-    parsed_time = parse_time(timestr)
-    timezone = datetime.now().tzinfo
-    return datetime.combine(parsed_date, parsed_time, timezone)
+    parsed_date = date(datestr)
+    parsed_time = time(timestr)
+    timezone = dt.datetime.now().tzinfo
+    return dt.datetime.combine(parsed_date, parsed_time, timezone)
 
 
-def parse_date(datestr: str) -> date:
+def date(datestr: str) -> dt.date:
     if datestr == "today":
-        return date.today()
+        return dt.date.today()
 
     if datestr in ("tmrw", "tomorrow"):
-        return date.today() + timedelta(days=1)
+        return dt.date.today() + dt.timedelta(days=1)
 
     if datestr == "yesterday":
-        return date.today() - timedelta(days=1)
+        return dt.date.today() - dt.timedelta(days=1)
 
     m = re.fullmatch(r"(\d{1,2})([a-zA-Z]{3,})(\d*)", datestr)
     if m is None:
@@ -127,23 +127,23 @@ def parse_date(datestr: str) -> date:
 
     day = int(m[1])
     month = get_month_from_shortening(m[2].lower())
-    year = int(m[3]) if m[3] else date.today().year
+    year = int(m[3]) if m[3] else dt.date.today().year
 
     try:
-        return date(year, month, day)
+        return dt.date(year, month, day)
     except ValueError as e:
         raise InvalidValueError from e
 
 
-def parse_time(timestr: str) -> time:
+def time(timestr: str) -> dt.time:
     if timestr == "now":
-        return datetime.now().time()
+        return dt.datetime.now().time()
 
     if timestr == "midnight":
-        return time()
+        return dt.time()
 
     if timestr == "noon":
-        return time(12)
+        return dt.time(12)
 
     m = re.fullmatch(r"(\d{1,2}?)(\d{2})?(\d{2})?([ap]m)?", timestr)
     if m is None:
@@ -164,7 +164,7 @@ def parse_time(timestr: str) -> time:
         hour = 0
 
     try:
-        return time(hour, minute, second)
+        return dt.time(hour, minute, second)
     except ValueError as e:
         raise InvalidValueError from e
 
