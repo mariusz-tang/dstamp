@@ -1,7 +1,7 @@
 """Functional tests for the get command."""
 
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
 from freezegun import freeze_time
@@ -51,6 +51,47 @@ def test_defaults(get):
     assert output.timestamp == NOW.timestamp()
     assert output.format_code == Format.RELATIVE.value
     assert not output.copied_to_clipboard
+
+
+@pytest.mark.parametrize(
+    "time,expected_datetime",
+    [
+        ("20mar2026,4pm", datetime(2026, 3, 20, 16)),
+        ("20", NOW.replace(hour=20, minute=0, second=0)),
+        ("tmrw", NOW.replace(hour=0, minute=0, second=0) + timedelta(1)),
+        ("yesterday,now", NOW - timedelta(1)),
+    ],
+)
+@freeze_time(NOW)
+def test_time_argument(get, time, expected_datetime):
+    error_code, output = get(time)
+    assert error_code == 0
+    assert output.timestamp == expected_datetime.timestamp()
+
+
+@pytest.mark.parametrize(
+    "offset,expected_timedelta",
+    [
+        ("2d", timedelta(2)),
+        ("1m", timedelta(minutes=1)),
+        ("2d-3m", timedelta(2, minutes=-3)),
+    ],
+)
+@freeze_time(NOW)
+def test_offset_cli_option(get, offset, expected_timedelta):
+    error_code, output = get("--offset", offset)
+    assert error_code == 0
+    assert output.timestamp == (NOW + expected_timedelta).timestamp()
+
+
+@freeze_time(NOW)
+def test_offset_cli_option_negative(get):
+    # Values beginning with - don't work without the = notation.
+    # This is not a test for that fact, it's just testing that values beginning
+    # with - are interpretted correctly at all.
+    error_code, output = get("--offset=-5s")
+    assert error_code == 0
+    assert output.timestamp == (NOW + timedelta(seconds=-5)).timestamp()
 
 
 def test_copy_to_clipboard_cli_option(get):
