@@ -39,13 +39,13 @@ def datetime(raw_datetime: str | None) -> dt.datetime:
         raise InvalidFormatError
 
     datestr, timestr = raw_datetime.split(",")
-    parsed_date = date(datestr)
-    parsed_time = time(timestr)
+    parsed_date = _date(datestr)
+    parsed_time = _time(timestr)
     timezone = dt.datetime.now().tzinfo
     return dt.datetime.combine(parsed_date, parsed_time, timezone)
 
 
-def date(datestr: str) -> dt.date:
+def _date(datestr: str) -> dt.date:
     if datestr == "today":
         return dt.date.today()
 
@@ -60,7 +60,7 @@ def date(datestr: str) -> dt.date:
         raise InvalidFormatError
 
     day = int(m[1])
-    month = get_month_from_shortening(m[2].lower())
+    month = _get_month_from_shortening(m[2].lower())
     year = int(m[3]) if m[3] else dt.date.today().year
 
     try:
@@ -69,7 +69,7 @@ def date(datestr: str) -> dt.date:
         raise InvalidValueError from e
 
 
-def time(timestr: str) -> dt.time:
+def _time(timestr: str) -> dt.time:
     if timestr == "now":
         return dt.datetime.now().time()
 
@@ -103,7 +103,7 @@ def time(timestr: str) -> dt.time:
         raise InvalidValueError from e
 
 
-months = [
+_months = [
     "january",
     "february",
     "march",
@@ -119,9 +119,9 @@ months = [
 ]
 
 
-def get_month_from_shortening(shortening: str) -> int:
+def _get_month_from_shortening(shortening: str) -> int:
     """Returns the index of the first month which starts with the given string."""
-    for ix, name in enumerate(months):
+    for ix, name in enumerate(_months):
         if name.startswith(shortening):
             return ix + 1
     raise InvalidFormatError

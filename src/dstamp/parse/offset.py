@@ -3,7 +3,7 @@
 import datetime as dt
 import re
 
-units = {
+_units = {
     "d": "days",
     "h": "hours",
     "m": "minutes",
@@ -31,13 +31,13 @@ def offset(raw_offset: str | None) -> dt.timedelta:
     subtracting = False
     matches = re.findall(r"([+-]?)(\d+)([dhms])", raw_offset)
     for sign, count_str, unit_key in matches:
-        subtracting = update_operation(sign, subtracting)
-        offset += get_suboffset(unit_key, count_str, subtracting)
+        subtracting = _update_operation(sign, subtracting)
+        offset += _get_suboffset(unit_key, count_str, subtracting)
 
     return offset
 
 
-def update_operation(sign: str, subtracting: bool) -> bool:
+def _update_operation(sign: str, subtracting: bool) -> bool:
     if sign == "+":
         return False
     if sign == "-":
@@ -46,8 +46,8 @@ def update_operation(sign: str, subtracting: bool) -> bool:
     return subtracting
 
 
-def get_suboffset(unit_key: str, count_str: str, subtracting: bool) -> dt.timedelta:
-    unit = units[unit_key]
+def _get_suboffset(unit_key: str, count_str: str, subtracting: bool) -> dt.timedelta:
+    unit = _units[unit_key]
     count = int(count_str)
     if subtracting:
         count *= -1
