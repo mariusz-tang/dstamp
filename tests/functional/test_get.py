@@ -102,15 +102,16 @@ def test_format_cli_option_overrides_config(get, config_path):
     assert output.format_code == "R"
 
 
+def round_time(time, raw_precision):
+    return round.time_to_precision(time, parse.rounding_precision(raw_precision))
+
+
 @freeze_time(NOW)
 def test_round_cli_option(get):
     error_code, output = get("--round")
     assert error_code == 0
     # 10m is the default rounding precision.
-    assert (
-        output.timestamp
-        == round.time_to_precision(NOW, parse.rounding_precision("10m")).timestamp()
-    )
+    assert output.timestamp == round_time(NOW, "10m").timestamp()
 
 
 @freeze_time(NOW)
@@ -119,10 +120,7 @@ def test_round_config_option(get, config_path):
     error_code, output = get()
     assert error_code == 0
     # 10m is the default rounding precision.
-    assert (
-        output.timestamp
-        == round.time_to_precision(NOW, parse.rounding_precision("10m")).timestamp()
-    )
+    assert output.timestamp == round_time(NOW, "10m").timestamp()
 
 
 @freeze_time(NOW)
@@ -131,10 +129,7 @@ def test_round_cli_option_overrides_config(get, config_path):
     error_code, output = get("--round")
     assert error_code == 0
     # 10m is the default rounding precision.
-    assert (
-        output.timestamp
-        == round.time_to_precision(NOW, parse.rounding_precision("10m")).timestamp()
-    )
+    assert output.timestamp == round_time(NOW, "10m").timestamp()
 
 
 @freeze_time(NOW)
@@ -151,10 +146,7 @@ def test_no_round_cli_option_overrides_config(get, config_path):
 def test_precision_cli_option(get, precision):
     error_code, output = get("--round", "--precision", precision)
     assert error_code == 0
-    assert (
-        output.timestamp
-        == round.time_to_precision(NOW, parse.rounding_precision(precision)).timestamp()
-    )
+    assert output.timestamp == round_time(NOW, precision).timestamp()
 
 
 @freeze_time(NOW)
@@ -162,10 +154,7 @@ def test_precision_cli_option_overrides_config(get, config_path):
     config_path.write_text('precision = "3m"')
     error_code, output = get("--round", "--precision", "12h")
     assert error_code == 0
-    assert (
-        output.timestamp
-        == round.time_to_precision(NOW, parse.rounding_precision("12h")).timestamp()
-    )
+    assert output.timestamp == round_time(NOW, "12h").timestamp()
 
 
 def test_invalid_precision(get):
