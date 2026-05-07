@@ -67,6 +67,7 @@ select = [
   "FURB",
   "I",
   "N",
+  "PT",
   "PTH",
   "RET",
   "RSE",
@@ -76,3 +77,4 @@ select = [
   "W",
 ]
 per-file-ignores = { "tests/**" = ["ANN"] }
+flake8-pytest-style.parametrize-names-type = "csv"

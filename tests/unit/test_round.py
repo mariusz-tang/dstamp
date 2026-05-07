@@ -16,7 +16,7 @@ def time(hour: int, minute: int, second: int, microsecond: int = 0):
 
 @pytest.mark.parametrize(
     "raw_time,precision,desired_output",
-    (
+    [
         # The missing ones are weird of the crude implementation of the
         # function being tested. This should be fixed in the future.
         (time(12, 0, 0), "1m", time(12, 0, 0)),
@@ -39,7 +39,7 @@ def time(hour: int, minute: int, second: int, microsecond: int = 0):
         # (time(14, 36, 49, 689), "s", time(14, 36, 50)),
         (time(14, 36, 49, 249), "5s", time(14, 36, 50)),
         (time(14, 36, 49, 249), "4s", time(14, 36, 48)),
-    ),
+    ],
 )
 def test_round(raw_time, precision, desired_output):
     assert (
