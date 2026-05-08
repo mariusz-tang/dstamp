@@ -73,8 +73,10 @@ select = [
   "RSE",
   "SIM",
   "SLF",
+  "TRY",
   "UP",
   "W",
 ]
+ignore = ["TRY003"]  # This rule is too strict.
 per-file-ignores = { "tests/**" = ["ANN"] }
 flake8-pytest-style.parametrize-names-type = "csv"
