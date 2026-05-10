@@ -3,6 +3,8 @@
 import datetime as dt
 import re
 
+from .exceptions import InvalidFormatError
+
 _units = {
     "d": "days",
     "h": "hours",
@@ -29,7 +31,12 @@ def offset(raw_offset: str | None) -> dt.timedelta:
 
     offset = dt.timedelta()
     subtracting = False
-    matches = re.findall(r"([+-]?)(\d+)([dhms])", raw_offset)
+
+    pattern = r"([+-]?)(\d+)([dhms])"
+    if not re.fullmatch(rf"({pattern})+", raw_offset):
+        raise InvalidFormatError
+
+    matches = re.findall(pattern, raw_offset)
     for sign, count_str, unit_key in matches:
         subtracting = _update_operation(sign, subtracting)
         offset += _get_suboffset(unit_key, count_str, subtracting)

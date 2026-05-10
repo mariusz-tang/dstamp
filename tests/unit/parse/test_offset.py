@@ -19,3 +19,9 @@ from dstamp import parse
 )
 def test_offset(raw_input, desired_output):
     assert parse.offset(raw_input) == desired_output
+
+
+@pytest.mark.parametrize("raw_input", ["10g", "--", "--20g", "--4012m", "m", "20s20"])
+def test_invalid_input(raw_input):
+    with pytest.raises(parse.InvalidFormatError):
+        parse.offset(raw_input)

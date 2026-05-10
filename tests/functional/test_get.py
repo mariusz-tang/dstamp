@@ -114,6 +114,12 @@ def test_offset_cli_option_negative(get):
     assert output.timestamp == (NOW + timedelta(seconds=-5)).timestamp()
 
 
+def test_invalid_offset(get):
+    error_code, output = get("--offset=10g")
+    assert error_code == 1
+    assert output.has_offset_error
+
+
 def test_copy_to_clipboard_cli_option(get):
     error_code, output = get("--copy-to-clipboard")
     assert error_code == 0
