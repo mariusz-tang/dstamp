@@ -16,8 +16,20 @@ class GetOutput:
     """Represents get command output."""
 
     def __init__(self, raw_output: str):
-        self.has_rounding_error = "Invalid rounding precision:" in raw_output
+        self.has_datetime_error = (
+            "could not be parsed as a datetime" in raw_output
+            or "invalid datetime" in raw_output
+        )
+        self.has_offset_error = (
+            "could not be parsed as a offset" in raw_output
+            or "invalid offset" in raw_output
+        )
+        if self.has_datetime_error or self.has_offset_error:
+            # Either of these means the program aborted so no other information
+            # will be displayed.
+            return
 
+        self.has_rounding_error = "Invalid rounding precision:" in raw_output
         if self.has_rounding_error:
             # Rounding error means the program aborted so no other information
             # will be displayed.
@@ -47,6 +59,8 @@ def get(app):
 def test_defaults(get):
     error_code, output = get()
     assert error_code == 0
+    assert not output.has_datetime_error
+    assert not output.has_offset_error
     assert not output.has_rounding_error
     assert output.timestamp == NOW.timestamp()
     assert output.format_code == Format.RELATIVE.value
@@ -67,6 +81,12 @@ def test_time_argument(get, time, expected_datetime):
     error_code, output = get(time)
     assert error_code == 0
     assert output.timestamp == expected_datetime.timestamp()
+
+
+def test_invalid_time(get):
+    error_code, output = get("25pm")
+    assert error_code == 1
+    assert output.has_datetime_error
 
 
 @pytest.mark.parametrize(

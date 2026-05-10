@@ -1,6 +1,6 @@
 """CLI commands."""
 
-from datetime import datetime, timedelta
+from collections.abc import Callable
 from pathlib import Path
 from typing import Annotated
 
@@ -107,9 +107,13 @@ def get_timestamp(
     :param precision: The precision to which TIME will be rounded if ROUND is
     specified.
     """
-    time: datetime = parse.datetime(time)
-    offset: timedelta = parse.offset(offset)
-    target_time = time + offset
+    time_obj = try_parse(parse.datetime, time, "datetime")
+    time_delta = try_parse(parse.offset, offset, "offset")
+
+    if time_obj is None or time_delta is None:
+        return 1
+
+    time_obj = time_delta + time_obj
 
     if round:
         try:
@@ -117,12 +121,12 @@ def get_timestamp(
         except parse.ParserInputError as e:
             console.error(str(e))
             return 1
-        target_time = time_to_precision(target_time, precision)
+        time_obj = time_to_precision(time_obj, precision)
 
-    output = format.convert_to_discord_format(target_time, output_format)
+    output = format.convert_to_discord_format(time_obj, output_format)
 
     one_second = parse.rounding_precision("1s")
-    console.info(f"Using time: {time_to_precision(target_time, one_second)}.")
+    console.info(f"Using time: {time_to_precision(time_obj, one_second)}.")
     console.print(output)
 
     if copy_to_clipboard:
@@ -134,3 +138,25 @@ def get_timestamp(
             return 1
 
     return 0
+
+
+def try_parse[T](
+    parser: Callable[[str | None], T], raw_input: str | None, quantity_type: str
+) -> T | None:
+    """Attempt to parse a quantity, printing an error message on failure.
+
+    :param parser: Parsing function to use.
+    :param raw_input: Input string to parse.
+    :param quantity_type: Type of quantity being parsed. Used in the error
+    message.
+
+    :returns: The parsed quantity, or None on failure.
+    """
+    try:
+        return parser(raw_input)
+    except parse.InvalidFormatError:
+        console.error(f"{raw_input} could not be parsed as a {quantity_type}.")
+    except parse.InvalidValueError:
+        console.error(f"{raw_input} represents an invalid {quantity_type}.")
+
+    return None
