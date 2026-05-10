@@ -57,26 +57,26 @@ addopts = ["--import-mode=importlib"]
 
 [tool.ruff.lint]
 select = [
-  "ANN",
-  "ARG",
-  "B",
-  "C4",
-  "C90",
-  "E",
-  "F",
-  "FURB",
-  "I",
-  "N",
-  "PT",
-  "PTH",
-  "RET",
-  "RSE",
-  "SIM",
-  "SLF",
-  "TRY",
-  "UP",
-  "W",
+  "ANN",  # flake8-annotations
+  "ARG",  # flake8-unused-arguments
+  "B",  # flake8-bugbear
+  "C4",  # flake8-comprehensions
+  "C90",  # mccabe
+  "E",  # pycodestyle error
+  "F",  # pyflakes
+  "FURB",  # refurb
+  "I",  # isort
+  "N",  # pep8-naming
+  "PT",  # flake8-pytest-style
+  "PTH",  # flake8-use-pathlib
+  "RET",  # flake8-return
+  "RSE",  # flake8-raise
+  "SIM",  # flake8-simplify
+  "SLF",  # flake8-self
+  "TRY",  # tryceratops
+  "UP",  # pyupgrade
+  "W",  # pycodestyle warning
 ]
-ignore = ["TRY003"]  # This rule is too strict.
+ignore = ["TRY003"]  # This rule is too strict, especially for ValueError.
 per-file-ignores = { "tests/**" = ["ANN"] }
 flake8-pytest-style.parametrize-names-type = "csv"
