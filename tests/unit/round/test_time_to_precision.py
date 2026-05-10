@@ -6,7 +6,7 @@ import pytest
 
 from dstamp.round import Precision, Unit, time_to_precision
 
-NOW = datetime(2025, 1, 2, 12, 53, 42)
+NOW = datetime(2025, 1, 2, 12, 53, 42, 231)
 ONE_DAY = timedelta(days=1)
 
 

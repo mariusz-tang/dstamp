@@ -28,7 +28,7 @@ def datetime(raw_datetime: str | None) -> dt.datetime:
     midnight
     """
     if raw_datetime is None or raw_datetime == "":
-        return dt.datetime.now()
+        return dt.datetime.now().replace(microsecond=0)
     # Ensure there is both a date and time supplied.
     if (x := raw_datetime.count(",")) == 0:
         try:
@@ -40,7 +40,7 @@ def datetime(raw_datetime: str | None) -> dt.datetime:
 
     datestr, timestr = raw_datetime.split(",")
     parsed_date = _date(datestr)
-    parsed_time = _time(timestr)
+    parsed_time = _time(timestr).replace(microsecond=0)
     timezone = dt.datetime.now().tzinfo
     return dt.datetime.combine(parsed_date, parsed_time, timezone)
 

@@ -7,7 +7,7 @@ from freezegun import freeze_time
 
 from dstamp import parse, round
 
-NOW = datetime(2025, 1, 2, 12, 53, 42)
+NOW = datetime(2025, 1, 2, 12, 53, 42, 123)
 
 
 @pytest.mark.parametrize(

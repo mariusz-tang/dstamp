@@ -9,7 +9,8 @@ from freezegun import freeze_time
 from dstamp import main, parse, round
 from dstamp.format import Format
 
-NOW = datetime(2025, 1, 2, 12, 53, 42)
+NOW = datetime(2025, 1, 2, 12, 53, 42, 12)
+NOW_ROUNDED = NOW.replace(microsecond=0)
 
 
 class GetOutput:
@@ -62,7 +63,7 @@ def test_defaults(get):
     assert not output.has_datetime_error
     assert not output.has_offset_error
     assert not output.has_rounding_error
-    assert output.timestamp == NOW.timestamp()
+    assert output.timestamp == NOW_ROUNDED.timestamp()
     assert output.format_code == Format.RELATIVE.value
     assert not output.copied_to_clipboard
 
@@ -71,9 +72,9 @@ def test_defaults(get):
     "time,expected_datetime",
     [
         ("20mar2026,4pm", datetime(2026, 3, 20, 16)),
-        ("20", NOW.replace(hour=20, minute=0, second=0)),
-        ("tmrw", NOW.replace(hour=0, minute=0, second=0) + timedelta(1)),
-        ("yesterday,now", NOW - timedelta(1)),
+        ("20", NOW_ROUNDED.replace(hour=20, minute=0, second=0)),
+        ("tmrw", NOW_ROUNDED.replace(hour=0, minute=0, second=0) + timedelta(1)),
+        ("yesterday,now", NOW_ROUNDED - timedelta(1)),
     ],
 )
 @freeze_time(NOW)
@@ -101,7 +102,7 @@ def test_invalid_time(get):
 def test_offset_cli_option(get, offset, expected_timedelta):
     error_code, output = get("--offset", offset)
     assert error_code == 0
-    assert output.timestamp == (NOW + expected_timedelta).timestamp()
+    assert output.timestamp == (NOW_ROUNDED + expected_timedelta).timestamp()
 
 
 @freeze_time(NOW)
@@ -111,7 +112,7 @@ def test_offset_cli_option_negative(get):
     # with - are interpretted correctly at all.
     error_code, output = get("--offset=-5s")
     assert error_code == 0
-    assert output.timestamp == (NOW + timedelta(seconds=-5)).timestamp()
+    assert output.timestamp == (NOW_ROUNDED + timedelta(seconds=-5)).timestamp()
 
 
 def test_invalid_offset(get):
@@ -205,7 +206,7 @@ def test_no_round_cli_option_overrides_config(get, config_path):
     error_code, output = get("--no-round")
     assert error_code == 0
     # 10m is the default rounding precision.
-    assert output.timestamp == NOW.timestamp()
+    assert output.timestamp == NOW_ROUNDED.timestamp()
 
 
 @pytest.mark.parametrize("precision", ["3s", "4m", "12h"])

@@ -7,7 +7,8 @@ from freezegun import freeze_time
 
 from dstamp import parse
 
-NOW = datetime(2025, 1, 2, 12, 53, 42)
+NOW = datetime(2025, 1, 2, 12, 53, 42, 213)
+NOW_ROUNDED = NOW.replace(microsecond=0)
 TODAY = NOW.date()
 
 
@@ -33,7 +34,7 @@ def test_date_only(raw_input, desired_date):
     "raw_input,desired_time",
     [
         # Keywords.
-        ("now", NOW.time()),
+        ("now", NOW_ROUNDED.time()),
         ("noon", time(12)),
         ("midnight", time()),
         # Hour only.
@@ -59,19 +60,19 @@ def test_time_only_assumes_today(raw_input, desired_time):
 
 @freeze_time(NOW)
 def test_empty_string_returns_now():
-    assert parse.datetime("") == NOW
+    assert parse.datetime("") == NOW_ROUNDED
 
 
 @freeze_time(NOW)
 def test_none_returns_now():
-    assert parse.datetime(None) == NOW
+    assert parse.datetime(None) == NOW_ROUNDED
 
 
 @pytest.mark.parametrize(
     "raw_input,desired_output",
     [
         ("24aug2000,midnight", datetime(2000, 8, 24)),
-        ("today,now", NOW),
+        ("today,now", NOW_ROUNDED),
         ("tmrw,7pm", datetime.combine(TODAY + timedelta(days=1), time(19))),
         ("yesterday,noon", datetime.combine(TODAY - timedelta(days=1), time(12))),
         ("4jan,1am", datetime.combine(date(TODAY.year, 1, 4), time(1))),
