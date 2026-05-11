@@ -123,7 +123,7 @@ def get_timestamp(
             return 1
         time_obj = time_to_precision(time_obj, precision)
 
-    output = format.convert_to_discord_format(time_obj, output_format)
+    output = format.discord(time_obj, output_format)
 
     one_second = parse.rounding_precision("1s")
     console.info(f"Using time: {time_to_precision(time_obj, one_second)}.")

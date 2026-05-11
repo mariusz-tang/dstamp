@@ -14,7 +14,7 @@ class Format(StrEnum):
     RELATIVE = "R"
 
 
-def convert_to_discord_format(time: datetime, format: Format) -> str:
+def discord(time: datetime, format: Format) -> str:
     """Convert a datetime object into a Discord-friendly timestamp."""
     timestamp = int(time.timestamp())
     return f"<t:{timestamp}:{format.value}>"

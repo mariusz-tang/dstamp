@@ -4,7 +4,7 @@ from datetime import UTC, datetime
 
 import pytest
 
-from dstamp.format import Format, convert_to_discord_format
+from dstamp.format import Format, discord
 
 
 @pytest.mark.parametrize(
@@ -21,5 +21,5 @@ from dstamp.format import Format, convert_to_discord_format
 )
 def test_convert_to_discord_format(timestamp, format, expected_result):
     time = datetime.fromtimestamp(timestamp, tz=UTC)
-    formatted_time = convert_to_discord_format(time, format)
+    formatted_time = discord(time, format)
     assert formatted_time == expected_result
