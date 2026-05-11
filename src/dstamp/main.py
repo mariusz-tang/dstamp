@@ -115,6 +115,8 @@ def get_timestamp(
 
     time_obj = time_delta + time_obj
 
+    console.info(f"Using time: {format.human_readable(time_obj)}.")
+
     if round:
         try:
             precision: Precision = parse.rounding_precision(precision)
@@ -122,11 +124,10 @@ def get_timestamp(
             console.error(str(e))
             return 1
         time_obj = time_to_precision(time_obj, precision)
+        console.info(f"After rounding: {format.human_readable(time_obj)}.")
 
     output = format.discord(time_obj, output_format)
 
-    one_second = parse.rounding_precision("1s")
-    console.info(f"Using time: {time_to_precision(time_obj, one_second)}.")
     console.print(output)
 
     if copy_to_clipboard:

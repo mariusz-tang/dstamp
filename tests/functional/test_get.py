@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import pytest
 from freezegun import freeze_time
 
-from dstamp import main, parse, round
+from dstamp import format, main, parse, round
 from dstamp.format import Format
 
 NOW = datetime(2025, 1, 2, 12, 53, 42, 12)
@@ -39,10 +39,29 @@ class GetOutput:
         self.copied_to_clipboard = main.COPY_SUCCESS_TEXT in raw_output
 
         lines = raw_output.splitlines()
-        m = re.fullmatch(r"<t:(\d+):([tTdDfFR])>", lines[1])
-        assert m is not None, "No timestamp in output"
-        self.timestamp = int(m[1])
-        self.format_code = m[2]
+        m_time = re.fullmatch(r"Using time: (.+)\.", lines[0])
+        assert m_time is not None, "Time not printed"
+        self.base_time = m_time[1]
+
+        m_after_rounding = re.fullmatch(r"After rounding: (.+)\.", lines[1])
+        if m_after_rounding:
+            self.time_after_rounding = m_after_rounding[1]
+            timestamp_line = 2
+        else:
+            self.time_after_rounding = None
+            timestamp_line = 1
+
+        m_timestamp = re.fullmatch(r"<t:(\d+):([tTdDfFR])>", lines[timestamp_line])
+        assert m_timestamp, "No timestamp in output"
+        self.timestamp = int(m_timestamp[1])
+        self.format_code = m_timestamp[2]
+
+    def base_time_matches(self, time: datetime) -> bool:
+        return format.human_readable(time) == self.base_time
+
+    def rounded_time_matches(self, time: datetime) -> bool:
+        assert self.time_after_rounding, "Rounded time not printed"
+        return format.human_readable(time) == self.time_after_rounding
 
 
 @pytest.fixture
@@ -63,6 +82,8 @@ def test_defaults(get):
     assert not output.has_datetime_error
     assert not output.has_offset_error
     assert not output.has_rounding_error
+    assert output.base_time_matches(NOW_ROUNDED)
+    assert not output.time_after_rounding
     assert output.timestamp == NOW_ROUNDED.timestamp()
     assert output.format_code == Format.RELATIVE.value
     assert not output.copied_to_clipboard
@@ -207,6 +228,14 @@ def test_no_round_cli_option_overrides_config(get, config_path):
     assert error_code == 0
     # 10m is the default rounding precision.
     assert output.timestamp == NOW_ROUNDED.timestamp()
+
+
+@freeze_time(NOW)
+def test_rounded_time_is_printed_separately(get):
+    error_code, output = get("--round")
+    assert error_code == 0
+    # 10m is the default rounding precision.
+    assert output.rounded_time_matches(round_time(NOW, "10m"))
 
 
 @pytest.mark.parametrize("precision", ["3s", "4m", "12h"])
