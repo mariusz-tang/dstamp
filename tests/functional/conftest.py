@@ -2,7 +2,7 @@
 
 import pytest
 
-from dstamp import config, main
+from dstamp import config, console, main
 
 
 @pytest.fixture(autouse=True)
@@ -26,6 +26,14 @@ def disable_clipboard(monkeypatch):
         pass
 
     monkeypatch.setattr(main.pyperclip, "copy", do_nothing)
+
+
+@pytest.fixture(autouse=True)
+def disable_color_output(monkeypatch):
+    """Disable colour output so the captured output is in plaintext."""
+    monkeypatch.setattr(console, "info", print)
+    monkeypatch.setattr(console, "warn", print)
+    monkeypatch.setattr(console, "error", print)
 
 
 @pytest.fixture
