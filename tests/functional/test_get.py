@@ -149,21 +149,21 @@ def test_copy_to_clipboard_cli_option(get):
 
 
 def test_copy_to_clipboard_config_option(get, config_path):
-    config_path.write_text("copy-to-clipboard = true")
+    config_path.write_text("[get]\ncopy-to-clipboard = true")
     error_code, output = get()
     assert error_code == 0
     assert output.copied_to_clipboard
 
 
 def test_copy_cli_option_overrides_config(get, config_path):
-    config_path.write_text("copy-to-clipboard = false")
+    config_path.write_text("[get]\ncopy-to-clipboard = false")
     error_code, output = get("--copy-to-clipboard")
     assert error_code == 0
     assert output.copied_to_clipboard
 
 
 def test_no_copy_cli_option_overrides_config(get, config_path):
-    config_path.write_text("copy-to-clipboard = true")
+    config_path.write_text("[get]\ncopy-to-clipboard = true")
     error_code, output = get("--no-copy-to-clipboard")
     assert error_code == 0
     assert not output.copied_to_clipboard
@@ -178,14 +178,14 @@ def test_format_cli_option(get, format):
 
 @pytest.mark.parametrize("format", (format for format in Format))
 def test_format_config_option(get, config_path, format):
-    config_path.write_text(f'output-format = "{format.name}"')
+    config_path.write_text(f'[get]\noutput-format = "{format.name}"')
     error_code, output = get()
     assert error_code == 0
     assert output.format_code == format.value
 
 
 def test_format_cli_option_overrides_config(get, config_path):
-    config_path.write_text('output-format = "SHORTTIME"')
+    config_path.write_text('[get]\noutput-format = "SHORTTIME"')
     error_code, output = get("--output-format", "RELATIVE")
     assert error_code == 0
     assert output.format_code == "R"
@@ -205,7 +205,7 @@ def test_round_cli_option(get):
 
 @freeze_time(NOW)
 def test_round_config_option(get, config_path):
-    config_path.write_text("round = true")
+    config_path.write_text("[get]\nround = true")
     error_code, output = get()
     assert error_code == 0
     # 10m is the default rounding precision.
@@ -214,7 +214,7 @@ def test_round_config_option(get, config_path):
 
 @freeze_time(NOW)
 def test_round_cli_option_overrides_config(get, config_path):
-    config_path.write_text("round = false")
+    config_path.write_text("[get]\nround = false")
     error_code, output = get("--round")
     assert error_code == 0
     # 10m is the default rounding precision.
@@ -223,7 +223,7 @@ def test_round_cli_option_overrides_config(get, config_path):
 
 @freeze_time(NOW)
 def test_no_round_cli_option_overrides_config(get, config_path):
-    config_path.write_text("round = true")
+    config_path.write_text("[get]\nround = true")
     error_code, output = get("--no-round")
     assert error_code == 0
     # 10m is the default rounding precision.
@@ -248,7 +248,7 @@ def test_precision_cli_option(get, precision):
 
 @freeze_time(NOW)
 def test_precision_cli_option_overrides_config(get, config_path):
-    config_path.write_text('precision = "3m"')
+    config_path.write_text('[get]\nprecision = "3m"')
     error_code, output = get("--round", "--precision", "12h")
     assert error_code == 0
     assert output.timestamp == round_time(NOW, "12h").timestamp()

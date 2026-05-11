@@ -29,7 +29,7 @@ def launch_with_config_file(
     """
     if config_path is None:
         config_path = config.get_config_path()
-    app.config = cyclopts.config.Toml(config_path, use_commands_as_keys=False)
+    app.config = cyclopts.config.Toml(config_path)
     return app(tokens)
 
 
