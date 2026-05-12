@@ -1,39 +1,36 @@
 """Fixtures for the functional tests."""
 
 import pytest
+from pytest_mock import MockerFixture
 
-from dstamp import config, console, main
+from dstamp import config, main
 
 
 @pytest.fixture(autouse=True)
-def config_path(monkeypatch, tmp_path):
+def config_path(mocker: MockerFixture, tmp_path):
     """
     Change the default config location so that it is empty for tests.
 
     Returns the new default config location.
     """
-    monkeypatch.setattr(
-        config.platformdirs, "user_config_path", lambda *_, **__: tmp_path
-    )
+
+    get_config_path = mocker.patch("dstamp.config.platformdirs.user_config_path")
+    get_config_path.return_value = tmp_path
     return config.get_config_path()
 
 
 @pytest.fixture(autouse=True)
-def disable_clipboard(monkeypatch):
+def disable_clipboard(mocker: MockerFixture):
     """Disable clipboard interactions so tests can be run on CI."""
-
-    def do_nothing(*_):
-        pass
-
-    monkeypatch.setattr(main.pyperclip, "copy", do_nothing)
+    mocker.patch("dstamp.main.pyperclip.copy")
 
 
 @pytest.fixture(autouse=True)
-def disable_color_output(monkeypatch):
+def disable_color_output(mocker: MockerFixture):
     """Disable colour output so the captured output is in plaintext."""
-    monkeypatch.setattr(console, "info", print)
-    monkeypatch.setattr(console, "warn", print)
-    monkeypatch.setattr(console, "error", print)
+    mocker.patch("dstamp.console.info", print)
+    mocker.patch("dstamp.console.warn", print)
+    mocker.patch("dstamp.console.error", print)
 
 
 @pytest.fixture
