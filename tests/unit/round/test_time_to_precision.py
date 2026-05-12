@@ -10,7 +10,7 @@ NOW = datetime(2025, 1, 2, 12, 53, 42, 231)
 ONE_DAY = timedelta(days=1)
 
 
-def time(hour: int, minute: int, second: int, microsecond: int = 0):
+def time(hour: int, minute: int, second: int, microsecond: int = 0) -> datetime:
     return NOW.replace(hour=hour, minute=minute, second=second, microsecond=microsecond)
 
 
@@ -41,5 +41,7 @@ def time(hour: int, minute: int, second: int, microsecond: int = 0):
         (time(14, 36, 49, 249), Precision(4, Unit.SECOND), time(14, 36, 48)),
     ],
 )
-def test_round(raw_time, precision, desired_output):
+def test_round(
+    raw_time: datetime, precision: Precision, desired_output: datetime
+) -> None:
     assert time_to_precision(raw_time, precision) == desired_output

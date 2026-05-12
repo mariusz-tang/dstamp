@@ -22,7 +22,7 @@ NOW = datetime(2025, 1, 2, 12, 53, 42, 123)
     ],
 )
 @freeze_time(NOW)
-def test_rounding_precision(raw_input, quantity, unit):
+def test_rounding_precision(raw_input: str, quantity: int, unit: round.Unit) -> None:
     precision = parse.rounding_precision(raw_input)
     assert precision.quantity == quantity
     assert precision.unit == unit
@@ -31,12 +31,12 @@ def test_rounding_precision(raw_input, quantity, unit):
 @pytest.mark.parametrize(
     "input", ["60m", "120H", "0m", "24h", "0H", "0s", "13S", "78s"]
 )
-def test_rounding_precision_invalid_quantity(input):
+def test_rounding_precision_invalid_quantity(input: str) -> None:
     with pytest.raises(parse.InvalidValueError):
         parse.rounding_precision(input)
 
 
 @pytest.mark.parametrize("input", ["60", "30g", "1D", "b", "-4m", "21901123103gea"])
-def test_rounding_precision_wrong_format(input):
+def test_rounding_precision_wrong_format(input: str) -> None:
     with pytest.raises(parse.InvalidFormatError):
         parse.rounding_precision(input)

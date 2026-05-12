@@ -79,5 +79,4 @@ select = [
   "W",  # pycodestyle warning
 ]
 ignore = ["TRY003"]  # This rule is too strict, especially for ValueError.
-per-file-ignores = { "tests/**" = ["ANN"] }
 flake8-pytest-style.parametrize-names-type = "csv"

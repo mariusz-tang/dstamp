@@ -1,13 +1,16 @@
 """Fixtures for the functional tests."""
 
+from pathlib import Path
+
 import pytest
 from pytest_mock import MockerFixture
 
 from dstamp import config, main
+from tests.typing import AppResult, AppRunner
 
 
 @pytest.fixture(autouse=True)
-def config_path(mocker: MockerFixture, tmp_path):
+def config_path(mocker: MockerFixture, tmp_path: Path) -> Path:
     """
     Change the default config location so that it is empty for tests.
 
@@ -20,13 +23,13 @@ def config_path(mocker: MockerFixture, tmp_path):
 
 
 @pytest.fixture(autouse=True)
-def disable_clipboard(mocker: MockerFixture):
+def disable_clipboard(mocker: MockerFixture) -> None:
     """Disable clipboard interactions so tests can be run on CI."""
     mocker.patch("dstamp.main.pyperclip.copy")
 
 
 @pytest.fixture(autouse=True)
-def disable_color_output(mocker: MockerFixture):
+def disable_color_output(mocker: MockerFixture) -> None:
     """Disable colour output so the captured output is in plaintext."""
     mocker.patch("dstamp.console.info", print)
     mocker.patch("dstamp.console.warn", print)
@@ -34,10 +37,10 @@ def disable_color_output(mocker: MockerFixture):
 
 
 @pytest.fixture
-def app(capsys):
+def app(capsys: pytest.CaptureFixture[str]) -> AppRunner[str]:
     """Return an app runner."""
 
-    def run(*args):
+    def run(*args: str) -> AppResult[str]:
         error_code = main.app.meta(args, result_action="return_value")
         output = capsys.readouterr().out
         return error_code, output

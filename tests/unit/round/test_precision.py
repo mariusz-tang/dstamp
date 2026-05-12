@@ -16,11 +16,11 @@ from dstamp.round import Precision, Unit
         (30, Unit.SECOND),
     ],
 )
-def test_valid_input(quantity, unit):
+def test_valid_input(quantity: int, unit: Unit) -> None:
     Precision(quantity, unit)
 
 
-def test_negative_quantity_raises():
+def test_negative_quantity_raises() -> None:
     with pytest.raises(ValueError, match="Precision quantity must be positive."):
         Precision(-1, Unit.HOUR)
 
@@ -33,7 +33,7 @@ def test_negative_quantity_raises():
         (60, Unit.SECOND),
     ],
 )
-def test_quantity_too_large_raises(quantity, unit):
+def test_quantity_too_large_raises(quantity: int, unit: Unit) -> None:
     with pytest.raises(
         ValueError,
         match=f"Precision quantity for {unit.name} "
@@ -50,7 +50,7 @@ def test_quantity_too_large_raises(quantity, unit):
         (29, Unit.SECOND),
     ],
 )
-def test_quantity_not_a_factor_of_max_raises(quantity, unit):
+def test_quantity_not_a_factor_of_max_raises(quantity: int, unit: Unit) -> None:
     with pytest.raises(
         ValueError,
         match=f"Precision quantity for {unit.name} "

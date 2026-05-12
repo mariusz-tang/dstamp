@@ -19,7 +19,9 @@ from dstamp.format import Format, discord
         (39042343, Format.SHORT_TIME, "<t:39042343:t>"),
     ],
 )
-def test_convert_to_discord_format(timestamp, format, expected_result):
+def test_convert_to_discord_format(
+    timestamp: int, format: Format, expected_result: str
+) -> None:
     time = datetime.fromtimestamp(timestamp, tz=UTC)
     formatted_time = discord(time, format)
     assert formatted_time == expected_result

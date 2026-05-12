@@ -26,7 +26,7 @@ TODAY = NOW.date()
     ],
 )
 @freeze_time(NOW)
-def test_date_only(raw_input, desired_date):
+def test_date_only(raw_input: str, desired_date: datetime) -> None:
     assert parse.datetime(raw_input) == desired_date
 
 
@@ -54,17 +54,17 @@ def test_date_only(raw_input, desired_date):
     ],
 )
 @freeze_time(NOW)
-def test_time_only_assumes_today(raw_input, desired_time):
+def test_time_only_assumes_today(raw_input: str, desired_time: time) -> None:
     assert parse.datetime(raw_input) == datetime.combine(TODAY, desired_time)
 
 
 @freeze_time(NOW)
-def test_empty_string_returns_now():
+def test_empty_string_returns_now() -> None:
     assert parse.datetime("") == NOW_ROUNDED
 
 
 @freeze_time(NOW)
-def test_none_returns_now():
+def test_none_returns_now() -> None:
     assert parse.datetime(None) == NOW_ROUNDED
 
 
@@ -80,39 +80,39 @@ def test_none_returns_now():
     ],
 )
 @freeze_time(NOW)
-def test_full_datetime(raw_input, desired_output):
+def test_full_datetime(raw_input: str, desired_output: datetime) -> None:
     assert parse.datetime(raw_input) == desired_output
 
 
 @freeze_time(NOW)
-def test_12am_is_midnight():
+def test_12am_is_midnight() -> None:
     assert parse.datetime("12am") == datetime.combine(TODAY, time())
 
 
 @freeze_time(NOW)
-def test_12pm_is_noon():
+def test_12pm_is_noon() -> None:
     assert parse.datetime("12pm") == datetime.combine(TODAY, time(12))
 
 
 @pytest.mark.parametrize(
     "input", ["today,now,now", "in two days", "2203pm", "24notamonth2032"]
 )
-def test_invalid_format_raises_invalid_format_error(input):
+def test_invalid_format_raises_invalid_format_error(input: str) -> None:
     with pytest.raises(parse.InvalidFormatError):
         parse.datetime(input)
 
 
 @pytest.mark.parametrize("input", ["2500", "32jan2024", "166", "1jan2001,13066pm"])
-def test_invalid_datetime_raises_invalid_value_error(input):
+def test_invalid_datetime_raises_invalid_value_error(input: str) -> None:
     with pytest.raises(parse.InvalidValueError):
         parse.datetime(input)
 
 
-def test_0am_raises_invalid_format_error():
+def test_0am_raises_invalid_format_error() -> None:
     with pytest.raises(parse.InvalidFormatError):
         parse.datetime("0am")
 
 
-def test_0pm_raises_invalid_format_error():
+def test_0pm_raises_invalid_format_error() -> None:
     with pytest.raises(parse.InvalidFormatError):
         parse.datetime("0pm")
