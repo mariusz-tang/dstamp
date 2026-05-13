@@ -1,6 +1,7 @@
 """Fixtures for the functional tests."""
 
 from pathlib import Path
+from unittest.mock import MagicMock
 
 import pytest
 from pytest_mock import MockerFixture
@@ -23,9 +24,9 @@ def config_path(mocker: MockerFixture, tmp_path: Path) -> Path:
 
 
 @pytest.fixture(autouse=True)
-def disable_clipboard(mocker: MockerFixture) -> None:
-    """Disable clipboard interactions so tests can be run on CI."""
-    mocker.patch("dstamp.main.pyperclip.copy")
+def mock_clipboard(mocker: MockerFixture) -> MagicMock:
+    """Mock clipboard interactions so tests can be run on CI."""
+    return mocker.patch("dstamp.main.pyperclip.copy")
 
 
 @pytest.fixture(autouse=True)

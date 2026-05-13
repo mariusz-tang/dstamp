@@ -3,7 +3,9 @@
 import re
 from datetime import datetime, timedelta
 from pathlib import Path
+from unittest.mock import MagicMock
 
+import pyperclip
 import pytest
 from freezegun import freeze_time
 
@@ -38,8 +40,6 @@ class GetOutput:
             # will be displayed.
             return
 
-        self.copied_to_clipboard = main.COPY_SUCCESS_TEXT in raw_output
-
         lines = raw_output.splitlines()
         m_time = re.fullmatch(r"Using time: (.+)\.", lines[0])
         assert m_time is not None, "Time not printed"
@@ -57,6 +57,11 @@ class GetOutput:
         assert m_timestamp, "No timestamp in output"
         self.timestamp = int(m_timestamp[1])
         self.format_code = m_timestamp[2]
+
+        self.has_clipboard_error = (
+            "There was a problem with the clipboard manager" in raw_output
+        )
+        self.copied_to_clipboard = main.COPY_SUCCESS_TEXT in raw_output
 
     def base_time_matches(self, time: datetime) -> bool:
         return format.human_readable(time) == self.base_time
@@ -91,6 +96,7 @@ def test_defaults(get: GetRunner) -> None:
     assert not output.time_after_rounding
     assert output.timestamp == NOW_ROUNDED.timestamp()
     assert output.format_code == Format.RELATIVE.value
+    assert not output.has_clipboard_error
     assert not output.copied_to_clipboard
 
 
@@ -160,6 +166,15 @@ def test_copy_to_clipboard_config_option(get: GetRunner, config_path: Path) -> N
     error_code, output = get()
     assert error_code == 0
     assert output.copied_to_clipboard
+
+
+def test_clipboard_manager_error_handled_gracefully(
+    get: GetRunner, mock_clipboard: MagicMock
+) -> None:
+    mock_clipboard.side_effect = pyperclip.PyperclipException
+    error_code, output = get("--copy-to-clipboard")
+    assert error_code == 1
+    assert output.has_clipboard_error
 
 
 def test_copy_cli_option_overrides_config(get: GetRunner, config_path: Path) -> None:
