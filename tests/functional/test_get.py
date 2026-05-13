@@ -286,3 +286,12 @@ def test_invalid_precision(get: GetRunner) -> None:
     error_code, output = get("--round", "--precision", "24h")
     assert error_code == 1
     assert output.has_rounding_error
+
+
+def test_config_cli_option(get: GetRunner, config_path: Path) -> None:
+    new_config_path = config_path.parent / "new.toml"
+    config_path.write_text("[get]\ncopy-to-clipboard = true")
+    new_config_path.write_text("[get]\ncopy-to-clipboard = false")
+    error_code, output = get("--config", str(new_config_path))
+    assert error_code == 0
+    assert not output.copied_to_clipboard
