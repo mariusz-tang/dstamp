@@ -116,8 +116,14 @@ def test_time_argument(get: GetRunner, time: str, expected_datetime: datetime) -
     assert output.timestamp == expected_datetime.timestamp()
 
 
-def test_invalid_time(get: GetRunner) -> None:
-    error_code, output = get("25pm")
+def test_invalid_time_value(get: GetRunner) -> None:
+    error_code, output = get("2500")
+    assert error_code == 1
+    assert output.has_datetime_error
+
+
+def test_invalid_time_format(get: GetRunner) -> None:
+    error_code, output = get("111111111111")
     assert error_code == 1
     assert output.has_datetime_error
 
@@ -149,7 +155,7 @@ def test_offset_cli_option_negative(get: GetRunner) -> None:
     assert output.timestamp == (NOW_ROUNDED + timedelta(seconds=-5)).timestamp()
 
 
-def test_invalid_offset(get: GetRunner) -> None:
+def test_invalid_offset_format(get: GetRunner) -> None:
     error_code, output = get("--offset=10g")
     assert error_code == 1
     assert output.has_offset_error
@@ -282,7 +288,13 @@ def test_precision_cli_option_overrides_config(
     assert output.timestamp == round_time(NOW, "12h").timestamp()
 
 
-def test_invalid_precision(get: GetRunner) -> None:
+def test_invalid_precision_format(get: GetRunner) -> None:
+    error_code, output = get("--round", "--precision", "24")
+    assert error_code == 1
+    assert output.has_rounding_error
+
+
+def test_invalid_precision_value(get: GetRunner) -> None:
     error_code, output = get("--round", "--precision", "24h")
     assert error_code == 1
     assert output.has_rounding_error
