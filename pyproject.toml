@@ -55,6 +55,7 @@ skip_covered = true
 
 [tool.pytest]
 addopts = ["--import-mode=importlib"]
+strict = true
 
 [tool.ruff.lint]
 select = [
