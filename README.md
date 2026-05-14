@@ -61,6 +61,12 @@ dstamp show-config
 dstamp --config ./path-to-a-different-file.toml
 ```
 
+## Versioning
+
+This project uses an `X.Y` versioning scheme. Bugfixes will move the version to
+`X.Y+1`, and anything else will move it to `X+1.0`. If `Y` is 0, we omit it,
+so `X+1.0` actually just becomes `X+1`.
+
 ## Contributing
 
 If you'd like to see something added to dstamp or if you would like to add something
