@@ -143,6 +143,13 @@ def get_timestamp(
     return 0
 
 
+@app.command
+def show_config() -> int:
+    """Show the default config location."""
+    print(config.get_config_path())
+    return 0
+
+
 def try_parse[T](
     parser: Callable[[str | None], T], raw_input: str | None, quantity_type: str
 ) -> T | None:
