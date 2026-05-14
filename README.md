@@ -2,6 +2,13 @@
 
 CLI app for generating timestamps for use in Discord chats.
 
+## TODO
+
+I intend to rewrite this project to use the standard argparse library instead
+of cyclopts. This makes the whole typer-to-cyclopts migration seem rather silly.
+My reasoning is that cyclopts is a bit too heavy-handed for my tastes, and I
+prefer how argparse forces you to separate parsing from handling functions.
+
 ## Installation
 
 Install using [pipx] or [uv]:
