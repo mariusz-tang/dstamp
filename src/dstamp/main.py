@@ -38,11 +38,13 @@ def get_timestamp(
     time: str | None = None,
     /,
     *,
-    offset: str | None = None,
-    output_format: format.Format = format.Format.RELATIVE,
-    copy_to_clipboard: bool = False,
-    round: bool = False,
-    precision: str = "10m",
+    offset: Annotated[str | None, Parameter(alias="-o")] = None,
+    output_format: Annotated[
+        format.Format, Parameter(alias="-f")
+    ] = format.Format.RELATIVE,
+    copy_to_clipboard: Annotated[bool, Parameter(alias="-x")] = False,
+    round: Annotated[bool, Parameter(alias="-r")] = False,
+    precision: Annotated[str, Parameter(alias="-p")] = "10m",
 ) -> int:
     r"""
     Generate a Discord timestamp.
