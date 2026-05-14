@@ -94,7 +94,7 @@ wheels = [
 
 [[package]]
 name = "dstamp"
-version = "1.0.1"
+version = "2"
 source = { editable = "." }
 dependencies = [
     { name = "cyclopts" },
