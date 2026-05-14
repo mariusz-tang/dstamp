@@ -42,7 +42,24 @@ dstamp get --help
 
 ## Configuration
 
-TODO
+dstamp accepts a TOML configuration file which can override any command-line
+argument. Keys should be structured as `command.option`. For example, to enable
+rounding by default and set a custom default rounding precision for the `get`
+command, you could do the following:
+
+```toml
+[get]
+round = true
+precision = "15m"
+```
+
+Use the `show-config` command to find the default config location. Specify the
+`--config` flag to use a different file.
+
+```bash
+dstamp show-config
+dstamp --config ./path-to-a-different-file.toml
+```
 
 ## Contributing
 
