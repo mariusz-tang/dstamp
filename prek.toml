@@ -1,0 +1,51 @@
+[[repos]]
+repo = "builtin"
+hooks = [
+  { id = "check-added-large-files" },
+  { id = "check-case-conflict" },
+  { id = "check-illegal-windows-names" },
+  { id = "end-of-file-fixer" },
+  { id = "trailing-whitespace" },
+]
+
+[[repos]]
+repo = "https://github.com/editorconfig-checker/editorconfig-checker"
+rev = "v3.6.0"
+hooks = [{ id = "editorconfig-checker" }]
+
+[[repos]]
+repo = "https://github.com/markdownlint/markdownlint"
+rev = "v0.15.0"
+hooks = [{ id = "markdownlint" }]
+
+[[repos]]
+repo = "https://github.com/astral-sh/ruff-pre-commit"
+rev = "v0.15.12"  # Ruff version.
+hooks = [
+  { id = "ruff-check", args = ["--fix"], types_or = ["python", "pyi"] },
+  { id = "ruff-format", types_or = ["python", "pyi"] },
+]
+
+[[repos]]
+repo = "https://github.com/tombi-toml/tombi-pre-commit"
+rev = "v0.9.24"
+hooks = [
+  {
+    id = "tombi-format",
+    exclude = { glob = ["tests/dstamp_config/invalid.toml", "uv.lock"] },
+  },
+  {
+    id = "tombi-lint",
+    exclude = { glob = ["tests/dstamp_config/invalid.toml", "uv.lock"] },
+  }
+]
+
+[[repos]]
+repo = "https://github.com/astral-sh/uv-pre-commit"
+rev = "0.11.8"
+hooks = [{ id = "uv-lock" }]
+
+[[repos]]
+repo = "https://github.com/google/yamlfmt"
+rev = "v0.21.0"
+hooks = [{ id = "yamlfmt" }]

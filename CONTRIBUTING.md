@@ -1,0 +1,108 @@
+# Contributing to dstamp
+
+Thank you for taking interest in dstamp!
+
+## Feedback
+
+If you have a bug to report or a feature request, please raise an [issue].
+
+I'm also happy to accept [PR]s but I would prefer you to first raise an issue and
+indicate your willingness to submit a PR.
+
+This is my first CLI app, so there are probably many things I could do or do differently
+to improve it. If you have suggestions please let me know in an issue :)
+
+[PR]: https://github.com/mariusz-tang/dstamp/pulls
+[issue]: https://github.com/mariusz-tang/dstamp/issues
+
+## Project setup
+
+### Installing
+
+After cloning the project set up [uv] and run the tests:
+
+```bash
+uv sync
+
+# This line depends on your shell.
+# See https://docs.astral.sh/uv/pip/environments/.
+source .venv/bin/activate
+coverage run
+```
+
+Optionally install and run the [prek] hooks.
+This will handle the code style requirements for this project, among other things.
+
+```bash
+prek install
+prek --all-files
+```
+
+[prek]: https://prek.j178.dev/
+[uv]: https://docs.astral.sh/uv/
+
+### Code style
+
+This project uses various linters and formatters to keep code in check:
+
+- [Editorconfig-checker] for all files.
+- [Markdownlint] for Markdown.
+- [Ruff] for Python.
+- [Tombi] for TOML.
+- [Ty] for type-checking.
+- [Yamlfmt] for YAML.
+
+If you install the prek hooks as above, this will be handled for you.
+
+**Note**: There is no hook for ty, so you need to run this yourself with
+`ty check`. See also the [pre-push hook](#pre-push-hook)
+below.
+
+[Editorconfig-checker]: https://editorconfig-checker.github.io/
+[Markdownlint]: https://github.com/markdownlint/markdownlint
+[Ruff]: https://docs.astral.sh/ruff/
+[Tombi]: https://tombi-toml.github.io/tombi/
+[Ty]: https://docs.astral.sh/ty/
+[Yamlfmt]: https://github.com/google/yamlfmt/
+
+### Testing
+
+Please test your code :)
+
+This project uses [pytest] and [coverage.py] for testing and coverage.
+
+#### Coverage
+
+As this is a small project, requiring 100% coverage is feasible and realistic.
+In rare cases, there will be code that need not be covered. [Exclude] such code
+from coverage.py.
+
+[pytest]: https://docs.pytest.org/en/stable/
+[coverage.py]: https://coverage.readthedocs.io/en/7.10.1/
+[exclude]: https://coverage.readthedocs.io/en/7.10.1/excluding.html
+
+## Pre-push hook
+
+In addition to the pre-commit hooks installed by prek, I recommend installing
+the following pre-push hook. Simply place it in a file at
+`./.git/hooks/pre-push`. Note that this may not work on Windows.
+
+```sh
+#!/bin/sh
+
+set -e
+pytest
+ty check
+prek --all-files
+```
+
+### A note on perfectionism
+
+Don't worry if you are unable to follow everything in this file! I appreciate any
+effort to stick to the guidelines, but you don't need to do everything perfectly
+in order to contribute code. In particular, I will run all the prek hooks
+before accepting any PR anyway, so anything which can be fixed with automatic
+formatting is not very important.
+
+If you are finding something challenging or are unsure about something, feel free
+to get in touch, for example by raising an issue or submitting a draft PR!
