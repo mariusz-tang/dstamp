@@ -13,15 +13,21 @@ classifiers = [
   "Intended Audience :: End Users/Desktop",
   "Topic :: Communications :: Chat",
 ]
+dependencies = []
 
 [project.urls]
 Issues = "https://github.com/mariusz-tang/dstamp/issues"
 Repository = "https://github.com/mariusz-tang/dstamp"
 
+[project.scripts]
+dstamp = "dstamp.cli:run"
+
 [dependency-groups]
 dev = [
   "coverage>=7.13.5",
+  "freezegun>=1.5.5",
   "pytest>=9.0.3",
+  "pytest-mock>=3.15.1",
   "ty>=0.0.34",
 ]
 
