@@ -7,7 +7,15 @@ using the standard argparse module instead of cyclopts.
 
 ## TODO
 
-At this stage, the priority is to achieve feature-parity with v2.
+At this stage, the priority is to achieve feature-parity with v2:
+
+- Add datetime parsing.
+- Add copy to clipboard.
+- Add rounding.
+- Add version flag.
+- Add shell completion.
+- Add config file support.
+- Add show-config.
 
 ## Installation
 
