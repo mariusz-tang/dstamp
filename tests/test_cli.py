@@ -38,10 +38,6 @@ def get(app: AppRunner[str]) -> AppRunner[GetOutput]:
     return run
 
 
-NOW_TIMESTAMP = 1234567890.2139
-NOW = datetime.fromtimestamp(NOW_TIMESTAMP)
-
-
 def test_no_args_prints_help(
     app: AppRunner[str], mocker: pytest_mock.MockFixture
 ) -> None:
@@ -50,10 +46,10 @@ def test_no_args_prints_help(
     print_help.assert_called_once()
 
 
-@freezegun.freeze_time(NOW)
+@freezegun.freeze_time(datetime.fromtimestamp(1234567890.2139))
 def test_get_no_args_returns_current_time(get: AppRunner[GetOutput]) -> None:
     output = get()
-    assert output.timestamp == int(NOW_TIMESTAMP)
+    assert output.timestamp == 1234567890
 
 
 def test_get_no_args_uses_long_full_format(get: AppRunner[GetOutput]) -> None:
