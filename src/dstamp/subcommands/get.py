@@ -3,7 +3,7 @@
 import argparse
 import datetime as dt
 
-from dstamp import discord, parse
+from dstamp import discord, exceptions, parse
 
 
 def register(subparsers: argparse._SubParsersAction) -> None:
@@ -33,5 +33,5 @@ def _get_datetime(date: str | None, time: str | None) -> dt.datetime:
 def _parse_date_or_time(input: str) -> dt.date | dt.time:
     try:
         return parse.date(input)
-    except parse.FormatError:
+    except exceptions.FormatError:
         return parse.time(input)
