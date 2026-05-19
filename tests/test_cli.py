@@ -55,3 +55,19 @@ def test_get_no_args_returns_current_time(get: AppRunner[GetOutput]) -> None:
 def test_get_no_args_uses_long_full_format(get: AppRunner[GetOutput]) -> None:
     output = get()
     assert output.format_code == "F"
+
+
+def test_get_date_only_uses_midnight(get: AppRunner[GetOutput]) -> None:
+    output = get("10jan2025")
+    assert output.timestamp == datetime(2025, 1, 10).timestamp()
+
+
+@freezegun.freeze_time("October 10 2025")
+def test_get_time_only_uses_current_date(get: AppRunner[GetOutput]) -> None:
+    output = get("9pm")
+    assert output.timestamp == datetime(2025, 10, 10, 21).timestamp()
+
+
+def test_get_date_and_time(get: AppRunner[GetOutput]) -> None:
+    output = get("25jun2028", "550pm")
+    assert output.timestamp == datetime(2028, 6, 25, 17, 50).timestamp()
