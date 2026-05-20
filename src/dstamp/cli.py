@@ -3,7 +3,7 @@
 import argparse
 from collections.abc import Iterable
 
-from dstamp import subcommands
+from dstamp import exceptions, subcommands
 
 parser = argparse.ArgumentParser()
 subparsers = parser.add_subparsers()
@@ -14,7 +14,11 @@ def run(args: Iterable[str] | None = None) -> None:
     """Parse `args` as CLI arguments and execute the resulting command."""
     parsed_args = parser.parse_args(args)
 
-    if hasattr(parsed_args, "func"):
-        parsed_args.func(parsed_args)
-    else:
+    if not hasattr(parsed_args, "func"):
         parser.print_help()
+        return
+
+    try:
+        parsed_args.func(parsed_args)
+    except exceptions.DstampError as e:
+        parser.error(str(e))

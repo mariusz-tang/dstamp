@@ -9,7 +9,7 @@ using the standard argparse module instead of cyclopts.
 
 At this stage, the priority is to achieve feature-parity with v2:
 
-- Add error handling.
+- Add more precise error handling.
 - Add date and time keywords like "midnight" and "tomorrow".
 - Add copy to clipboard.
 - Add rounding.

@@ -14,7 +14,7 @@ class ParserInputError(DstampError):
         :param input: The input string which caused the parser to fail.
         """
         self.input = input
-        super().__init__(f"Invalid parser input: {input}")
+        super().__init__(f"invalid parser input: {input}")
 
 
 class FormatError(ParserInputError):

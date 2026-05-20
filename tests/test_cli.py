@@ -1,3 +1,4 @@
+import contextlib
 import re
 import typing
 from datetime import datetime
@@ -15,15 +16,28 @@ class AppRunner[T](typing.Protocol):
 
 @pytest.fixture
 def app(capsys: pytest.CaptureFixture) -> AppRunner[str]:
+    """Return an app runner."""
+
     def run(*args: str) -> str:
-        dstamp.cli.run(args)
-        return capsys.readouterr().out
+        with contextlib.suppress(SystemExit):
+            # We collect error information in other ways, so we can safely
+            # ignore SystemExit. Otherwise, this would cause tests which
+            # intentionally cause errors to fail.
+            dstamp.cli.run(args)
+        out, err = capsys.readouterr()
+        return out or err
 
     return run
 
 
 class GetOutput:
     def __init__(self, raw_output: str) -> None:
+        m = re.search(r"error: (.+)", raw_output)
+        self.error_text = m[1] if m else ""
+        if self.error_text:
+            # There won't be any meaningful output after an error is emitted.
+            return
+
         m = re.match(r"<t:(-?\d+):([dDfFRsStT])>", raw_output)
         assert m, "No timestamp in output"
         self.timestamp = int(m[1])
@@ -71,3 +85,13 @@ def test_get_time_only_uses_current_date(get: AppRunner[GetOutput]) -> None:
 def test_get_date_and_time(get: AppRunner[GetOutput]) -> None:
     output = get("25jun2028", "550pm")
     assert output.timestamp == datetime(2028, 6, 25, 17, 50).timestamp()
+
+
+def test_get_no_args_produces_no_error_text(get: AppRunner[GetOutput]) -> None:
+    output = get()
+    assert not output.error_text
+
+
+def test_get_invalid_data_prints_error(get: AppRunner[GetOutput]) -> None:
+    output = get("not valid input")
+    assert "invalid parser input" in output.error_text
