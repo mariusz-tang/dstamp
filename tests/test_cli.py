@@ -92,6 +92,20 @@ def test_get_no_args_produces_no_error_text(get: AppRunner[GetOutput]) -> None:
     assert not output.error_text
 
 
-def test_get_invalid_data_prints_error(get: AppRunner[GetOutput]) -> None:
-    output = get("not valid input")
-    assert "invalid parser input" in output.error_text
+@pytest.mark.parametrize(
+    ("args", "expected_error_text"),
+    [
+        (["bad date format", "0000"], "invalid date format"),
+        (["32jan", "0000"], "input represents an invalid date"),
+        (["1jan", "bad time format"], "invalid time format"),
+        (["1jan", "2500"], "input represents an invalid time"),
+        (["32jan"], "input represents an invalid date"),
+        (["2500"], "input represents an invalid time"),
+        (["bad format"], "invalid time format"),
+    ],
+)
+def test_get_invalid_data_prints_error(
+    get: AppRunner[GetOutput], args: list[str], expected_error_text: str
+) -> None:
+    output = get(*args)
+    assert expected_error_text in output.error_text

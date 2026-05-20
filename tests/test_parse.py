@@ -46,19 +46,20 @@ def test_date_no_year_implies_current_year() -> None:
 
 @pytest.mark.parametrize("input", ["10jan0", "32aug", "29feb2023"])
 def test_date_invalid_date_raises(input: str) -> None:
-    with pytest.raises(exceptions.InvalidDateError) as e:
+    with pytest.raises(exceptions.ParserValueError) as e:
         parse.date(input)
     assert e.value.input == input
+    assert e.value.output_type == date
 
 
 def test_date_invalid_format_raises() -> None:
-    with pytest.raises(exceptions.FormatError) as e:
+    with pytest.raises(exceptions.ParserFormatError) as e:
         parse.date("not a date")
     assert e.value.input == "not a date"
 
 
 def test_date_checks_full_match() -> None:
-    with pytest.raises(exceptions.FormatError) as e:
+    with pytest.raises(exceptions.ParserFormatError) as e:
         parse.date("12jan plus some extra")
     assert e.value.input == "12jan plus some extra"
 
@@ -125,25 +126,26 @@ def test_time_ignores_case() -> None:
 
 @pytest.mark.parametrize("input", ["2500", "360", "31560"])
 def test_time_invalid_time_raises(input: str) -> None:
-    with pytest.raises(exceptions.InvalidTimeError) as e:
+    with pytest.raises(exceptions.ParserValueError) as e:
         parse.time(input)
     assert e.value.input == input
+    assert e.value.output_type == time
 
 
 def test_time_invalid_format_raises() -> None:
-    with pytest.raises(exceptions.FormatError) as e:
+    with pytest.raises(exceptions.ParserFormatError) as e:
         parse.time("not a time")
     assert e.value.input == "not a time"
 
 
 def test_time_checks_full_match() -> None:
-    with pytest.raises(exceptions.FormatError) as e:
+    with pytest.raises(exceptions.ParserFormatError) as e:
         parse.time("12pm plus some extra")
     assert e.value.input == "12pm plus some extra"
 
 
 @pytest.mark.parametrize("input", ["0pm", "13am", "16pm"])
 def test_time_24_hour_with_ampm_is_a_format_error(input: str) -> None:
-    with pytest.raises(exceptions.FormatError) as e:
+    with pytest.raises(exceptions.ParserFormatError) as e:
         parse.time(input)
     assert e.value.input == input

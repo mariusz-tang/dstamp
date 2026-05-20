@@ -25,7 +25,7 @@ def date(input: str) -> dt.date:
     """Parse `input` as a date."""
     m = re.fullmatch(rf"(\d+)({'|'.join(MONTHS)})(\d+)?", input.lower())
     if not m:
-        raise exceptions.FormatError(input)
+        raise exceptions.ParserFormatError(input, dt.date)
 
     day = int(m[1])
     month = MONTHS.index(m[2]) + 1
@@ -34,20 +34,20 @@ def date(input: str) -> dt.date:
     try:
         return dt.date(year, month, day)
     except ValueError as e:
-        raise exceptions.InvalidDateError(input) from e
+        raise exceptions.ParserValueError(input, dt.date) from e
 
 
 def time(input: str) -> dt.time:
     """Parse `input` as a time."""
     m = re.fullmatch(r"(\d{1,2})(\d{2})?(\d{2})?(am|pm)?", input.lower())
     if not m:
-        raise exceptions.FormatError(input)
+        raise exceptions.ParserFormatError(input, dt.time)
 
     hour = int(m[1])
     if ampm := m[4]:
         if not 1 <= hour <= 12:
             # Cannot use 24 hour time and ampm simultaneously.
-            raise exceptions.FormatError(input)
+            raise exceptions.ParserFormatError(input, dt.time)
         if ampm == "pm" and hour != 12:
             hour += 12
         elif ampm == "am" and hour == 12:
@@ -60,4 +60,4 @@ def time(input: str) -> dt.time:
     try:
         return dt.time(hour, minute, second)
     except ValueError as e:
-        raise exceptions.InvalidTimeError(input) from e
+        raise exceptions.ParserValueError(input, dt.time) from e

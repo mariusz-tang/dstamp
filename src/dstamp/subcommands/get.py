@@ -33,5 +33,5 @@ def _get_datetime(date: str | None, time: str | None) -> dt.datetime:
 def _parse_date_or_time(input: str) -> dt.date | dt.time:
     try:
         return parse.date(input)
-    except exceptions.FormatError:
+    except exceptions.ParserFormatError:
         return parse.time(input)
