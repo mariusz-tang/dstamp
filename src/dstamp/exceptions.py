@@ -19,7 +19,7 @@ class ParserInputError(DstampError):
         super().__init__(self._format_message())
 
     def _format_message(self) -> str:
-        raise NotImplementedError
+        raise NotImplementedError  # pragma: no cover
 
 
 class ParserFormatError(ParserInputError):
