@@ -74,12 +74,14 @@ def test_time_invalid_format_raises() -> None:
     with pytest.raises(exceptions.ParserFormatError) as e:
         parse.time("not a time")
     assert e.value.input == "not a time"
+    assert e.value.output_type == time
 
 
 def test_time_checks_full_match() -> None:
     with pytest.raises(exceptions.ParserFormatError) as e:
         parse.time("12pm plus some extra")
     assert e.value.input == "12pm plus some extra"
+    assert e.value.output_type == time
 
 
 @pytest.mark.parametrize("input", ["0pm", "13am", "16pm"])
@@ -87,6 +89,7 @@ def test_time_24_hour_with_ampm_is_a_format_error(input: str) -> None:
     with pytest.raises(exceptions.ParserFormatError) as e:
         parse.time(input)
     assert e.value.input == input
+    assert e.value.output_type == time
 
 
 @pytest.mark.parametrize(

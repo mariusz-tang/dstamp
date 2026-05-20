@@ -56,12 +56,14 @@ def test_date_invalid_format_raises() -> None:
     with pytest.raises(exceptions.ParserFormatError) as e:
         parse.date("not a date")
     assert e.value.input == "not a date"
+    assert e.value.output_type == date
 
 
 def test_date_checks_full_match() -> None:
     with pytest.raises(exceptions.ParserFormatError) as e:
         parse.date("12jan plus some extra")
     assert e.value.input == "12jan plus some extra"
+    assert e.value.output_type == date
 
 
 def test_date_ignores_case() -> None:
