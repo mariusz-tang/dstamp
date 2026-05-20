@@ -66,3 +66,17 @@ def test_date_checks_full_match() -> None:
 
 def test_date_ignores_case() -> None:
     assert parse.date("10AuG") == parse.date("10aug")
+
+
+@pytest.mark.parametrize(
+    ("input", "expected_output"),
+    [
+        ("today", date(2026, 5, 20)),
+        ("tmrw", date(2026, 5, 21)),
+        ("tomorrow", date(2026, 5, 21)),
+        ("yesterday", date(2026, 5, 19)),
+    ],
+)
+@freezegun.freeze_time("20 May 2026")
+def test_date_keywords(input: str, expected_output: date) -> None:
+    assert parse.date(input) == expected_output

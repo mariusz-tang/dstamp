@@ -1,5 +1,6 @@
 from datetime import time
 
+import freezegun
 import pytest
 
 from dstamp import exceptions, parse
@@ -86,3 +87,16 @@ def test_time_24_hour_with_ampm_is_a_format_error(input: str) -> None:
     with pytest.raises(exceptions.ParserFormatError) as e:
         parse.time(input)
     assert e.value.input == input
+
+
+@pytest.mark.parametrize(
+    ("input", "expected_output"),
+    [
+        ("now", time(15, 54, 4)),
+        ("midnight", time()),
+        ("noon", time(12)),
+    ],
+)
+@freezegun.freeze_time("20 May 2026 3:54:04pm")
+def test_time_keywords(input: str, expected_output: time) -> None:
+    assert parse.time(input) == expected_output

@@ -23,6 +23,13 @@ MONTHS = [
 
 def date(input: str) -> dt.date:
     """Parse `input` as a date."""
+    if input == "today":
+        return dt.date.today()
+    if input in ["tomorrow", "tmrw"]:
+        return dt.date.today() + dt.timedelta(1)
+    if input == "yesterday":
+        return dt.date.today() - dt.timedelta(1)
+
     m = re.fullmatch(rf"(\d+)({'|'.join(MONTHS)})(\d+)?", input.lower())
     if not m:
         raise exceptions.ParserFormatError(input, dt.date)
@@ -39,6 +46,13 @@ def date(input: str) -> dt.date:
 
 def time(input: str) -> dt.time:
     """Parse `input` as a time."""
+    if input == "now":
+        return dt.datetime.now().time()
+    if input == "midnight":
+        return dt.time()
+    if input == "noon":
+        return dt.time(12)
+
     m = re.fullmatch(r"(\d{1,2})(\d{2})?(\d{2})?(am|pm)?", input.lower())
     if not m:
         raise exceptions.ParserFormatError(input, dt.time)
