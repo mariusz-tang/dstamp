@@ -8,9 +8,26 @@ from dstamp import discord, exceptions, parse
 
 def register(subparsers: argparse._SubParsersAction) -> None:
     """Register the get command as a subparser."""
-    get = subparsers.add_parser("get")
-    get.add_argument("date", nargs="?")
-    get.add_argument("time", nargs="?")
+    get = subparsers.add_parser(
+        "get",
+        help="Generate a timestamp",
+        description="Generate a Discord-compatible timestamp",
+    )
+    get.add_argument(
+        "date",
+        nargs="?",
+        help="Examples: 1jan2025, 30may2020, 6jun. If the year is omitted, the "
+        "current year is used. If the entire date is omitted, the current date "
+        "is used. Accepts special keywords: today, tomorrow, tmrw, yesterday",
+    )
+    get.add_argument(
+        "time",
+        nargs="?",
+        help="Examples: 1, 15, 1730, 35004pm. If omitted, midnight is used. If "
+        "the date is also omitted, the current time is used instead. Can be "
+        "provided even if the date is omitted. Accepts special keywords: now "
+        "(current time), midnight, noon",
+    )
     get.set_defaults(func=_get)
 
 
