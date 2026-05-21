@@ -151,3 +151,26 @@ def test_get_no_copy_option(
     output = get("--no-copy")
     copy_mock.assert_not_called()
     assert not output.copied_to_clipboard
+
+
+@pytest.mark.parametrize("option_name", ["-f", "--format"])
+@pytest.mark.parametrize(
+    ("option_value", "expected_format_code"),
+    [
+        ("short-time", "t"),
+        ("long-time", "T"),
+        ("short-date", "d"),
+        ("long-date", "D"),
+        ("short-datetime", "f"),
+        ("long-datetime", "F"),
+        ("relative", "R"),
+    ],
+)
+def test_get_output_format_option(
+    get: AppRunner[GetOutput],
+    option_name: str,
+    option_value: str,
+    expected_format_code: str,
+) -> None:
+    output = get(option_name, option_value)
+    assert output.format_code == expected_format_code

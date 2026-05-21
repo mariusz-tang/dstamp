@@ -37,12 +37,30 @@ def register(subparsers: argparse._SubParsersAction) -> None:
         default=True,
         help="If set, copy the result to clipboard. True by default",
     )
+    get.add_argument(
+        "-f",
+        "--format",
+        choices=_format_codes.keys(),
+        default="long-datetime",
+        help="The output format to use. The default is long-datetime",
+    )
     get.set_defaults(func=_get)
+
+
+_format_codes = {
+    "short-time": "t",
+    "long-time": "T",
+    "short-date": "d",
+    "long-date": "D",
+    "short-datetime": "f",
+    "long-datetime": "F",
+    "relative": "R",
+}
 
 
 def _get(args: argparse.Namespace) -> None:
     datetime = _get_datetime(args.date, args.time)
-    timestamp = discord.timestamp(datetime, "F")
+    timestamp = discord.timestamp(datetime, _format_codes[args.format])
     print(timestamp)
     if args.copy:
         pyperclip.copy(timestamp)
