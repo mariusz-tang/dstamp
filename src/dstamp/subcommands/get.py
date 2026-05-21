@@ -3,6 +3,8 @@
 import argparse
 import datetime as dt
 
+import pyperclip
+
 from dstamp import discord, exceptions, parse
 
 
@@ -28,12 +30,23 @@ def register(subparsers: argparse._SubParsersAction) -> None:
         "provided even if the date is omitted. Accepts special keywords: now "
         "(current time), midnight, noon",
     )
+    get.add_argument(
+        "-c",
+        "--copy",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="If set, copy the result to clipboard. True by default",
+    )
     get.set_defaults(func=_get)
 
 
 def _get(args: argparse.Namespace) -> None:
     datetime = _get_datetime(args.date, args.time)
-    print(discord.timestamp(datetime, "F"))
+    timestamp = discord.timestamp(datetime, "F")
+    print(timestamp)
+    if args.copy:
+        pyperclip.copy(timestamp)
+        print("Copied to clipboard!")
 
 
 def _get_datetime(date: str | None, time: str | None) -> dt.datetime:

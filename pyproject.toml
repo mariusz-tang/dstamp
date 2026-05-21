@@ -13,7 +13,9 @@ classifiers = [
   "Intended Audience :: End Users/Desktop",
   "Topic :: Communications :: Chat",
 ]
-dependencies = []
+dependencies = [
+  "pyperclip>=1.11.0",
+]
 
 [project.urls]
 Issues = "https://github.com/mariusz-tang/dstamp/issues"

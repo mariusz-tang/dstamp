@@ -1,6 +1,7 @@
 import contextlib
 import re
 import typing
+import unittest.mock
 from datetime import datetime
 
 import freezegun
@@ -42,6 +43,7 @@ class GetOutput:
         assert m, "No timestamp in output"
         self.timestamp = int(m[1])
         self.format_code = m[2]
+        self.copied_to_clipboard = "Copied to clipboard!" in raw_output
 
 
 @pytest.fixture
@@ -50,6 +52,11 @@ def get(app: AppRunner[str]) -> AppRunner[GetOutput]:
         return GetOutput(app("get", *args))
 
     return run
+
+
+@pytest.fixture(autouse=True)
+def copy_mock(mocker: pytest_mock.MockerFixture) -> unittest.mock.Mock:
+    return mocker.patch("dstamp.subcommands.get.pyperclip.copy")
 
 
 def test_no_args_prints_help(
@@ -109,3 +116,38 @@ def test_get_invalid_data_prints_error(
 ) -> None:
     output = get(*args)
     assert expected_error_text in output.error_text
+
+
+def test_get_copy_enabled_by_default(
+    get: AppRunner[GetOutput], copy_mock: unittest.mock.Mock
+) -> None:
+    output = get()
+    timestamp = f"<t:{output.timestamp}:{output.format_code}>"
+    copy_mock.assert_called_with(timestamp)
+    assert output.copied_to_clipboard
+
+
+def test_get_copy_option(
+    get: AppRunner[GetOutput], copy_mock: unittest.mock.Mock
+) -> None:
+    output = get("--copy")
+    timestamp = f"<t:{output.timestamp}:{output.format_code}>"
+    copy_mock.assert_called_with(timestamp)
+    assert output.copied_to_clipboard
+
+
+def test_get_copy_short_option(
+    get: AppRunner[GetOutput], copy_mock: unittest.mock.Mock
+) -> None:
+    output = get("-c")
+    timestamp = f"<t:{output.timestamp}:{output.format_code}>"
+    copy_mock.assert_called_with(timestamp)
+    assert output.copied_to_clipboard
+
+
+def test_get_no_copy_option(
+    get: AppRunner[GetOutput], copy_mock: unittest.mock.Mock
+) -> None:
+    output = get("--no-copy")
+    copy_mock.assert_not_called()
+    assert not output.copied_to_clipboard
