@@ -1,5 +1,7 @@
 import contextlib
+import pathlib
 import re
+import tomllib
 import typing
 import unittest.mock
 from datetime import datetime
@@ -68,6 +70,15 @@ def test_no_args_prints_help(
     print_help = mocker.patch("dstamp.cli.parser.print_help")
     app()
     print_help.assert_called_once()
+
+
+def test_version_option_matches_pyproject(app: AppRunner[str]) -> None:
+    pyproject_path = pathlib.Path(__file__).parent.parent / "pyproject.toml"
+    with pyproject_path.open("rb") as f:
+        project_config = tomllib.load(f)
+
+    output = app("--version")
+    assert project_config["project"]["version"] in output
 
 
 @freezegun.freeze_time(datetime.fromtimestamp(1234567890.2139))

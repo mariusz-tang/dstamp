@@ -10,7 +10,6 @@ using the standard argparse module instead of cyclopts.
 At this stage, the priority is to achieve feature-parity with v2:
 
 - Add rounding.
-- Add version flag.
 - Add shell completion.
 - Add config file support.
 - Add show-config.

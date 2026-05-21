@@ -6,6 +6,7 @@ from collections.abc import Iterable
 from dstamp import exceptions, subcommands
 
 parser = argparse.ArgumentParser(description="Discord timestamp generator")
+parser.add_argument("--version", action="version", version="%(prog)s 2")
 subparsers = parser.add_subparsers()
 subcommands.register_all(subparsers)
 
