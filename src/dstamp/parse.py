@@ -2,6 +2,7 @@
 
 import datetime as dt
 import re
+from collections import Counter
 
 from dstamp import exceptions
 
@@ -75,3 +76,32 @@ def time(input: str) -> dt.time:
         return dt.time(hour, minute, second)
     except ValueError as e:
         raise exceptions.ParserValueError(input, dt.time) from e
+
+
+_OFFSET_UNITS = {
+    "d": "days",
+    "h": "hours",
+    "m": "minutes",
+    "s": "seconds",
+}
+
+
+def offset(input: str) -> dt.timedelta:
+    """Parse `input` as a time offset, represented by a `timedelta` object."""
+    unit_pattern = rf"(\d+)([{''.join(_OFFSET_UNITS.keys())}])"
+
+    if not re.fullmatch(rf"b?({unit_pattern})+", input.lower()):
+        raise exceptions.ParserFormatError(input, dt.timedelta)
+
+    kwargs = Counter()
+    for quantity, unit_code in re.findall(unit_pattern, input.lower()):
+        unit = _OFFSET_UNITS[unit_code]
+        kwargs[unit] += int(quantity)
+
+    result = dt.timedelta(**kwargs)
+
+    if input.lower().startswith("b"):
+        # Return the backwards offset.
+        result *= -1
+
+    return result
