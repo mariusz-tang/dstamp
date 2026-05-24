@@ -85,12 +85,17 @@ def _get(args: argparse.Namespace) -> None:
 
 def _get_datetime(date: str | None, time: str | None) -> dt.datetime:
     if not date:
+        # Use current time if neither date nor time are provided.
         return dt.datetime.now()
     if not time:
         date_or_time = _parse_date_or_time(date)
         if isinstance(date_or_time, dt.date):
+            # Use midnight if only date is provided.
             return dt.datetime.combine(date_or_time, dt.time())
+        # Use current date if only time is provided.
         return dt.datetime.combine(dt.date.today(), date_or_time)
+    # Note that it's not possible for time to be defined but not date because
+    # they are both optional positional arguments.
     return dt.datetime.combine(parse.date(date), parse.time(time))
 
 
