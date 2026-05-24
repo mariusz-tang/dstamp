@@ -44,6 +44,17 @@ def register(subparsers: argparse._SubParsersAction) -> None:
         default="long-datetime",
         help="The output format to use. The default is long-datetime",
     )
+    get.add_argument(
+        "-o",
+        "--offset",
+        help="An offset to apply to the date and time. Examples: 1d (one day), "
+        "3h5m (three hours and five minutes), 5s (five seconds). The only valid "
+        "units are d (days), h (hours), m (minutes), and s (seconds). Units can "
+        "be repeated, for example 5s3d2s would be three days and seven (5+2) "
+        "seconds. Units can be specified in any order. To specify a backwards "
+        "offset, prefix the offset with b, for example b1d would be backwards "
+        "one day.",
+    )
     get.set_defaults(func=_get)
 
 
@@ -60,8 +71,13 @@ _format_codes = {
 
 def _get(args: argparse.Namespace) -> None:
     datetime = _get_datetime(args.date, args.time)
+
+    if args.offset:
+        datetime += parse.offset(args.offset)
+
     timestamp = discord.timestamp(datetime, _format_codes[args.format])
     print(timestamp)
+
     if args.copy:
         pyperclip.copy(timestamp)
         print("Copied to clipboard!")

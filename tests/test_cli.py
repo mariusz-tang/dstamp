@@ -4,7 +4,7 @@ import re
 import tomllib
 import typing
 import unittest.mock
-from datetime import datetime
+from datetime import UTC, datetime
 
 import freezegun
 import pytest
@@ -182,3 +182,19 @@ def test_get_output_format_option(
 ) -> None:
     output = get(option_name, option_value)
     assert output.format_code == expected_format_code
+
+
+@pytest.mark.parametrize("option_name", ["-o", "--offset"])
+@pytest.mark.parametrize(
+    ("option_value", "expected_datetime"),
+    [
+        ("1d", datetime(2026, 5, 25, 14, 35, 49, tzinfo=UTC)),
+        ("b3s", datetime(2026, 5, 24, 14, 35, 46, tzinfo=UTC)),
+    ],
+)
+@freezegun.freeze_time("24th May 2026, 14:35:49 UTC")
+def test_get_offset_option(
+    get: GetRunner, option_name: str, option_value: str, expected_datetime: datetime
+) -> None:
+    output = get(option_name, option_value)
+    assert output.timestamp == expected_datetime.timestamp()
