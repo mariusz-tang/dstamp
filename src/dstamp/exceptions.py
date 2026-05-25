@@ -1,5 +1,7 @@
 """Exception classes for errors raised by dstamp."""
 
+from dstamp import round
+
 
 class DstampError(Exception):
     """Base class for all exceptions raised by dstamp."""
@@ -36,4 +38,25 @@ class ParserValueError(ParserInputError):
         return (
             f"input represents an invalid {self.output_type.__name__.lower()}: "
             f"{repr(self.input)}"
+        )
+
+
+class PrecisionQuantityError(DstampError):
+    """Raised when the `Precision` constructor receives an invalid quantity."""
+
+    def __init__(self, quantity: int, unit: round.Unit) -> None:
+        """Initialize an error instance with a formatted error message.
+
+        :param quantity: The quantity passed to the `Precision` constructor.
+        :param unit: The unit object passed to the `Precision` constructor.
+        """
+        self.quantity = quantity
+        self.unit = unit
+        super().__init__(self._format_message())
+
+    def _format_message(self) -> str:
+        return (
+            f"Quantity for {self.unit.name.lower()} must be between 1 and "
+            f"{self.unit.max_quantity} (inclusive), and must be a factor of "
+            f"{self.unit.max_quantity} (actual quantity was {self.quantity})."
         )
