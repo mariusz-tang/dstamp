@@ -1,7 +1,10 @@
+# PYTHON_ARGCOMPLETE_OK
 """Dstamp's CLI interface."""
 
 import argparse
 from collections.abc import Iterable
+
+import argcomplete
 
 from dstamp import exceptions, subcommands
 
@@ -13,6 +16,7 @@ subcommands.register_all(subparsers)
 
 def run(args: Iterable[str] | None = None) -> None:
     """Parse `args` as CLI arguments and execute the resulting command."""
+    argcomplete.autocomplete(parser)
     parsed_args = parser.parse_args(args)
 
     if not hasattr(parsed_args, "func"):

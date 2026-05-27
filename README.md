@@ -9,8 +9,6 @@ using the standard argparse module instead of cyclopts.
 
 At this stage, the priority is to achieve feature-parity with v2:
 
-- Add rounding.
-- Add shell completion.
 - Add config file support.
 - Add show-config.
 
@@ -28,6 +26,13 @@ uv tool install dstamp
 
 [pipx]: https://pipx.pypa.io/stable/
 [uv]: https://docs.astral.sh/uv/
+
+## Shell completion
+
+Dstamp supports shell completion using [argcomplete]. See the argcomplete
+documentation for setup instructions.
+
+[argcomplete]: https://github.com/kislyuk/argcomplete#activating-global-completion
 
 ## Versioning
 
