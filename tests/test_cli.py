@@ -120,7 +120,7 @@ def test_get_no_args_produces_no_error_text(get: GetRunner) -> None:
         (["bad format"], "invalid time format"),
     ],
 )
-def test_get_invalid_data_prints_error(
+def test_get_invalid_datetime_prints_error(
     get: GetRunner, args: list[str], expected_error_text: str
 ) -> None:
     output = get(*args)
