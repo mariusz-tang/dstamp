@@ -56,7 +56,7 @@ class PrecisionQuantityError(DstampError):
 
     def _format_message(self) -> str:
         return (
-            f"Quantity for {self.unit.name.lower()} must be between 1 and "
+            f"quantity for {self.unit.name.lower()} must be between 1 and "
             f"{self.unit.max_quantity} (inclusive), and must be a factor of "
             f"{self.unit.max_quantity} (actual quantity was {self.quantity})."
         )

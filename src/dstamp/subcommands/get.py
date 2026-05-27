@@ -5,7 +5,7 @@ import datetime as dt
 
 import pyperclip
 
-from dstamp import discord, exceptions, parse
+from dstamp import discord, exceptions, parse, round
 
 
 def register(subparsers: argparse._SubParsersAction) -> None:
@@ -55,6 +55,15 @@ def register(subparsers: argparse._SubParsersAction) -> None:
         "offset, prefix the offset with b, for example b1d would be backwards "
         "one day.",
     )
+    get.add_argument(
+        "-p",
+        "--precision",
+        default="1s",
+        help="The precision to which the date and time should be rounded. "
+        "Examples: 1s, 30m, 2h, 24h, 60s, 60m. The only valid units are h "
+        "(hours), m (minutes), and s (seconds). The quantity must be a factor "
+        "of 60 (minutes or seconds) or 24 (hours). The default is 1s.",
+    )
     get.set_defaults(func=_get)
 
 
@@ -75,7 +84,10 @@ def _get(args: argparse.Namespace) -> None:
     if args.offset:
         datetime += parse.offset(args.offset)
 
-    timestamp = discord.timestamp(datetime, _format_codes[args.format])
+    precision = parse.precision(args.precision)
+    datetime_rounded = round.datetime(datetime, precision)
+
+    timestamp = discord.timestamp(datetime_rounded, _format_codes[args.format])
     print(timestamp)
 
     if args.copy:

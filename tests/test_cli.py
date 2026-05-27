@@ -198,3 +198,38 @@ def test_get_offset_option(
 ) -> None:
     output = get(option_name, option_value)
     assert output.timestamp == expected_datetime.timestamp()
+
+
+@pytest.mark.parametrize("option_name", ["-p", "--precision"])
+@pytest.mark.parametrize(
+    ("option_value", "expected_datetime"),
+    [
+        ("1s", datetime(2030, 1, 1, 23, 43, 12)),
+        ("2h", datetime(2030, 1, 2)),
+        ("3m", datetime(2030, 1, 1, 23, 42)),
+    ],
+)
+@freezegun.freeze_time(datetime(2030, 1, 1, 23, 43, 12, 121))
+def test_precision_option(
+    get: GetRunner, option_name: str, option_value: str, expected_datetime: datetime
+) -> None:
+    output = get(option_name, option_value)
+    assert output.timestamp == expected_datetime.timestamp()
+
+
+@pytest.mark.parametrize("option_name", ["-p", "--precision"])
+def test_invalid_precision_quantity_prints_error(
+    get: GetRunner, option_name: str
+) -> None:
+    output = get(option_name, "61s")
+    assert "quantity for second must be between 1 and 60" in output.error_text
+    assert "must be a factor of 60" in output.error_text
+    assert "actual quantity was 61" in output.error_text
+
+
+@pytest.mark.parametrize("option_name", ["-p", "--precision"])
+def test_invalid_precision_format_prints_error(
+    get: GetRunner, option_name: str
+) -> None:
+    output = get(option_name, "24f")
+    assert "invalid precision format" in output.error_text
