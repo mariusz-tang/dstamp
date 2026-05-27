@@ -80,6 +80,64 @@ def test_precision_constructor_quantity_not_a_factor_of_max_raises(
 
 
 @pytest.mark.parametrize(
+    ("lhs", "rhs"),
+    [
+        (
+            round.Precision(1, round.Unit.SECOND),
+            round.Precision(1, round.Unit.SECOND),
+        ),
+        (
+            round.Precision(2, round.Unit.HOUR),
+            round.Precision(2, round.Unit.HOUR),
+        ),
+        (
+            round.Precision(15, round.Unit.MINUTE),
+            round.Precision(15, round.Unit.MINUTE),
+        ),
+        (
+            round.Precision(24, round.Unit.HOUR),
+            round.Precision(24, round.Unit.HOUR),
+        ),
+    ],
+)
+def test_precision_equality_comparison(
+    lhs: round.Precision, rhs: round.Precision
+) -> None:
+    assert lhs == rhs
+
+
+@pytest.mark.parametrize(
+    ("lhs", "rhs"),
+    [
+        (
+            round.Precision(1, round.Unit.SECOND),
+            round.Precision(2, round.Unit.SECOND),
+        ),
+        (
+            round.Precision(2, round.Unit.SECOND),
+            round.Precision(2, round.Unit.HOUR),
+        ),
+        (
+            round.Precision(20, round.Unit.SECOND),
+            round.Precision(15, round.Unit.MINUTE),
+        ),
+        (
+            round.Precision(30, round.Unit.MINUTE),
+            round.Precision(24, round.Unit.HOUR),
+        ),
+    ],
+)
+def test_precision_equality_comparison_unequal(
+    lhs: round.Precision, rhs: round.Precision
+) -> None:
+    assert lhs != rhs
+
+
+def test_precision_equality_against_other_types_not_implemented() -> None:
+    assert round.Precision(1, round.Unit.SECOND).__eq__(object()) is NotImplemented
+
+
+@pytest.mark.parametrize(
     ("datetime", "precision", "expected_result"),
     [
         (

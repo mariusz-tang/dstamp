@@ -39,6 +39,13 @@ class Precision:
         self.quantity = quantity
         self.unit = unit
 
+    def __eq__(self, other: object) -> bool:
+        """Compare equality of this Precision object with `other`."""
+        if type(other) is Precision:
+            return self.quantity == other.quantity and self.unit == other.unit
+
+        return NotImplemented
+
 
 def datetime(datetime: dt.datetime, precision: Precision) -> dt.datetime:
     """Round `datetime` to `precision`."""

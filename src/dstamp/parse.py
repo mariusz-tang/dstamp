@@ -4,7 +4,7 @@ import datetime as dt
 import re
 from collections import Counter
 
-from dstamp import exceptions
+from dstamp import exceptions, round
 
 MONTHS = [
     "jan",
@@ -105,3 +105,25 @@ def offset(input: str) -> dt.timedelta:
         result *= -1
 
     return result
+
+
+_ROUNDING_UNITS = {
+    "h": round.Unit.HOUR,
+    "m": round.Unit.MINUTE,
+    "s": round.Unit.SECOND,
+}
+
+
+def precision(input: str) -> round.Precision:
+    """Parse `input` as a rounding precision.
+
+    Raises `PrecisionQuantityError` instead of `ParserValueError` if the
+    precision quantity is invalid.
+    """
+    m = re.fullmatch(rf"(\d+)([{''.join(_ROUNDING_UNITS.keys())}])", input.lower())
+    if not m:
+        raise exceptions.ParserFormatError(input, round.Precision)
+
+    quantity = int(m[1])
+    unit = _ROUNDING_UNITS[m[2]]
+    return round.Precision(quantity, unit)
