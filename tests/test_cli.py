@@ -87,11 +87,6 @@ def test_get_no_args_returns_current_time(get: GetRunner) -> None:
     assert output.timestamp == 1234567890
 
 
-def test_get_no_args_uses_long_full_format(get: GetRunner) -> None:
-    output = get()
-    assert output.format_code == "F"
-
-
 def test_get_date_only_uses_midnight(get: GetRunner) -> None:
     output = get("10jan2025")
     assert output.timestamp == datetime(2025, 1, 10).timestamp()
@@ -182,6 +177,11 @@ def test_get_output_format_option(
 ) -> None:
     output = get(option_name, option_value)
     assert output.format_code == expected_format_code
+
+
+def test_get_output_format_option_defaults_to_long_datetime(get: GetRunner) -> None:
+    output = get()
+    assert output.format_code == "F"
 
 
 @pytest.mark.parametrize("option_name", ["-o", "--offset"])
