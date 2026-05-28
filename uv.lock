@@ -61,7 +61,7 @@ wheels = [
 
 [[package]]
 name = "dstamp"
-version = "2"
+version = "3"
 source = { editable = "." }
 dependencies = [
     { name = "argcomplete" },
