@@ -20,6 +20,31 @@ uv tool install dstamp
 [pipx]: https://pipx.pypa.io/stable/
 [uv]: https://docs.astral.sh/uv/
 
+## Usage
+
+```bash
+# Get the current time.
+dstamp get
+
+# Get the current time, to the nearest 15 minutes.
+dstamp get --precision 15m
+
+# Show the config file location.
+dstamp show-config
+```
+
+See the help messages for full usage information:
+
+```bash
+dstamp -h
+dstamp -h get
+```
+
+### Configuration
+
+Dstamp supports configuration by TOML file. See `dstamp -h show-config` for full
+information.
+
 ## Shell completion
 
 Dstamp supports shell completion using [argcomplete]. See the argcomplete
