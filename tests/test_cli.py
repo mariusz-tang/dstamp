@@ -230,3 +230,28 @@ def test_get_invalid_precision_format_prints_error(
 ) -> None:
     output = get(option_name, "24f")
     assert "invalid precision format" in output.error_text
+
+
+@freezegun.freeze_time("28 May 2021 16:52:04 UTC")
+def test_get_config_file_options(get: GetRunner, config_path: pathlib.Path) -> None:
+    config_path.write_text("copy=false\nformat='long-time'\nprecision='1h'")
+    output = get()
+    assert not output.copied_to_clipboard
+    assert output.format_code == "T"
+    assert output.timestamp == datetime(2021, 5, 28, 17, tzinfo=UTC).timestamp()
+
+
+@freezegun.freeze_time("28 May 2021 16:52:04 UTC")
+def test_get_cli_args_override_config_file_options(
+    get: GetRunner, config_path: pathlib.Path
+) -> None:
+    config_path.write_text("copy=false\nformat='long-time'\nprecision='1h'")
+    output = get("--copy", "--format", "short-time", "--precision", "1s")
+    assert output.copied_to_clipboard
+    assert output.format_code == "t"
+    assert output.timestamp == datetime(2021, 5, 28, 16, 52, 4, tzinfo=UTC).timestamp()
+
+
+def test_show_config(app: AppRunner[str], config_path: pathlib.Path) -> None:
+    output = app("show-config")
+    assert str(config_path) in output

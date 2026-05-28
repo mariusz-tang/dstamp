@@ -80,4 +80,4 @@ select = [
   "W",  # pycodestyle warning
 ]
 pydocstyle.convention = "pep257"
-per-file-ignores = { "tests/**/test_*.py" = ["D"] }
+per-file-ignores = { "tests/**/*" = ["D"] }

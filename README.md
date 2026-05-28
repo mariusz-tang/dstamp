@@ -5,13 +5,6 @@ CLI app for generating timestamps for use in Discord chats.
 *Note*: This is a complete rewrite of the original project from the ground up,
 using the standard argparse module instead of cyclopts.
 
-## TODO
-
-At this stage, the priority is to achieve feature-parity with v2:
-
-- Add config file support.
-- Add show-config.
-
 ## Installation
 
 Install using [pipx] or [uv]:

@@ -1,17 +1,8 @@
 import pathlib
 
 import pytest
-import pytest_mock
 
 from dstamp import config
-
-
-@pytest.fixture(autouse=True)
-def config_path(
-    tmp_path: pathlib.Path, mocker: pytest_mock.MockerFixture
-) -> pathlib.Path:
-    mocker.patch("platformdirs.user_config_path").return_value = tmp_path
-    return tmp_path / "config.toml"
 
 
 def test_default_path(config_path: pathlib.Path) -> None:

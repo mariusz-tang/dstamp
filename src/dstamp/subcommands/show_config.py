@@ -1,0 +1,23 @@
+"""The get timestamp command."""
+
+import argparse
+
+from dstamp import config
+
+
+def register(subparsers: argparse._SubParsersAction) -> None:
+    """Register the get command as a subparser."""
+    show_config: argparse.ArgumentParser = subparsers.add_parser(
+        "show-config",
+        help="Show the default config location and exit",
+        description="Show the default configuration file location and exit",
+        epilog="The config file should contain valid TOML. Valid keys are copy "
+        "(bool), format (string), and precision (string), which override the "
+        "default values for the corresponding options for other commands.",
+        add_help=False,
+    )
+    show_config.set_defaults(print_help=show_config.print_help, func=_show_config)
+
+
+def _show_config(_: argparse.Namespace) -> None:
+    print(config.default_path())
