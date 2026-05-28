@@ -207,7 +207,7 @@ def test_get_offset_option(
     ],
 )
 @freezegun.freeze_time(datetime(2030, 1, 1, 23, 43, 12, 121))
-def test_precision_option(
+def test_get_precision_option(
     get: GetRunner, option_name: str, option_value: str, expected_datetime: datetime
 ) -> None:
     output = get(option_name, option_value)
@@ -215,7 +215,7 @@ def test_precision_option(
 
 
 @pytest.mark.parametrize("option_name", ["-p", "--precision"])
-def test_invalid_precision_quantity_prints_error(
+def test_get_invalid_precision_quantity_prints_error(
     get: GetRunner, option_name: str
 ) -> None:
     output = get(option_name, "61s")
@@ -225,7 +225,7 @@ def test_invalid_precision_quantity_prints_error(
 
 
 @pytest.mark.parametrize("option_name", ["-p", "--precision"])
-def test_invalid_precision_format_prints_error(
+def test_get_invalid_precision_format_prints_error(
     get: GetRunner, option_name: str
 ) -> None:
     output = get(option_name, "24f")
