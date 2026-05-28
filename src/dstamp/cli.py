@@ -15,7 +15,6 @@ def construct_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         add_help=False,
         description="Discord timestamp generator",
-        epilog="Some options can be set via config file. See %(prog)s -h show-config",
     )
     parser.add_argument(
         "-h",
@@ -32,7 +31,7 @@ def construct_parser() -> argparse.ArgumentParser:
         help="Show version number and exit",
     )
 
-    subparsers = parser.add_subparsers()
+    subparsers = parser.add_subparsers(title="commands")
     subcommands.register_all(subparsers)
 
     return parser

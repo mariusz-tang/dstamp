@@ -14,6 +14,7 @@ def register(subparsers: argparse._SubParsersAction) -> None:
         "get",
         help="Generate a timestamp",
         description="Generate a Discord-compatible timestamp",
+        epilog="Some options can be set via config file. See %(prog)s -h show-config",
         add_help=False,
     )
     get.add_argument(
