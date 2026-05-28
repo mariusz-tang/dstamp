@@ -64,12 +64,9 @@ def copy_mock(mocker: pytest_mock.MockerFixture) -> unittest.mock.Mock:
     return mocker.patch("dstamp.subcommands.get.pyperclip.copy")
 
 
-def test_no_args_prints_help(
-    app: AppRunner[str], mocker: pytest_mock.MockFixture
-) -> None:
-    print_help = mocker.patch("dstamp.cli.parser.print_help")
-    app()
-    print_help.assert_called_once()
+def test_no_args_prints_help(app: AppRunner[str]) -> None:
+    output = app()
+    assert "Show this help message and exit" in output
 
 
 def test_version_option_matches_pyproject(app: AppRunner[str]) -> None:

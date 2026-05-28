@@ -10,10 +10,11 @@ from dstamp import discord, exceptions, parse, round
 
 def register(subparsers: argparse._SubParsersAction) -> None:
     """Register the get command as a subparser."""
-    get = subparsers.add_parser(
+    get: argparse.ArgumentParser = subparsers.add_parser(
         "get",
         help="Generate a timestamp",
         description="Generate a Discord-compatible timestamp",
+        add_help=False,
     )
     get.add_argument(
         "date",
@@ -35,7 +36,7 @@ def register(subparsers: argparse._SubParsersAction) -> None:
         "--copy",
         action=argparse.BooleanOptionalAction,
         default=True,
-        help="If set, copy the result to clipboard. True by default",
+        help="If set, copy the result to clipboard. Enabled by default",
     )
     get.add_argument(
         "-f",
@@ -53,7 +54,7 @@ def register(subparsers: argparse._SubParsersAction) -> None:
         "be repeated, for example 5s3d2s would be three days and seven (5+2) "
         "seconds. Units can be specified in any order. To specify a backwards "
         "offset, prefix the offset with b, for example b1d would be backwards "
-        "one day.",
+        "one day",
     )
     get.add_argument(
         "-p",
@@ -62,9 +63,9 @@ def register(subparsers: argparse._SubParsersAction) -> None:
         help="The precision to which the date and time should be rounded. "
         "Examples: 1s, 30m, 2h, 24h, 60s, 60m. The only valid units are h "
         "(hours), m (minutes), and s (seconds). The quantity must be a factor "
-        "of 60 (minutes or seconds) or 24 (hours). The default is 1s.",
+        "of 60 (minutes or seconds) or 24 (hours). The default is 1s",
     )
-    get.set_defaults(func=_get)
+    get.set_defaults(print_help=get.print_help, func=_get)
 
 
 _format_codes = {
