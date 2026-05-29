@@ -2,6 +2,7 @@
 
 import argparse
 import datetime as dt
+from typing import Any
 
 import pyperclip
 
@@ -42,10 +43,10 @@ def register(subparsers: argparse._SubParsersAction) -> None:
     get.add_argument(
         "-f",
         "--format",
-        choices=_format_codes.keys(),
+        choices=_output_formats.keys(),
         default="long-datetime",
         help="The output format to use. The default is long-datetime",
-    )
+    ).completer = _output_format_completer  # ty: ignore[unresolved-attribute]
     get.add_argument(
         "-o",
         "--offset",
@@ -73,15 +74,19 @@ def register(subparsers: argparse._SubParsersAction) -> None:
     )
 
 
-_format_codes = {
-    "short-time": "t",
-    "long-time": "T",
-    "short-date": "d",
-    "long-date": "D",
-    "short-datetime": "f",
-    "long-datetime": "F",
-    "relative": "R",
+_output_formats = {
+    "short-time": ("t", "18:01"),
+    "long-time": ("T", "18:01:06"),
+    "short-date": ("d", "29/05/2026"),
+    "long-date": ("D", "29 May 2026"),
+    "short-datetime": ("f", "29 May 2026 at 18:01"),
+    "long-datetime": ("F", "Friday 29 May 2026 at 18:01"),
+    "relative": ("R", "3 minutes ago"),
 }
+
+
+def _output_format_completer(**_: Any) -> dict:  # pragma: nocover
+    return {key: "e.g. " + _output_formats[key][1] for key in _output_formats}
 
 
 def _get(args: argparse.Namespace) -> None:
@@ -93,7 +98,8 @@ def _get(args: argparse.Namespace) -> None:
     precision = parse.precision(args.precision)
     datetime_rounded = round.datetime(datetime, precision)
 
-    timestamp = discord.timestamp(datetime_rounded, _format_codes[args.format])
+    format_code = _output_formats[args.format][0]
+    timestamp = discord.timestamp(datetime_rounded, format_code)
     print(timestamp)
 
     if args.copy:

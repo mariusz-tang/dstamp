@@ -81,3 +81,4 @@ select = [
 ]
 pydocstyle.convention = "pep257"
 per-file-ignores = { "tests/**/*" = ["D"] }
+flake8-annotations.allow-star-arg-any = true
