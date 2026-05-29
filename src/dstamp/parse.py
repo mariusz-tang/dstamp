@@ -6,7 +6,7 @@ from collections import Counter
 
 from dstamp import exceptions, round
 
-MONTHS = [
+_MONTHS = [
     "jan",
     "feb",
     "mar",
@@ -31,12 +31,12 @@ def date(input: str) -> dt.date:
     if input == "yesterday":
         return dt.date.today() - dt.timedelta(1)
 
-    m = re.fullmatch(rf"(\d+)({'|'.join(MONTHS)})(\d+)?", input.lower())
+    m = re.fullmatch(rf"(\d+)({'|'.join(_MONTHS)})(\d+)?", input.lower())
     if not m:
         raise exceptions.ParserFormatError(input, dt.date)
 
     day = int(m[1])
-    month = MONTHS.index(m[2]) + 1
+    month = _MONTHS.index(m[2]) + 1
     year = int(m[3]) if m[3] else dt.date.today().year
 
     try:
