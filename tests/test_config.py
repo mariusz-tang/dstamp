@@ -49,3 +49,10 @@ def test_parse_unrecognized_keys_triggers_warning(config_path: pathlib.Path) -> 
     assert "unknown_key" in message
     assert "another" in message
     assert "copy" not in message
+
+
+@pytest.mark.filterwarnings("ignore:unknown keys in config file")
+def test_parse_unrecognized_keys_are_discarded(config_path: pathlib.Path) -> None:
+    config_path.write_text("copy=true\nunknown_key='hello!'\nanother='byeee'")
+
+    assert config.parse(config_path) == {"copy": True}

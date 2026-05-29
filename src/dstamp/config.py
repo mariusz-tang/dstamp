@@ -43,4 +43,4 @@ def parse(path: pathlib.Path) -> dict:
             f"unknown keys in config file: {', '.join(unknown_keys)}", stacklevel=2
         )
 
-    return config
+    return {key: value for key, value in config.items() if key in _VALID_KEYS}
