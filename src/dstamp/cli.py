@@ -15,6 +15,7 @@ def construct_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         add_help=False,
         description="Discord timestamp generator",
+        suggest_on_error=True,
     )
     parser.add_argument(
         "-h",
