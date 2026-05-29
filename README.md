@@ -5,6 +5,15 @@ CLI app for generating timestamps for use in Discord chats.
 *Note*: This is a complete rewrite of the original project from the ground up,
 using the standard argparse module instead of cyclopts.
 
+## TODO
+
+- Add logging.
+- Add option to print detailed runtime information such as the date and time
+  used.
+- Clean up how warning messages are displayed.
+- Add `in OFFSET` command which uses the current date/time. This would be
+  equivalent to `dstamp get -o OFFSET`, which is a common usecase.
+
 ## Installation
 
 Install using [pipx] or [uv]:
