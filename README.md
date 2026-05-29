@@ -29,7 +29,7 @@ dstamp get
 # Get the current time, to the nearest 15 minutes.
 dstamp get --precision 15m
 
-# Show the config file location.
+# Show the default config file location.
 dstamp show-config
 ```
 
@@ -43,7 +43,8 @@ dstamp -h get
 ### Configuration
 
 Dstamp supports configuration by TOML file. See `dstamp -h show-config` for full
-information.
+information. The config file location can be overridden using the `--config`
+option.
 
 ## Shell completion
 

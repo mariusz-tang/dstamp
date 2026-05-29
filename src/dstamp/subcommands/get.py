@@ -6,10 +6,10 @@ from typing import Any
 
 import pyperclip
 
-from dstamp import config, discord, exceptions, parse, round
+from dstamp import discord, exceptions, parse, round
 
 
-def register(subparsers: argparse._SubParsersAction) -> None:
+def register(subparsers: argparse._SubParsersAction, config: dict) -> None:
     """Register the get command as a subparser."""
     get: argparse.ArgumentParser = subparsers.add_parser(
         "get",
@@ -67,11 +67,7 @@ def register(subparsers: argparse._SubParsersAction) -> None:
         "(hours), m (minutes), and s (seconds). The quantity must be a factor "
         "of 60 (minutes or seconds) or 24 (hours). The default is 1s",
     )
-    get.set_defaults(
-        print_help=get.print_help,
-        func=_get,
-        **config.parse(config.default_path()),
-    )
+    get.set_defaults(print_help=get.print_help, func=_get, **config)
 
 
 _output_formats = {

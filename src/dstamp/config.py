@@ -28,11 +28,16 @@ _VALID_KEYS = {
 }
 
 
-def parse(path: pathlib.Path) -> dict:
+def parse(path: pathlib.Path | None = None) -> dict:
     """Parse `path` as a config file and return the corresponding defaults dict.
+
+    If `path` is `None`, the default given by `default_path()` is used.
 
     If `path` does not exist, it is treated as if it were an empty file.
     """
+    if not path:
+        path = default_path()
+
     if not path.exists():
         return {}
 

@@ -38,6 +38,11 @@ def test_parse_valid_options(
     assert config.parse(config_path) == expected_result
 
 
+def test_parse_no_args_uses_default_config_path(config_path: pathlib.Path) -> None:
+    config_path.write_text("copy=true")
+    assert config.parse() == {"copy": True}
+
+
 def test_parse_unrecognized_keys_triggers_warning(config_path: pathlib.Path) -> None:
     config_path.write_text("copy=true\nunknown_key='hello!'\nanother='byeee'")
 

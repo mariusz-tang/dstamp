@@ -255,3 +255,25 @@ def test_get_cli_args_override_config_file_options(
 def test_show_config(app: AppRunner[str], config_path: pathlib.Path) -> None:
     output = app("show-config")
     assert str(config_path) in output
+
+
+@freezegun.freeze_time("28 May 2021 16:52:04 UTC")
+def test_config_option(app: AppRunner[str], config_path: pathlib.Path) -> None:
+    new_config_path = config_path.parent / "new_config.toml"
+    new_config_path.write_text("copy=false\nformat='long-time'\nprecision='1h'")
+    output = GetOutput(app("--config", str(new_config_path), "get"))
+    assert not output.copied_to_clipboard
+    assert output.format_code == "T"
+    assert output.timestamp == datetime(2021, 5, 28, 17, tzinfo=UTC).timestamp()
+
+
+@freezegun.freeze_time("28 May 2021 16:52:04 UTC")
+def test_config_option_overrides_default_config_file(
+    app: AppRunner[str], config_path: pathlib.Path
+) -> None:
+    config_path.write_text("copy=false\nformat='long-time'\nprecision='1h'")
+    new_config_path = config_path.parent / "new_config.toml"
+    output = GetOutput(app("--config", str(new_config_path), "get"))
+    assert output.copied_to_clipboard
+    assert output.format_code == "F"
+    assert output.timestamp == datetime(2021, 5, 28, 16, 52, 4, tzinfo=UTC).timestamp()
