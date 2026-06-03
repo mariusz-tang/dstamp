@@ -7,6 +7,7 @@ import unittest.mock
 from datetime import UTC, datetime
 
 import freezegun
+import pyperclip
 import pytest
 import pytest_mock
 
@@ -153,6 +154,14 @@ def test_get_no_copy_option(get: GetRunner, copy_mock: unittest.mock.Mock) -> No
     output = get("--no-copy")
     copy_mock.assert_not_called()
     assert not output.copied_to_clipboard
+
+
+def test_clipboard_error_is_printed(
+    get: GetRunner, copy_mock: unittest.mock.Mock
+) -> None:
+    copy_mock.side_effect = pyperclip.PyperclipException
+    output = get("--copy")
+    assert "problem with the clipboard manager" in output.error_text
 
 
 @pytest.mark.parametrize("option_name", ["-f", "--format"])

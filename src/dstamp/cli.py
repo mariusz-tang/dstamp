@@ -6,6 +6,7 @@ import pathlib
 from collections.abc import Iterable
 
 import argcomplete
+import pyperclip
 
 from dstamp import config, exceptions, subcommands
 
@@ -71,3 +72,5 @@ def run(args: Iterable[str] | None = None) -> None:
         parsed_args.func(parsed_args)
     except exceptions.DstampError as e:
         parser.error(str(e))
+    except pyperclip.PyperclipException as e:
+        parser.error(f"there was a problem with the clipboard manager: {e}")
