@@ -13,46 +13,48 @@ import pytest_mock
 import dstamp.cli
 
 
-class AppRunner[T](typing.Protocol):
+class RawOutput(typing.NamedTuple):
+    out: str
+    err: str
+
+
+class AppRunner[T = RawOutput](typing.Protocol):
     def __call__(self, *args: str) -> T: ...
 
 
 @pytest.fixture
-def app(capsys: pytest.CaptureFixture) -> AppRunner[str]:
+def app(capsys: pytest.CaptureFixture[str]) -> AppRunner:
     """Return an app runner."""
 
-    def run(*args: str) -> str:
+    def run(*args: str) -> RawOutput:
         with contextlib.suppress(SystemExit):
             # We collect error information in other ways, so we can safely
             # ignore SystemExit. Otherwise, this would cause tests which
             # intentionally cause errors to fail.
             dstamp.cli.run(args)
-        out, err = capsys.readouterr()
-        return out or err
+        return RawOutput(*capsys.readouterr())
 
     return run
 
 
 class GetOutput:
-    def __init__(self, raw_output: str) -> None:
-        m = re.search(r"error: (.+)", raw_output)
+    def __init__(self, raw_output: RawOutput) -> None:
+        m = re.search(r"error: (.+)", raw_output.err)
         self.error_text = m[1] if m else ""
-        if self.error_text:
-            # There won't be any meaningful output after an error is emitted.
-            return
 
-        m = re.match(r"<t:(-?\d+):([dDfFRsStT])>", raw_output)
-        assert m, "No timestamp in output"
-        self.timestamp = int(m[1])
-        self.format_code = m[2]
-        self.copied_to_clipboard = "Copied to clipboard!" in raw_output
+        m = re.match(r"<t:(-?\d+):([dDfFRsStT])>", raw_output.out)
+        if m:
+            self.timestamp = int(m[1])
+            self.format_code = m[2]
+
+        self.copied_to_clipboard = "Copied to clipboard!" in raw_output.out
 
 
 type GetRunner = AppRunner[GetOutput]
 
 
 @pytest.fixture
-def get(app: AppRunner[str]) -> GetRunner:
+def get(app: AppRunner) -> GetRunner:
     def run(*args: str) -> GetOutput:
         return GetOutput(app("get", *args))
 
@@ -64,18 +66,18 @@ def copy_mock(mocker: pytest_mock.MockerFixture) -> unittest.mock.Mock:
     return mocker.patch("dstamp.subcommands.get.pyperclip.copy")
 
 
-def test_no_args_prints_help(app: AppRunner[str]) -> None:
+def test_no_args_prints_help(app: AppRunner) -> None:
     output = app()
-    assert "Show this help message and exit" in output
+    assert "Show this help message and exit" in output.out
 
 
-def test_version_option_matches_pyproject(app: AppRunner[str]) -> None:
+def test_version_option_matches_pyproject(app: AppRunner) -> None:
     pyproject_path = pathlib.Path(__file__).parent.parent / "pyproject.toml"
     with pyproject_path.open("rb") as f:
         project_config = tomllib.load(f)
 
     output = app("--version")
-    assert project_config["project"]["version"] in output
+    assert project_config["project"]["version"] in output.out
 
 
 @freezegun.freeze_time(datetime.fromtimestamp(1234567890.2139))
@@ -252,13 +254,13 @@ def test_get_cli_args_override_config_file_options(
     assert output.timestamp == datetime(2021, 5, 28, 16, 52, 4, tzinfo=UTC).timestamp()
 
 
-def test_show_config(app: AppRunner[str], config_path: pathlib.Path) -> None:
+def test_show_config(app: AppRunner, config_path: pathlib.Path) -> None:
     output = app("show-config")
-    assert str(config_path) in output
+    assert str(config_path) in output.out
 
 
 @freezegun.freeze_time("28 May 2021 16:52:04 UTC")
-def test_config_option(app: AppRunner[str], config_path: pathlib.Path) -> None:
+def test_config_option(app: AppRunner, config_path: pathlib.Path) -> None:
     new_config_path = config_path.parent / "new_config.toml"
     new_config_path.write_text("copy=false\nformat='long-time'\nprecision='1h'")
     output = GetOutput(app("--config", str(new_config_path), "get"))
@@ -269,7 +271,7 @@ def test_config_option(app: AppRunner[str], config_path: pathlib.Path) -> None:
 
 @freezegun.freeze_time("28 May 2021 16:52:04 UTC")
 def test_config_option_overrides_default_config_file(
-    app: AppRunner[str], config_path: pathlib.Path
+    app: AppRunner, config_path: pathlib.Path
 ) -> None:
     config_path.write_text("copy=false\nformat='long-time'\nprecision='1h'")
     new_config_path = config_path.parent / "new_config.toml"
