@@ -9,7 +9,7 @@ import warnings
 
 import platformdirs
 
-_APP_NAME = "dstamp"
+import dstamp
 
 
 def default_path() -> pathlib.Path:
@@ -17,7 +17,7 @@ def default_path() -> pathlib.Path:
 
     Note that the file does not necessarily exist.
     """
-    config_dir = platformdirs.user_config_path(_APP_NAME)
+    config_dir = platformdirs.user_config_path(dstamp.APP_NAME)
     return config_dir / "config.toml"
 
 
