@@ -11,7 +11,7 @@ import pyperclip
 from dstamp import config, exceptions, subcommands
 
 
-def construct_parser(config: dict) -> argparse.ArgumentParser:
+def construct_parser(config: dict | None = None) -> argparse.ArgumentParser:
     """Create the dstamp CLI argument parser."""
     # Add the help option manually so we can change the help message.
     parser = argparse.ArgumentParser(
@@ -43,26 +43,25 @@ def construct_parser(config: dict) -> argparse.ArgumentParser:
     )
 
     subparsers = parser.add_subparsers(title="commands")
-    subcommands.register_all(subparsers, config)
+    subcommands.register_all(subparsers, config or {})
 
     return parser
 
 
 def run(args: Iterable[str] | None = None) -> None:
     """Parse `args` as CLI arguments and execute the resulting command."""
-    default_config = config.parse()
-    parser = construct_parser(default_config)
+    parser = construct_parser()
     argcomplete.autocomplete(parser)
 
     parsed_args = parser.parse_args(args)
 
-    if parsed_args.config:
-        # Re-parse the arguments with defaults from the new config.
-        # We use this method because the config path needs to be known at parse
-        # time, but we cannot determine an overridden config path before parsing.
-        new_config = config.parse(parsed_args.config)
-        parser = construct_parser(new_config)
-        parsed_args = parser.parse_args(args)
+    config_path = parsed_args.config or config.default_path()
+    # Re-parse the arguments with defaults from the config.
+    # We use this method because the config path needs to be known at parse
+    # time, but we cannot determine an overridden config path before parsing.
+    parsed_config = config.parse(config_path)
+    parser = construct_parser(parsed_config)
+    parsed_args = parser.parse_args(args)
 
     if not hasattr(parsed_args, "func") or parsed_args.help:
         parsed_args.print_help()
