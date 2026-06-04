@@ -2,11 +2,14 @@
 
 import argparse
 import datetime as dt
+import logging
 from typing import Any
 
 import pyperclip
 
 from dstamp import discord, exceptions, parse, round
+
+logger = logging.getLogger(__name__)
 
 
 def register(subparsers: argparse._SubParsersAction, config: dict) -> None:
@@ -87,12 +90,15 @@ def _output_format_completer(**_: Any) -> dict:  # pragma: nocover
 
 def _get(args: argparse.Namespace) -> None:
     datetime = _get_datetime(args.date, args.time)
+    logger.info(f"using datetime: {datetime}")
 
     if args.offset:
         datetime += parse.offset(args.offset)
+        logger.info(f"datetime after offset: {datetime}")
 
     precision = parse.precision(args.precision)
     datetime_rounded = round.datetime(datetime, precision)
+    logger.info(f"datetime after rounding: {datetime_rounded}")
 
     format_code = _output_formats[args.format][0]
     timestamp = discord.timestamp(datetime_rounded, format_code)

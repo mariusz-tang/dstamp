@@ -7,7 +7,6 @@ using the standard argparse module instead of cyclopts.
 
 ## TODO
 
-- Add logging.
 - Add option to print detailed runtime information such as the date and time
   used.
 - Clean up how warning messages are displayed.

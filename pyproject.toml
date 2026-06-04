@@ -15,6 +15,7 @@ classifiers = [
 ]
 dependencies = [
   "argcomplete>=3.6.3",
+  "logassert>=8.6",
   "platformdirs>=4.10.0",
   "pyperclip>=1.11.0",
 ]

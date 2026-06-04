@@ -10,6 +10,7 @@ import freezegun
 import pyperclip
 import pytest
 import pytest_mock
+from logassert import logassert
 
 import dstamp.cli
 
@@ -263,6 +264,33 @@ def test_get_cli_args_override_config_file_options(
     assert output.timestamp == datetime(2021, 5, 28, 16, 52, 4, tzinfo=UTC).timestamp()
 
 
+def test_get_datetime_is_logged(
+    get: GetRunner, logs: logassert.FixtureLogChecker
+) -> None:
+    get("16jun2026", "5pm")
+    assert "using datetime: " + re.escape(str(datetime(2026, 6, 16, 17))) in logs.info
+
+
+def test_get_datetime_after_offset_is_logged(
+    get: GetRunner, logs: logassert.FixtureLogChecker
+) -> None:
+    get("16jun2026", "5pm", "--offset", "2h")
+    assert (
+        "datetime after offset: " + re.escape(str(datetime(2026, 6, 16, 19)))
+        in logs.info
+    )
+
+
+def test_get_datetime_after_rounding_is_logged(
+    get: GetRunner, logs: logassert.FixtureLogChecker
+) -> None:
+    get("16jun2026", "5pm", "--precision", "6h")
+    assert (
+        "datetime after rounding: " + re.escape(str(datetime(2026, 6, 16, 18)))
+        in logs.info
+    )
+
+
 def test_show_config(app: AppRunner, config_path: pathlib.Path) -> None:
     output = app("show-config")
     assert str(config_path) in output.out
@@ -288,3 +316,89 @@ def test_config_option_overrides_default_config_file(
     assert output.copied_to_clipboard
     assert output.format_code == "F"
     assert output.timestamp == datetime(2021, 5, 28, 16, 52, 4, tzinfo=UTC).timestamp()
+
+
+@pytest.mark.parametrize(
+    "args",
+    [
+        [],
+        ["invalid", "args"],
+        ["-h"],
+        ["-h", "get"],
+    ],
+)
+def test_logging_not_configured_if_command_not_resolved(
+    app: AppRunner, logging_config_mock: unittest.mock.Mock, args: list[str]
+) -> None:
+    app(*args)
+    logging_config_mock.assert_not_called()
+
+
+def test_logging_is_configured_if_command_resolved(
+    app: AppRunner, logging_config_mock: unittest.mock.Mock
+) -> None:
+    app("show-config")
+    logging_config_mock.assert_called()
+
+
+def test_unexpected_error_is_printed(
+    get: GetRunner, mocker: pytest_mock.MockerFixture
+) -> None:
+    get_mock = mocker.patch("dstamp.subcommands.get._get")
+    get_mock.side_effect = Exception
+    output = get()
+    assert "unexpected error" in output.error_text
+
+
+def test_args_are_logged(app: AppRunner, logs: logassert.FixtureLogChecker) -> None:
+    args = ["get", "20jan", "5pm", "-p", "2h"]
+    app(*args)
+    assert ".+".join(args) in logs.info
+
+
+def test_sys_argv_is_logged(
+    mocker: pytest_mock.MockerFixture, logs: logassert.FixtureLogChecker
+) -> None:
+    args = ["get", "20jan", "5pm", "-p", "2h"]
+    mocker.patch("dstamp.cli.sys.argv", ["dstamp", *args])
+    # Have to call run directly because the app fixture uses an empty list if
+    # called with no args.
+    dstamp.cli.run()
+
+    assert ".+".join(args) in logs.info
+
+
+def test_config_file_location_is_logged(
+    app: AppRunner,
+    logs: logassert.FixtureLogChecker,
+    config_path: pathlib.Path,
+) -> None:
+    app("show-config")
+    assert f"using config in {config_path}" in logs.info
+
+
+def test_config_file_location_is_logged_config_option_specified(
+    app: AppRunner,
+    logs: logassert.FixtureLogChecker,
+    tmp_path: pathlib.Path,
+) -> None:
+    new_config_path = tmp_path / "new_config.toml"
+    app("--config", str(new_config_path), "show-config")
+    assert f"using config in {new_config_path}" in logs.info
+
+
+def test_parsed_config_is_logged(
+    app: AppRunner, logs: logassert.FixtureLogChecker, config_path: pathlib.Path
+) -> None:
+    config_path.write_text("copy=false")
+    app("show-config")
+    assert "computed config options: " + re.escape(str({"copy": False})) in logs.info
+
+
+def test_unexpected_error_is_logged(
+    get: GetRunner, mocker: pytest_mock.MockerFixture, logs: logassert.FixtureLogChecker
+) -> None:
+    get_mock = mocker.patch("dstamp.subcommands.get._get")
+    get_mock.side_effect = Exception
+    get()
+    assert "unexpected error" in logs.error
