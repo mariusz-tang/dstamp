@@ -13,6 +13,7 @@ import pytest_mock
 from logassert import logassert
 
 import dstamp.cli
+from dstamp import logging
 
 
 class RawOutput(typing.NamedTuple):
@@ -294,6 +295,11 @@ def test_get_datetime_after_rounding_is_logged(
 def test_show_config(app: AppRunner, config_path: pathlib.Path) -> None:
     output = app("show-config")
     assert str(config_path) in output.out
+
+
+def test_show_log(app: AppRunner) -> None:
+    output = app("show-log")
+    assert str(logging.LOG_DIR) in output.out
 
 
 @freezegun.freeze_time("28 May 2021 16:52:04 UTC")

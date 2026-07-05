@@ -4,7 +4,7 @@ import platformdirs
 
 import dstamp
 
-_LOG_DIR = platformdirs.user_log_path(dstamp.APP_NAME, ensure_exists=True)
+LOG_DIR = platformdirs.user_log_path(dstamp.APP_NAME, ensure_exists=True)
 
 CONFIG = {
     "version": 1,
@@ -15,7 +15,7 @@ CONFIG = {
         "file": {
             "class": "logging.handlers.RotatingFileHandler",
             "formatter": "full",
-            "filename": _LOG_DIR / f"{dstamp.APP_NAME}.log",
+            "filename": LOG_DIR / f"{dstamp.APP_NAME}.log",
             "encoding": "utf-8",
             "maxBytes": 50_000,
             "backupCount": 1,
