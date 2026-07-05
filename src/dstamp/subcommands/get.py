@@ -7,7 +7,7 @@ from typing import Any
 
 import pyperclip
 
-from dstamp import discord, exceptions, parse, round
+from dstamp import cli, discord, exceptions, parse, round
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +20,7 @@ def register(subparsers: argparse._SubParsersAction, config: dict) -> None:
         description="Generate a Discord-compatible timestamp",
         epilog="Some options can be set via config file. See %(prog)s -h show-config",
         add_help=False,
+        parents=[cli.base_parser],
     )
     get.add_argument(
         "date",
@@ -70,7 +71,7 @@ def register(subparsers: argparse._SubParsersAction, config: dict) -> None:
         "(hours), m (minutes), and s (seconds). The quantity must be a factor "
         "of 60 (minutes or seconds) or 24 (hours). The default is 1s",
     )
-    get.set_defaults(print_help=get.print_help, func=_get, **config)
+    get.set_defaults(func=_get, **config)
 
 
 _output_formats = {

@@ -2,7 +2,7 @@
 
 import argparse
 
-from dstamp import config
+from dstamp import cli, config
 
 
 def register(subparsers: argparse._SubParsersAction) -> None:
@@ -15,8 +15,9 @@ def register(subparsers: argparse._SubParsersAction) -> None:
         "(bool), format (string), and precision (string), which override the "
         "default values for the corresponding options for other commands.",
         add_help=False,
+        parents=[cli.base_parser],
     )
-    show_config.set_defaults(print_help=show_config.print_help, func=_show_config)
+    show_config.set_defaults(func=_show_config)
 
 
 def _show_config(_: argparse.Namespace) -> None:

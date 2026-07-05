@@ -16,24 +16,26 @@ from dstamp import config, exceptions, subcommands
 
 logger = logging.getLogger(__name__)
 
+# Use a base parser to change the help flag's help message.
+base_parser = argparse.ArgumentParser(add_help=False)
+base_parser.add_argument(
+    "-h",
+    "--help",
+    action="help",
+    help="Show this help message and exit.",
+)
+
 
 def construct_parser(config: dict | None = None) -> argparse.ArgumentParser:
     """Create the dstamp CLI argument parser."""
     # Add the help option manually so we can change the help message.
     parser = argparse.ArgumentParser(
         add_help=False,
+        parents=[base_parser],
         description="Discord timestamp generator",
         epilog="Some options can be set via config file. See %(prog)s -h show-config",
         suggest_on_error=True,
     )
-    parser.add_argument(
-        "-h",
-        "--help",
-        action="store_true",
-        help="Show this help message and exit. For command-specific help, use "
-        "%(prog)s -h COMMAND",
-    )
-    parser.set_defaults(print_help=parser.print_help)
     parser.add_argument(
         "--version",
         action="version",
@@ -59,11 +61,13 @@ def run(args: Iterable[str] | None = None) -> None:
     parser = construct_parser()
     argcomplete.autocomplete(parser)
 
+    # Move help flags past subcommands so the most specific help message is shown.
+    args = _move_help_to_end(args or sys.argv[1:])
     parsed_args = parser.parse_args(args)
 
-    # Exit early on help invocation.
-    if not hasattr(parsed_args, "func") or parsed_args.help:
-        parsed_args.print_help()
+    # Print help if no arguments are provided.
+    if not hasattr(parsed_args, "func"):
+        parser.print_help()
         return
 
     # Only log if a command was resolved.
@@ -91,3 +95,22 @@ def run(args: Iterable[str] | None = None) -> None:
     except Exception:
         logger.exception("An unexpected error occurred.")
         parser.error("an unexpected error occurred; please report this to dstamp")
+
+
+def _move_help_to_end(args: Iterable[str]) -> Iterable[str]:
+    args = list(args)
+    if "-h" not in args and "--help" not in args:
+        return args
+
+    # Remove --version so it doesn't override the help flag if present.
+    _remove_arg(args, "--version")
+    _remove_arg(args, "--help")
+    _remove_arg(args, "-h")
+
+    args.append("--help")
+    return args
+
+
+def _remove_arg(args: list[str], arg: str) -> None:
+    while arg in args:
+        args.remove(arg)
