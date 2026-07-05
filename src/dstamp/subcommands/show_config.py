@@ -1,4 +1,4 @@
-"""The get timestamp command."""
+"""The show-config command."""
 
 import argparse
 
@@ -6,7 +6,7 @@ from dstamp import cli, config
 
 
 def register(subparsers: argparse._SubParsersAction) -> None:
-    """Register the get command as a subparser."""
+    """Register the show-config command as a subparser."""
     show_config: argparse.ArgumentParser = subparsers.add_parser(
         "show-config",
         help="Show the default config location and exit",
