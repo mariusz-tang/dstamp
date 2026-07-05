@@ -12,8 +12,7 @@ import pytest
 import pytest_mock
 from logassert import logassert
 
-import dstamp.cli
-from dstamp import logging
+from dstamp import cli, logging
 
 
 class RawOutput(typing.NamedTuple):
@@ -34,7 +33,7 @@ def app(capsys: pytest.CaptureFixture[str]) -> AppRunner:
             # We collect error information in other ways, so we can safely
             # ignore SystemExit. Otherwise, this would cause tests which
             # intentionally cause errors to fail.
-            dstamp.cli.run(args)
+            cli.run(args)
         return RawOutput(*capsys.readouterr())
 
     return run
@@ -369,7 +368,7 @@ def test_sys_argv_is_logged(
     mocker.patch("dstamp.cli.sys.argv", ["dstamp", *args])
     # Have to call run directly because the app fixture uses an empty list if
     # called with no args.
-    dstamp.cli.run()
+    cli.run()
 
     assert ".+".join(args) in logs.info
 
