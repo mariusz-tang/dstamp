@@ -101,8 +101,11 @@ def run(args: Iterable[str] | None = None) -> None:
     logger.info(f"args: {args or sys.argv[1:]}")
 
     logger.info(f"using config in {config_path}")
-    if parsed_args.config and not parsed_args.config.exists():
-        logger.warning("specified config file does not exist")
+    if parsed_args.config:
+        if not parsed_args.config.exists():
+            logger.warning("specified config file does not exist")
+        elif not parsed_args.config.is_file():
+            logger.warning("specified config path is not a file")
 
     logger.info(f"computed config options: {parsed_config}")
     if unknown_keys:

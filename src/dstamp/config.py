@@ -43,7 +43,7 @@ def parse(path: pathlib.Path | None = None) -> tuple[dict[str, Any], set[str]]:
     if not path:
         path = default_path()
 
-    if not path.exists():
+    if not path.is_file():
         return {}, set()
 
     config = tomllib.loads(path.read_text())

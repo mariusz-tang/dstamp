@@ -472,3 +472,10 @@ def test_config_path_specified_but_does_not_exists_logs_warning(
 ) -> None:
     app("--config", str(config_path), "get")
     assert "specified config file does not exist" in logs.warning
+
+
+def test_config_path_specified_but_is_not_a_file_logs_warning(
+    app: AppRunner, config_path: pathlib.Path, logs: logassert.FixtureLogChecker
+) -> None:
+    app("--config", str(config_path.parent), "get")
+    assert "specified config path is not a file" in logs.warning
