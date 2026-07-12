@@ -407,3 +407,13 @@ def test_unexpected_error_is_logged(
     get_mock.side_effect = Exception
     get()
     assert "unexpected error" in logs.error
+
+
+def test_invalid_config_options_are_logged(
+    get: GetRunner, config_path: pathlib.Path, logs: logassert.FixtureLogChecker
+) -> None:
+    config_path.write_text("copy=false\nformatt='short'\nprecisionn='1m'")
+    get()
+    assert "unknown keys in config file:" in logs.warning
+    assert "formatt" in logs.warning
+    assert "precisionn" in logs.warning

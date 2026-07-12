@@ -81,8 +81,11 @@ def run(args: Iterable[str] | None = None) -> None:
     # Re-parse the arguments with defaults from the config.
     # We use this method because the config path needs to be known at parse
     # time, but we cannot determine an overridden config path before parsing.
-    parsed_config = config.parse(config_path)
+    parsed_config, unknown_keys = config.parse(config_path)
     logger.info(f"computed config options: {parsed_config}")
+    if unknown_keys:
+        logger.warning(f"unknown keys in config file: {', '.join(unknown_keys)}")
+
     parser = construct_parser(parsed_config)
     parsed_args = parser.parse_args(args)
 

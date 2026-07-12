@@ -5,7 +5,7 @@ The functions in this module do not create a config file if one does not exist.
 
 import pathlib
 import tomllib
-import warnings
+from typing import Any
 
 import platformdirs
 
@@ -28,24 +28,23 @@ _VALID_KEYS = {
 }
 
 
-def parse(path: pathlib.Path | None = None) -> dict:
+def parse(path: pathlib.Path | None = None) -> tuple[dict[str, Any], set[str]]:
     """Parse `path` as a config file and return the corresponding defaults dict.
 
     If `path` is `None`, the default given by `default_path()` is used.
 
     If `path` does not exist, it is treated as if it were an empty file.
+
+    Returns a dictionary containing the parsed config and a set of invalid keys
+    that were found at `path`.
     """
     if not path:
         path = default_path()
 
     if not path.exists():
-        return {}
+        return {}, set()
 
     config = tomllib.loads(path.read_text())
-
-    if unknown_keys := config.keys() - _VALID_KEYS:
-        warnings.warn(
-            f"unknown keys in config file: {', '.join(unknown_keys)}", stacklevel=2
-        )
-
-    return {key: value for key, value in config.items() if key in _VALID_KEYS}
+    cleaned_config = {key: value for key, value in config.items() if key in _VALID_KEYS}
+    unknown_keys = config.keys() - _VALID_KEYS
+    return cleaned_config, unknown_keys
