@@ -16,8 +16,8 @@ def register(subparsers: argparse._SubParsersAction, config: dict) -> None:
     """Register the get command as a subparser."""
     get: argparse.ArgumentParser = subparsers.add_parser(
         "get",
-        help="Generate a timestamp",
-        description="Generate a Discord-compatible timestamp",
+        help="Generate a timestamp.",
+        description="Generate a Discord-compatible timestamp.",
         epilog="Some options can be set via config file. See %(prog)s -h show-config",
         add_help=False,
         parents=[cli.base_parser],
@@ -27,7 +27,7 @@ def register(subparsers: argparse._SubParsersAction, config: dict) -> None:
         nargs="?",
         help="Examples: 1jan2025, 30may2020, 6jun. If the year is omitted, the "
         "current year is used. If the entire date is omitted, the current date "
-        "is used. Accepts special keywords: today, tomorrow, tmrw, yesterday",
+        "is used. Accepts special keywords: today, tomorrow, tmrw, yesterday.",
     )
     get.add_argument(
         "time",
@@ -35,21 +35,21 @@ def register(subparsers: argparse._SubParsersAction, config: dict) -> None:
         help="Examples: 1, 15, 1730, 35004pm. If omitted, midnight is used. If "
         "the date is also omitted, the current time is used instead. Can be "
         "provided even if the date is omitted. Accepts special keywords: now "
-        "(current time), midnight, noon",
+        "(current time), midnight, noon.",
     )
     get.add_argument(
         "-c",
         "--copy",
         action=argparse.BooleanOptionalAction,
         default=True,
-        help="If set, copy the result to clipboard. Enabled by default",
+        help="If set, copy the result to clipboard. Enabled by default.",
     )
     get.add_argument(
         "-f",
         "--format",
         choices=_output_formats.keys(),
         default="long-datetime",
-        help="The output format to use. The default is long-datetime",
+        help="The output format to use. The default is long-datetime.",
     ).completer = _output_format_completer  # ty: ignore[unresolved-attribute]
     get.add_argument(
         "-o",
@@ -60,7 +60,7 @@ def register(subparsers: argparse._SubParsersAction, config: dict) -> None:
         "be repeated, for example 5s3d2s would be three days and seven (5+2) "
         "seconds. Units can be specified in any order. To specify a backwards "
         "offset, prefix the offset with b, for example b1d would be backwards "
-        "one day",
+        "one day.",
     )
     get.add_argument(
         "-p",
@@ -69,7 +69,7 @@ def register(subparsers: argparse._SubParsersAction, config: dict) -> None:
         help="The precision to which the date and time should be rounded. "
         "Examples: 1s, 30m, 2h, 24h, 60s, 60m. The only valid units are h "
         "(hours), m (minutes), and s (seconds). The quantity must be a factor "
-        "of 60 (minutes or seconds) or 24 (hours). The default is 1s",
+        "of 60 (minutes or seconds) or 24 (hours). The default is 1s.",
     )
     get.set_defaults(func=_get, **config)
 

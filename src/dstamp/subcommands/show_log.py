@@ -9,8 +9,8 @@ def register(subparsers: argparse._SubParsersAction) -> None:
     """Register the show-log command as a subparser."""
     show_config: argparse.ArgumentParser = subparsers.add_parser(
         "show-log",
-        help="Show the log location and exit",
-        description="Show the default logfile location and exit",
+        help="Show the log location and exit.",
+        description="Show the default logfile location and exit.",
         add_help=False,
         parents=[cli.base_parser],
     )

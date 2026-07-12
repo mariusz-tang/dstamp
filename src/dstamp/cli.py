@@ -32,7 +32,7 @@ def construct_parser(config: dict | None = None) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         add_help=False,
         parents=[base_parser],
-        description="Discord timestamp generator",
+        description="Discord timestamp generator.",
         epilog="Some options can be set via config file. See %(prog)s -h show-config",
         suggest_on_error=True,
     )
@@ -40,7 +40,7 @@ def construct_parser(config: dict | None = None) -> argparse.ArgumentParser:
         "--version",
         action="version",
         version="%(prog)s 3",
-        help="Show version number and exit",
+        help="Show version number and exit.",
     )
     parser.add_argument(
         "--config",
@@ -52,13 +52,13 @@ def construct_parser(config: dict | None = None) -> argparse.ArgumentParser:
     parser.add_argument(
         "--quiet",
         action=argparse.BooleanOptionalAction,
-        help="Do not print warnings to the console. Disabled by default",
+        help="Do not print warnings to the console. Disabled by default.",
     )
     parser.add_argument(
         "--verbose",
         action=argparse.BooleanOptionalAction,
         help="Print detailed info messages to the console. Takes precedence over "
-        "--quiet. Disabled by default",
+        "--quiet. Disabled by default.",
     )
 
     subparsers = parser.add_subparsers(title="commands")
