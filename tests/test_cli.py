@@ -465,3 +465,10 @@ def test_verbose_overrides_quiet(
     get_log_config = mocker.patch("dstamp.logging.get_config")
     app("--verbose", "--quiet", "get")
     get_log_config.assert_called_once_with("verbose")
+
+
+def test_config_path_specified_but_does_not_exists_logs_warning(
+    app: AppRunner, config_path: pathlib.Path, logs: logassert.FixtureLogChecker
+) -> None:
+    app("--config", str(config_path), "get")
+    assert "specified config file does not exist" in logs.warning
