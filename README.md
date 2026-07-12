@@ -7,8 +7,6 @@ using the standard argparse module instead of cyclopts.
 
 ## TODO
 
-- Add option to print detailed runtime information such as the date and time
-  used.
 - Add `in OFFSET` command which uses the current date/time. This would be
   equivalent to `dstamp get -o OFFSET`, which is a common usecase.
 

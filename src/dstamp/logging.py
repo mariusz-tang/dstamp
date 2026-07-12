@@ -33,3 +33,20 @@ CONFIG = {
     },
     "disable_existing_loggers": False,
 }
+
+
+def get_config(verbosity: str) -> dict:
+    """Get an appropriate logging configuration for the given `verbosity`.
+
+    :param verbosity: recognized values are "quiet" and "verbose". Other values
+    are ignored and produce the default config.
+    """
+    # Use unspecific type annotation to avoid type errors below.
+    base: dict = CONFIG
+
+    if verbosity == "quiet":
+        base["root"]["handlers"].remove("console")
+    elif verbosity == "verbose":
+        base["handlers"]["console"]["level"] = "INFO"
+
+    return base

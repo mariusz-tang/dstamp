@@ -25,6 +25,8 @@ _VALID_KEYS = {
     "copy",
     "format",
     "precision",
+    "quiet",
+    "verbose",
 }
 
 

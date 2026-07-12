@@ -49,6 +49,17 @@ def construct_parser(config: dict | None = None) -> argparse.ArgumentParser:
         help="Alternative config file to use instead of the default. Should be "
         "a TOML file.",
     )
+    parser.add_argument(
+        "--quiet",
+        action=argparse.BooleanOptionalAction,
+        help="Do not print warnings to the console. Disabled by default",
+    )
+    parser.add_argument(
+        "--verbose",
+        action=argparse.BooleanOptionalAction,
+        help="Print detailed info messages to the console. Takes precedence over "
+        "--quiet. Disabled by default",
+    )
 
     subparsers = parser.add_subparsers(title="commands")
     subcommands.register_all(subparsers, config or {})
@@ -70,24 +81,28 @@ def run(args: Iterable[str] | None = None) -> None:
         parser.print_help()
         return
 
-    # Only log if a command was resolved.
-    logging.config.dictConfig(dstamp.logging.CONFIG)
-    logger.info(f"args: {args or sys.argv[1:]}")
-
     # Compute the config path.
     config_path = parsed_args.config or config.default_path()
-    logger.info(f"using config in {config_path}")
 
     # Re-parse the arguments with defaults from the config.
     # We use this method because the config path needs to be known at parse
     # time, but we cannot determine an overridden config path before parsing.
     parsed_config, unknown_keys = config.parse(config_path)
+    parser = construct_parser(parsed_config)
+    parsed_args = parser.parse_args(args)
+
+    # Configure logging only after reading the config.
+    verbosity = (
+        "verbose" if parsed_args.verbose else "quiet" if parsed_args.quiet else "normal"
+    )
+    logging.config.dictConfig(dstamp.logging.get_config(verbosity))
+
+    # Now we can start logging.
+    logger.info(f"args: {args or sys.argv[1:]}")
+    logger.info(f"using config in {config_path}")
     logger.info(f"computed config options: {parsed_config}")
     if unknown_keys:
         logger.warning(f"unknown keys in config file: {', '.join(unknown_keys)}")
-
-    parser = construct_parser(parsed_config)
-    parsed_args = parser.parse_args(args)
 
     try:
         parsed_args.func(parsed_args)

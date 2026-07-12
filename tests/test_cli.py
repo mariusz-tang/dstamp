@@ -417,3 +417,51 @@ def test_invalid_config_options_are_logged(
     assert "unknown keys in config file:" in logs.warning
     assert "formatt" in logs.warning
     assert "precisionn" in logs.warning
+
+
+def test_default_log_verbosity_normal(
+    get: GetRunner, mocker: pytest_mock.MockerFixture
+) -> None:
+    get_log_config = mocker.patch("dstamp.logging.get_config")
+    get()
+    get_log_config.assert_called_once_with("normal")
+
+
+def test_quiet_option(app: AppRunner, mocker: pytest_mock.MockerFixture) -> None:
+    get_log_config = mocker.patch("dstamp.logging.get_config")
+    app("--quiet", "get")
+    get_log_config.assert_called_once_with("quiet")
+
+
+def test_quiet_config_option(
+    get: GetRunner, mocker: pytest_mock.MockerFixture, config_path: pathlib.Path
+) -> None:
+    config_path.write_text("quiet=true")
+    get_log_config = mocker.patch("dstamp.logging.get_config")
+    get()
+    get_log_config.assert_called_once_with("quiet")
+
+
+def test_verbose_option(app: AppRunner, mocker: pytest_mock.MockerFixture) -> None:
+    get_log_config = mocker.patch("dstamp.logging.get_config")
+    app("--verbose", "get")
+    get_log_config.assert_called_once_with("verbose")
+
+
+def test_verbose_config_option(
+    get: GetRunner, mocker: pytest_mock.MockerFixture, config_path: pathlib.Path
+) -> None:
+    config_path.write_text("verbose=true")
+    get_log_config = mocker.patch("dstamp.logging.get_config")
+    get()
+    get_log_config.assert_called_once_with("verbose")
+
+
+def test_verbose_overrides_quiet(
+    app: AppRunner, mocker: pytest_mock.MockerFixture
+) -> None:
+    # --verbose should override --quiet because the latter is likely to be set
+    # in a config file while the former is likely to only be set on the CLI.
+    get_log_config = mocker.patch("dstamp.logging.get_config")
+    app("--verbose", "--quiet", "get")
+    get_log_config.assert_called_once_with("verbose")

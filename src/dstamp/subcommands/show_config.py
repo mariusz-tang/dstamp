@@ -12,8 +12,9 @@ def register(subparsers: argparse._SubParsersAction) -> None:
         help="Show the default config location and exit",
         description="Show the default configuration file location and exit",
         epilog="The config file should contain valid TOML. Valid keys are copy "
-        "(bool), format (string), and precision (string), which override the "
-        "default values for the corresponding options for other commands.",
+        "(bool), format (string), precision (string), quiet (bool), and verbose "
+        "(bool), which override the default values for the corresponding options "
+        "for other commands.",
         add_help=False,
         parents=[cli.base_parser],
     )
