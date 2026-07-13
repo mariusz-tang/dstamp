@@ -479,3 +479,11 @@ def test_config_path_specified_but_is_not_a_file_logs_warning(
 ) -> None:
     app("--config", str(config_path.parent), "get")
     assert "specified config path is not a file" in logs.warning
+
+
+def test_config_file_is_invalid_toml_logs_warning(
+    get: GetRunner, config_path: pathlib.Path, logs: logassert.FixtureLogChecker
+) -> None:
+    config_path.write_text("invalid toml")
+    get()
+    assert "config file is not valid TOML" in logs.warning

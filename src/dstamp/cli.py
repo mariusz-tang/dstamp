@@ -83,14 +83,12 @@ def run(args: Iterable[str] | None = None) -> None:
         return
 
     # Read the config file.
-    config_path = parsed_args.config or config.default_path()
-    config_raw = tomllib.loads(config_path.read_text()) if config_path.is_file() else {}
-    config_cleaned, unknown_keys = config.clean(config_raw)
+    config_path, config_, unknown_keys, config_warning = _get_config(parsed_args.config)
 
     # Re-parse the arguments with defaults from the config.
     # We use this method because the config path needs to be known at parse
     # time, but we cannot determine an overridden config path before parsing.
-    parser = construct_parser(config_cleaned)
+    parser = construct_parser(config_)
     parsed_args = parser.parse_args(args)
 
     # Configure logging only after reading the config.
@@ -103,13 +101,10 @@ def run(args: Iterable[str] | None = None) -> None:
     logger.info(f"args: {args or sys.argv[1:]}")
 
     logger.info(f"using config in {config_path}")
-    if parsed_args.config:
-        if not parsed_args.config.exists():
-            logger.warning("specified config file does not exist")
-        elif not parsed_args.config.is_file():
-            logger.warning("specified config path is not a file")
+    if config_warning:
+        logger.warning(config_warning)
 
-    logger.info(f"computed config options: {config_cleaned}")
+    logger.info(f"computed config options: {config_}")
     if unknown_keys:
         logger.warning(f"unknown keys in config file: {', '.join(unknown_keys)}")
 
@@ -141,3 +136,37 @@ def _move_help_to_end(args: Iterable[str]) -> Iterable[str]:
 def _remove_arg(args: list[str], arg: str) -> None:
     while arg in args:
         args.remove(arg)
+
+
+def _get_config(
+    config_path_arg: pathlib.Path | None,
+) -> tuple[pathlib.Path, dict, set, str | None]:
+    """Get config from `config_path_arg`.
+
+    Returns the effective config path, cleaned config, unknown keys set, and
+    a warning message if applicable.
+    """
+    log_warning = None
+
+    # Log if config path is specified at the command line but cannot be used.
+    if config_path_arg:
+        if not config_path_arg.exists():
+            log_warning = "specified config file does not exist"
+        elif not config_path_arg.is_file():
+            log_warning = "specified config path is not a file"
+
+    # Default result if we cannot read a file.
+    config_cleaned = {}
+    unknown_keys = set()
+
+    config_path = config_path_arg or config.default_path()
+    if config_path.is_file():
+        try:
+            config_raw = tomllib.loads(config_path.read_text())
+        except tomllib.TOMLDecodeError:
+            log_warning = "config file is not valid TOML"
+        else:
+            # Override result with file contents.
+            config_cleaned, unknown_keys = config.clean(config_raw)
+
+    return config_path, config_cleaned, unknown_keys, log_warning
