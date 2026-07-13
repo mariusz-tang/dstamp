@@ -6,6 +6,7 @@ import logging
 import logging.config
 import pathlib
 import sys
+import tomllib
 from collections.abc import Iterable
 
 import argcomplete
@@ -81,14 +82,15 @@ def run(args: Iterable[str] | None = None) -> None:
         parser.print_help()
         return
 
-    # Compute the config path.
+    # Read the config file.
     config_path = parsed_args.config or config.default_path()
+    config_raw = tomllib.loads(config_path.read_text()) if config_path.is_file() else {}
+    config_cleaned, unknown_keys = config.clean(config_raw)
 
     # Re-parse the arguments with defaults from the config.
     # We use this method because the config path needs to be known at parse
     # time, but we cannot determine an overridden config path before parsing.
-    parsed_config, unknown_keys = config.parse(config_path)
-    parser = construct_parser(parsed_config)
+    parser = construct_parser(config_cleaned)
     parsed_args = parser.parse_args(args)
 
     # Configure logging only after reading the config.
@@ -107,7 +109,7 @@ def run(args: Iterable[str] | None = None) -> None:
         elif not parsed_args.config.is_file():
             logger.warning("specified config path is not a file")
 
-    logger.info(f"computed config options: {parsed_config}")
+    logger.info(f"computed config options: {config_cleaned}")
     if unknown_keys:
         logger.warning(f"unknown keys in config file: {', '.join(unknown_keys)}")
 

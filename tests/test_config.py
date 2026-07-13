@@ -9,43 +9,50 @@ def test_default_path(config_path: pathlib.Path) -> None:
     assert config.default_path() == config_path
 
 
-def test_parse_non_existent_file_returns_empty(config_path: pathlib.Path) -> None:
-    assert config.parse(config_path) == ({}, set())
-
-
-def test_parse_empty_file_returns_empty(config_path: pathlib.Path) -> None:
-    config_path.touch()
-    assert config.parse(config_path) == ({}, set())
+@pytest.mark.parametrize(
+    "cfg",
+    [
+        {"copy": True},
+        {"copy": False},
+        {"format": "short-time"},
+        {"precision": "20s"},
+        {"copy": True, "format": "long-time", "precision": "60s"},
+        {"quiet": True},
+        {"verbose": False, "quiet": True},
+    ],
+)
+def test_clean_valid_keys_only(cfg: dict) -> None:
+    assert config.clean(cfg) == (cfg, set())
 
 
 @pytest.mark.parametrize(
-    ("config_text", "expected_result"),
+    "cfg",
     [
-        ("copy = true", {"copy": True}),
-        ("copy = false", {"copy": False}),
-        ("format = 'short-time'", {"format": "short-time"}),
-        ("precision = '20s'", {"precision": "20s"}),
-        (
-            "copy=true\nformat='long-time'\nprecision='60s'",
-            {"copy": True, "format": "long-time", "precision": "60s"},
-        ),
+        {"cop": True},
+        {"cpy": False},
+        {"frmat": "short-time"},
+        {"prcision": "20s"},
+        {"coy": True, "formt": "long-time", "prcision": "60s"},
+        {"quet": True},
+        {"vrbose": False, "uiet": True},
     ],
 )
-def test_parse_valid_options(
-    config_path: pathlib.Path, config_text: str, expected_result: dict
+def test_clean_invalid_keys_only(cfg: dict) -> None:
+    assert config.clean(cfg) == ({}, cfg.keys())
+
+
+@pytest.mark.parametrize(
+    ("cfg", "cleaned", "invalid_keys"),
+    [
+        (
+            {"coy": True, "format": "long-time", "precision": "60s"},
+            {"format": "long-time", "precision": "60s"},
+            {"coy"},
+        ),
+        ({"vrbose": False, "quiet": True}, {"quiet": True}, {"vrbose"}),
+    ],
+)
+def test_clean_valid_and_invalid_keys(
+    cfg: dict, cleaned: dict, invalid_keys: set
 ) -> None:
-    config_path.write_text(config_text)
-    assert config.parse(config_path) == (expected_result, set())
-
-
-def test_parse_no_args_uses_default_config_path(config_path: pathlib.Path) -> None:
-    config_path.write_text("copy=true")
-    assert config.parse() == ({"copy": True}, set())
-
-
-def test_parse_unrecognized_keys_are_returned_in_second_part(
-    config_path: pathlib.Path,
-) -> None:
-    config_path.write_text("copy=true\nunknown_key='hello!'\nanother='byeee'")
-
-    assert config.parse(config_path) == ({"copy": True}, {"unknown_key", "another"})
+    assert config.clean(cfg) == (cleaned, invalid_keys)
