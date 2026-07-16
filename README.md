@@ -39,8 +39,9 @@ dstamp show-config
 See the help messages for full usage information:
 
 ```bash
-dstamp -h
+dstamp --help
 dstamp -h get
+dstamp -h in
 ```
 
 ### Configuration
@@ -48,6 +49,10 @@ dstamp -h get
 Dstamp supports configuration by TOML file. See `dstamp -h show-config` for full
 information. The config file location can be overridden using the `--config`
 option.
+
+## Logs
+
+Dstamp writes logs to a file. Use `dstamp show-log` to get the file location.
 
 ## Shell completion
 
