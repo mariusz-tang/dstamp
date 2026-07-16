@@ -1,4 +1,4 @@
-"""The get timestamp command."""
+"""The get timestamp command, and the related in command."""
 
 import argparse
 import datetime as dt
@@ -13,14 +13,32 @@ logger = logging.getLogger(__name__)
 
 
 def register(subparsers: argparse._SubParsersAction, config: dict) -> None:
-    """Register the get command as a subparser."""
+    """Register the get and in commands as subparsers."""
+    base = argparse.ArgumentParser(add_help=False)
+    base.add_argument(
+        "-c",
+        "--copy",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="If set, copy the result to clipboard. Enabled by default.",
+    )
+    base.add_argument(
+        "-p",
+        "--precision",
+        default="1s",
+        help="The precision to which the date and time should be rounded. "
+        "Examples: 1s, 30m, 2h, 24h, 60s, 60m. The only valid units are h "
+        "(hours), m (minutes), and s (seconds). The quantity must be a factor "
+        "of 60 (minutes or seconds) or 24 (hours). The default is 1s.",
+    )
+
     get: argparse.ArgumentParser = subparsers.add_parser(
         "get",
         help="Generate a timestamp.",
         description="Generate a Discord-compatible timestamp.",
         epilog="Some options can be set via config file. See %(prog)s -h show-config",
         add_help=False,
-        parents=[cli.base_parser],
+        parents=[cli.base_parser, base],
     )
     get.add_argument(
         "date",
@@ -38,20 +56,6 @@ def register(subparsers: argparse._SubParsersAction, config: dict) -> None:
         "(current time), midnight, noon.",
     )
     get.add_argument(
-        "-c",
-        "--copy",
-        action=argparse.BooleanOptionalAction,
-        default=True,
-        help="If set, copy the result to clipboard. Enabled by default.",
-    )
-    get.add_argument(
-        "-f",
-        "--format",
-        choices=_output_formats.keys(),
-        default="long-datetime",
-        help="The output format to use. The default is long-datetime.",
-    ).completer = _output_format_completer  # ty: ignore[unresolved-attribute]
-    get.add_argument(
         "-o",
         "--offset",
         help="An offset to apply to the date and time. Examples: 1d (one day), "
@@ -63,15 +67,43 @@ def register(subparsers: argparse._SubParsersAction, config: dict) -> None:
         "one day.",
     )
     get.add_argument(
-        "-p",
-        "--precision",
-        default="1s",
-        help="The precision to which the date and time should be rounded. "
-        "Examples: 1s, 30m, 2h, 24h, 60s, 60m. The only valid units are h "
-        "(hours), m (minutes), and s (seconds). The quantity must be a factor "
-        "of 60 (minutes or seconds) or 24 (hours). The default is 1s.",
-    )
+        "-f",
+        "--format",
+        choices=_output_formats.keys(),
+        default="long-datetime",
+        help="The output format to use. The default is long-datetime.",
+    ).completer = _output_format_completer  # ty: ignore[unresolved-attribute]
     get.set_defaults(func=_get, **config)
+
+    in_: argparse.ArgumentParser = subparsers.add_parser(
+        "in",
+        help="Generate a timestamp relative to now.",
+        description="Generate a Discord-compatible timestamp relative to the current "
+        "time.",
+        epilog="Some options can be set via config file. See %(prog)s -h show-config",
+        add_help=False,
+        parents=[cli.base_parser, base],
+    )
+    in_.add_argument(
+        "offset",
+        help="An offset to apply to the current time. Examples: 1d (one day), "
+        "3h5m (three hours and five minutes), 5s (five seconds). The only valid "
+        "units are d (days), h (hours), m (minutes), and s (seconds). Units can "
+        "be repeated, for example 5s3d2s would be three days and seven (5+2) "
+        "seconds. Units can be specified in any order. To specify a backwards "
+        "offset, prefix the offset with b, for example b1d would be backwards "
+        "one day.",
+    )
+    # We duplicate the format argument because the defaults are linked if we
+    # put it in the parent parser.
+    in_.add_argument(
+        "-f",
+        "--format",
+        choices=_output_formats.keys(),
+        default="relative",
+        help="The output format to use. The default is relative.",
+    ).completer = _output_format_completer  # ty: ignore[unresolved-attribute]
+    in_.set_defaults(func=_in, **config)
 
 
 _output_formats = {
@@ -97,6 +129,20 @@ def _get(args: argparse.Namespace) -> None:
         datetime += parse.offset(args.offset)
         logger.info(f"datetime after offset: {datetime}")
 
+    _show_timestamp(datetime, args)
+
+
+def _in(args: argparse.Namespace) -> None:
+    datetime = dt.datetime.now()
+    logger.info(f"using datetime: {datetime}")
+
+    datetime += parse.offset(args.offset)
+    logger.info(f"datetime after offset: {datetime}")
+
+    _show_timestamp(datetime, args)
+
+
+def _show_timestamp(datetime: dt.datetime, args: argparse.Namespace) -> None:
     precision = parse.precision(args.precision)
     datetime_rounded = round.datetime(datetime, precision)
     logger.info(f"datetime after rounding: {datetime_rounded}")

@@ -487,3 +487,21 @@ def test_config_file_is_invalid_toml_logs_warning(
     config_path.write_text("invalid toml")
     get()
     assert "config file is not valid TOML" in logs.warning
+
+
+@pytest.mark.parametrize(
+    ("offset", "expected_datetime"),
+    [
+        ("1d", datetime(2026, 5, 25, 14, 35, 49, tzinfo=UTC)),
+        ("b3s", datetime(2026, 5, 24, 14, 35, 46, tzinfo=UTC)),
+    ],
+)
+@freezegun.freeze_time("24th May 2026, 14:35:49 UTC")
+def test_in(app: AppRunner, offset: str, expected_datetime: datetime) -> None:
+    output = GetOutput(app("in", offset))
+    assert output.timestamp == expected_datetime.timestamp()
+
+
+def test_in_default_format_relative(app: AppRunner) -> None:
+    output = GetOutput(app("in", "1m"))
+    assert output.format_code == "R"
