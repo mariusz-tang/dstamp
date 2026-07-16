@@ -40,7 +40,7 @@ def construct_parser(config: dict | None = None) -> argparse.ArgumentParser:
     parser.add_argument(
         "--version",
         action="version",
-        version="%(prog)s 3",
+        version="%(prog)s 4",
         help="Show version number and exit.",
     )
     parser.add_argument(
