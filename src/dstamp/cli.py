@@ -74,7 +74,9 @@ def run(args: Iterable[str] | None = None) -> None:
     argcomplete.autocomplete(parser)
 
     # Move help flags past subcommands so the most specific help message is shown.
-    args = _move_help_to_end(args or sys.argv[1:])
+    if args is None:
+        args = sys.argv[1:]
+    args = _move_help_to_end(args)
     parsed_args = parser.parse_args(args)
 
     # Print help if no arguments are provided.
@@ -98,7 +100,7 @@ def run(args: Iterable[str] | None = None) -> None:
     logging.config.dictConfig(dstamp.logging.get_config(verbosity))
 
     # Now we can start logging.
-    logger.info(f"args: {args or sys.argv[1:]}")
+    logger.info(f"args: {args}")
 
     logger.info(f"using config in {config_path}")
     if config_warning:
